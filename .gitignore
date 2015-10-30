@@ -5,7 +5,7 @@
 # Inverse ignore some stuff
 !/Assets/
 !/ProjectSettings/
-!tutorial.apk
+!Project/tutorial.apk
 !README.md
 !.gitignore
 
