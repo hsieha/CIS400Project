@@ -1,0 +1,26 @@
+# Ignore everything
+/*
+/*/
+
+# Inverse ignore some stuff
+!/Project/
+/Project/*
+!Assets/
+!ProjectSettings/
+!*.apk
+!README.md
+!.gitignore
+
+Library/
+
+# OS StuffS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+$RECYCLE.BIN/
+Desktop.ini
+
+
