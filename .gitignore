@@ -1,19 +1,32 @@
-# Ignore everything
+##### [1] ignore everything (allows this file to function as whitelist)
+# IGNORE files (and directores) in top-level directory (TLD)
 /*
+# IGNORE directories in TLD (I think this is redundant)
 /*/
 
-# Inverse ignore some stuff
+##### [2] reinclude important files
+# ALLOW .gitignore in TLD
+!/.gitignore
+# ALLOW readme in TLD
+!/README.md
+# ALLOW TLD's Project/ directory
 !/Project/
+# IGNORE all files (and directories) inside TLD's Project/ directory
 /Project/*
+# but, ALLOW any Assets/ directory (and everything inside)
 !Assets/
+# but, ALLOW any ProjectSettings/ directory (and everything inside)
 !ProjectSettings/
+
+
+
+
+
+##### [-2] files to ALLOW (in any tracked directory)
+# ALLOW *.apk files in any tracked directory
 !*.apk
-!README.md
-!.gitignore
 
-Library/
-
-# OS StuffS
+##### [-1] files to ALWAYS IGNORE
 .DS_Store
 ._*
 .Spotlight-V100
@@ -22,5 +35,3 @@ ehthumbs.db
 Thumbs.db
 $RECYCLE.BIN/
 Desktop.ini
-
-
