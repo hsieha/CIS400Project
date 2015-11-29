@@ -9,6 +9,7 @@
 !/.gitignore
 # ALLOW readme in TLD
 !/README.md
+
 # ALLOW TLD's Project/ directory
 !/Project/
 # IGNORE all files (and directories) inside TLD's Project/ directory
@@ -17,6 +18,9 @@
 !Assets/
 # but, ALLOW any ProjectSettings/ directory (and everything inside)
 !ProjectSettings/
+
+# ALLOW TLD's Documents/ directory
+!/Documents/
 
 
 
