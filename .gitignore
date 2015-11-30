@@ -28,6 +28,9 @@
 # ALLOW TLD's vuforia/ directory
 !/vuforia/
 
+# ALLOW TLD's apks/ directory
+!/apks/
+
 
 
 ##### [-2] files to ALLOW (in any tracked directory)
