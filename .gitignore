@@ -19,16 +19,16 @@
 # but, ALLOW any ProjectSettings/ directory (and everything inside)
 !ProjectSettings/
 
-# ALLOW TLD's documents/ directory
+# ALLOW TLD's documents/ directory (& everything inside)
 !/documents/
 
-# ALLOW TLD's cardboard/ directory
+# ALLOW TLD's cardboard/ directory (& everything inside)
 !/cardboard/
 
-# ALLOW TLD's vuforia/ directory
+# ALLOW TLD's vuforia/ directory (& everything inside)
 !/vuforia/
 
-# ALLOW TLD's apks/ directory
+# ALLOW TLD's apks/ directory (& everything inside)
 !/apks/
 
 
