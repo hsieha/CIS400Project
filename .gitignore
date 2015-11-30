@@ -25,7 +25,8 @@
 # ALLOW TLD's cardboard/ directory
 !/cardboard/
 
-
+# ALLOW TLD's vuforia/ directory
+!/vuforia/
 
 
 
