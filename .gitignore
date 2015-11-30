@@ -19,8 +19,11 @@
 # but, ALLOW any ProjectSettings/ directory (and everything inside)
 !ProjectSettings/
 
-# ALLOW TLD's Documents/ directory
-!/Documents/
+# ALLOW TLD's documents/ directory
+!/documents/
+
+# ALLOW TLD's cardboard/ directory
+!/cardboard/
 
 
 
