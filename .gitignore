@@ -1,48 +1,37 @@
-##### [1] ignore everything (allows this file to function as whitelist)
-# IGNORE files (and directores) in top-level directory (TLD)
-/*
-# IGNORE directories in TLD (I think this is redundant)
-/*/
+# Built application files
+/*/build/
 
-##### [2] reinclude important files
-# ALLOW .gitignore in TLD
-!/.gitignore
-# ALLOW readme in TLD
-!/README.md
+# Crashlytics configuations
+com_crashlytics_export_strings.xml
 
-# ALLOW TLD's Project/ directory
-!/Project/
-# IGNORE all files (and directories) inside TLD's Project/ directory
-/Project/*
-# but, ALLOW any Assets/ directory (and everything inside)
-!Assets/
-# but, ALLOW any ProjectSettings/ directory (and everything inside)
-!ProjectSettings/
+# Local configuration file (sdk path, etc)
+local.properties
 
-# ALLOW TLD's documents/ directory (& everything inside)
-!/documents/
+# Gradle generated files
+.gradle/
 
-# ALLOW TLD's cardboard/ directory (& everything inside)
-!/cardboard/
+# Signing files
+.signing/
 
-# ALLOW TLD's vuforia/ directory (& everything inside)
-!/vuforia/
+# User-specific configurations
+.idea/libraries/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/.name
+.idea/compiler.xml
+.idea/copyright/profiles_settings.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/vcs.xml
+*.iml
 
-# ALLOW TLD's apks/ directory (& everything inside)
-!/apks/
-
-
-
-##### [-2] files to ALLOW (in any tracked directory)
-# ALLOW *.apk files in any tracked directory
-!*.apk
-
-##### [-1] files to ALWAYS IGNORE
+# OS-specific files
 .DS_Store
+.DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
 Thumbs.db
-$RECYCLE.BIN/
-Desktop.ini
