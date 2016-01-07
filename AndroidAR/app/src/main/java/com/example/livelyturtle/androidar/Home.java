@@ -28,7 +28,11 @@ public class Home extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("***HELLO");
+
         setContentView(R.layout.activity_home);
+        System.out.println("***ABOUT TO MAKE mGoogleApiClient");
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -36,6 +40,10 @@ public class Home extends Activity implements
                     .addApi(LocationServices.API)
                     .build();
         }
+        else {
+            System.out.println("***mGoogleApiClient wasn't even null to begin with!");
+        }
+        System.out.println("***mGoogleApiClient: " + mGoogleApiClient);
         setContentView(R.layout.activity_home);
         mLatitudeText = (TextView)findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView)findViewById(R.id.mLongitudeText);
@@ -48,6 +56,7 @@ public class Home extends Activity implements
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        System.out.println("***End of createLocationRequest reached");
     }
 
     protected void onStart() {
@@ -76,11 +85,19 @@ public class Home extends Activity implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        System.out.println("***NOW CONNECTED");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+            System.out.println("LAT: " + String.valueOf(mLastLocation.getLatitude()));
+            System.out.println("LONG: " + String.valueOf(mLastLocation.getLongitude()));
+        }
+        else {
+            System.out.println("WOMP WOMP");
+            mLatitudeText.setText("NULL");
+            mLongitudeText.setText("NULL");
         }
 
         if (mRequestingLocationUpdates) {
