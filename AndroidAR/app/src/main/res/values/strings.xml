@@ -4,5 +4,7 @@
     <string name="app_name">AndroidAR</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="advance">ADVANCE...</string>
+    <string name="title_activity_black_screen">A Black Screen...</string>
 
 </resources>

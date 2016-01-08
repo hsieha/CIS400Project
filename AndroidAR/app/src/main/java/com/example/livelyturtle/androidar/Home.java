@@ -1,10 +1,12 @@
 package com.example.livelyturtle.androidar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -53,8 +55,8 @@ public class Home extends Activity implements
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         System.out.println("***End of createLocationRequest reached");
     }
@@ -158,5 +160,10 @@ public class Home extends Activity implements
     private void updateUI() {
         mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
         mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+    }
+
+    public void advanceFromHome(View view) {
+        Intent intent = new Intent(this, BlackScreenActivity.class);
+        startActivity(intent);
     }
 }
