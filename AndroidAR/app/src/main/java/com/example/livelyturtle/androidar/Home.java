@@ -1,8 +1,11 @@
 package com.example.livelyturtle.androidar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,17 +18,18 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationListener;
 
 
 public class Home extends Activity implements
-        ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+        ConnectionCallbacks, OnConnectionFailedListener {
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private TextView mLatitudeText;
     private TextView mLongitudeText;
     private LocationRequest mLocationRequest;
     private boolean mRequestingLocationUpdates;
+
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +38,68 @@ public class Home extends Activity implements
         System.out.println("***HELLO");
 
         setContentView(R.layout.activity_home);
-        System.out.println("***ABOUT TO MAKE mGoogleApiClient");
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+
+        mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+        mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+
+        if (false) {
+            System.out.println("***ABOUT TO MAKE mGoogleApiClient");
+            if (mGoogleApiClient == null) {
+                mGoogleApiClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API)
+                        .build();
+            } else {
+                System.out.println("***mGoogleApiClient wasn't even null to begin with!");
+            }
+            System.out.println("***mGoogleApiClient: " + mGoogleApiClient);
+            setContentView(R.layout.activity_home);
+
+            mRequestingLocationUpdates = true;
+            createLocationRequest();
         }
         else {
-            System.out.println("***mGoogleApiClient wasn't even null to begin with!");
+            System.out.println("***GoogleApiClient is not being used!");
+            System.out.println("***Proceeding with android.location GPS functionality...");
+            // Acquire a reference to the system Location Manager
+            locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+            // Define a listener that responds to location updates
+            LocationListener locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    // Called when a new location is found by the network location provider.
+                    System.out.println("***LOCATION_CHANGED");
+                    writeLatLongToScreen();
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    System.out.println("***STATUS_CHANGED");
+                    writeLatLongToScreen();
+                }
+
+                public void onProviderEnabled(String provider) {}
+
+                public void onProviderDisabled(String provider) {}
+            };
+
+            // Register the listener with the Location Manager to receive location updates
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, locationListener);
+
+            writeLatLongToScreen();
         }
-        System.out.println("***mGoogleApiClient: " + mGoogleApiClient);
-        setContentView(R.layout.activity_home);
-        mLatitudeText = (TextView)findViewById(R.id.mLatitudeText);
-        mLongitudeText = (TextView)findViewById(R.id.mLongitudeText);
-        mRequestingLocationUpdates = true;
-        createLocationRequest();
+    }
+
+    protected void writeLatLongToScreen() {
+        System.out.println("***WRITING NEW LAT/LONG VALUES...");
+        Location l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (l != null) {
+            mLatitudeText.setText(Double.valueOf(l.getLatitude()).toString());
+            mLongitudeText.setText(Double.valueOf(l.getLongitude()).toString());
+        }
+        else {
+            System.out.println("***DIDN'T WRITE NEW LAT/LONG VALUES...");
+        }
     }
 
     protected void createLocationRequest() {
@@ -62,34 +111,36 @@ public class Home extends Activity implements
     }
 
     protected void onStart() {
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient != null) mGoogleApiClient.connect();
         super.onStart();
     }
 
     protected void onStop() {
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient != null) mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
+        if (mGoogleApiClient != null) {
+            //stopLocationUpdates();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
-            startLocationUpdates();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
+            //startLocationUpdates();
         }
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         System.out.println("***NOW CONNECTED");
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mLastLocation = (mGoogleApiClient != null) ? LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient) : null;
         if (mLastLocation != null) {
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
@@ -103,7 +154,7 @@ public class Home extends Activity implements
         }
 
         if (mRequestingLocationUpdates) {
-            startLocationUpdates();
+            //startLocationUpdates();
         }
     }
 
@@ -140,18 +191,17 @@ public class Home extends Activity implements
         //
         // More about this in the 'Handle Connection Failures' section.
     }
+//
+//    protected void startLocationUpdates() {
+//        LocationServices.FusedLocationApi.requestLocationUpdates(
+//                mGoogleApiClient, mLocationRequest, this);
+//    }
+//
+//    protected void stopLocationUpdates() {
+//        LocationServices.FusedLocationApi.removeLocationUpdates(
+//                mGoogleApiClient, this);
+//    }
 
-    protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
-    }
-
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
-
-    @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         updateUI();
@@ -163,7 +213,7 @@ public class Home extends Activity implements
     }
 
     public void advanceFromHome(View view) {
-        Intent intent = new Intent(this, BlackScreenActivity.class);
+        Intent intent = new Intent(this, FullScreenActivity.class);
         startActivity(intent);
     }
 }

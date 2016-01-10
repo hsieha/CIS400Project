@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BlackScreenActivity"
+            android:name=".FullScreenActivity"
             android:label="@string/title_activity_black_screen"
             android:parentActivityName=".Home">
             <meta-data
