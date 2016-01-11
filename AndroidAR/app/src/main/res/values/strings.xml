@@ -10,5 +10,6 @@
     <string name="example_ui">**BASIC EXAMPLE UI**</string>
     <string name="title_activity_black_screen">A Black Screen...</string>
     <string name="title_activity_camera_preview">CameraPreviewActivity</string>
+    <string name="title_activity_orientation_dashboard">OrientationDashboardActivity</string>
 
 </resources>

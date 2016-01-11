@@ -224,4 +224,9 @@ public class Home extends Activity implements
         Intent intent = new Intent(this, CameraPreviewActivity.class);
         startActivity(intent);
     }
+
+    public void toOrientationActivity(View view) {
+        Intent intent = new Intent(this, OrientationDashboardActivity.class);
+        startActivity(intent);
+    }
 }

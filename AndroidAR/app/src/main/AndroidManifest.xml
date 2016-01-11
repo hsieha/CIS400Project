@@ -8,6 +8,15 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.compass"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.gyroscope"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -38,6 +47,14 @@
         <activity
             android:name=".CameraPreviewActivity"
             android:label="@string/title_activity_camera_preview"
+            android:parentActivityName=".Home">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.livelyturtle.androidar.Home" />
+        </activity>
+        <activity
+            android:name=".OrientationDashboardActivity"
+            android:label="@string/title_activity_orientation_dashboard"
             android:parentActivityName=".Home">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
