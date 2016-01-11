@@ -36,6 +36,21 @@
         android:layout_height="wrap_content"
         android:text="@string/advance"
         android:onClick="advanceFromHome" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_camera"
+        android:onClick="toCameraActivity" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/orientation"
+        android:onClick="advanceFromHome" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/example_ui"
+        android:onClick="advanceFromHome" />
 
 
 </LinearLayout>

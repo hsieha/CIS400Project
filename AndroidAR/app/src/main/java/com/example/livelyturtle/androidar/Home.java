@@ -212,8 +212,16 @@ public class Home extends Activity implements
         mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
     }
 
+
+    // ----- BUTTONS ON HOME SCREEN -----
+
     public void advanceFromHome(View view) {
         Intent intent = new Intent(this, FullScreenActivity.class);
+        startActivity(intent);
+    }
+
+    public void toCameraActivity(View view) {
+        Intent intent = new Intent(this, CameraPreviewActivity.class);
         startActivity(intent);
     }
 }

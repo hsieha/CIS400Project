@@ -35,6 +35,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.livelyturtle.androidar.Home" />
         </activity>
+        <activity
+            android:name=".CameraPreviewActivity"
+            android:label="@string/title_activity_camera_preview"
+            android:parentActivityName=".Home">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.livelyturtle.androidar.Home" />
+        </activity>
     </application>
 
 </manifest>
