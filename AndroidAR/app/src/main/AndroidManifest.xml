@@ -60,6 +60,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.livelyturtle.androidar.Home" />
         </activity>
+        <activity
+            android:name=".World3DActivity"
+            android:label="@string/title_activity_world3_d"
+            android:parentActivityName=".Home">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.livelyturtle.androidar.Home" />
+        </activity>
     </application>
 
 </manifest>

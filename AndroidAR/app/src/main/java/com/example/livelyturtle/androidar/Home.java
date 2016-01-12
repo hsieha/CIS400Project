@@ -229,4 +229,9 @@ public class Home extends Activity implements
         Intent intent = new Intent(this, OrientationDashboardActivity.class);
         startActivity(intent);
     }
+
+    public void toWorldActivity(View view) {
+        Intent intent = new Intent(this, World3DActivity.class);
+        startActivity(intent);
+    }
 }
