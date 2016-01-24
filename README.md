@@ -1,7 +1,6 @@
-# CIS400Project
+# Senior Project
+## SOMBD
+## 2015 - 2016
+## University of Pennsylvania
 
-Here are some names we should be aware of:
- * Unity
- * Moverio Cardboard
- * Vuforia
- * Moverio SDK
+Hello we are doing something very cool
