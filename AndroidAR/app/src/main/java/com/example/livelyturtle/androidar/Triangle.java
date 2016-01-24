@@ -3,6 +3,9 @@ package com.example.livelyturtle.androidar;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
+import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -16,17 +19,56 @@ public class Triangle {
     private final int mProgram;
 
     // number of coordinates per vertex in this array
+    static final int TOTAL_VERTICES = 3;
     static final int COORDS_PER_VERTEX = 3;
-    static float triangleCoords[] = {   // in counterclockwise order:
-            0.0f, -0.75f,  12.0f, // top
-            -1.2f, -0.75f, -1.5f, // bottom left
-            1.2f, -0.75f, -1.5f  // bottom right
-    };
+
+    static final Vector TOP = Vector.of(0f, -0.75f, -12.0f);
+    static final Vector LEFT = Vector.of(-1.2f, -1f, -2f);
+    static final Vector RIGHT = Vector.of(1.2f, -.5f, -2f);
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 1.0f };
 
-    public Triangle(Context ctxt) {
+    public Triangle(Context ctxt, CardinalDirection dir) {
+        // place the Triangle
+        int deg;
+        switch (dir) {
+            case WEST:
+                deg = 90;
+                break;
+            case EAST:
+                deg = 270;
+                break;
+            case SOUTH:
+                deg = 180;
+                break;
+            case NORTHWEST:
+                deg = 45;
+                break;
+            case SOUTHWEST:
+                deg = 135;
+                break;
+            case NORTHEAST:
+                deg = 315;
+                break;
+            case SOUTHEAST:
+                deg = 225;
+                break;
+            case NORTH:
+            default:
+                deg = 0;
+                break;
+        }
+        Vector top = Moverio3D.rotateYAxis(TOP, (float) Math.toRadians(deg));
+        Vector left = Moverio3D.rotateYAxis(LEFT, (float)Math.toRadians(deg));
+        Vector right = Moverio3D.rotateYAxis(RIGHT, (float)Math.toRadians(deg));
+
+        float triangleCoords[] = {   // in counterclockwise order:
+                top.x(), top.y(), top.z(), // top
+                left.x(), left.y(), left.z(), // bottom left
+                right.x(), right.y(), right.z()  // bottom right
+        };
+
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -61,7 +103,7 @@ public class Triangle {
 
     private int mPositionHandle;
     private int mColorHandle;
-    private final int vertexCount = triangleCoords.length / COORDS_PER_VERTEX;
+    private final int vertexCount = TOTAL_VERTICES;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     // Use to access and set the view transformation

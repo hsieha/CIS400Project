@@ -18,6 +18,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
+import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,8 +37,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
-    private Triangle mTriangle;
     private Context ctxt;
+    private Triangle mTriangle;
 
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
@@ -58,40 +61,52 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
-        GLES20.glClearColor(0.1f, 0.1f, 0.5f, 1.0f);
+        GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         // initialize a triangle
-        mTriangle = new Triangle(ctxt);
+        mTriangle = new Triangle(ctxt, CardinalDirection.NORTH);
     }
 
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
+        // default upV is straight up (0,1,0)
+        // default toCoV is straight forward (0,0,-1)
+        // these are the numbers that would be used when A,P,R are all 0
+        // the eye is always at the origin
+
+        // the order of multiplication is around x first, then z, then y
+        // so on paper, it goes y(azimuth), z(roll), x(pitch)
+        // I'm not too sure, but I believe the order doesn't matter (matrix mult is assoc)
 
         // calculate correct vector values from currentAPR (orientation)
-        float[] upV = {
-            (float)(-1.*Math.sin(currentAPR[2])),
-            (float)(    Math.cos(currentAPR[1])*Math.cos(currentAPR[2])),
-            (float)(    Math.sin(currentAPR[1])*Math.cos(currentAPR[2]))
-        };
-        float[] eye = {
-                0f,0f,-1f
-        };
-        // assuming default for "toCenterofView" is {0,0,1} (giving a CoV of {0,0,0})
-        float[] toCoV = {
-                0f,
-                (float)(-1.*Math.sin(currentAPR[1])),
-                (float)(    Math.cos(currentAPR[1]))
-        };
+        // this is done with homogeneous coordinates and 4x4 matrices
+        // http://www.it.hiof.no/~borres/j3d/math/homo/p-homo.html
 
-        // NOTE: THESE ALGORITHMS ALL ASSUME AZIMUTH IS ALWAYS 0!
+        // Android APR values are reversed. (It's a left-hand system where clockwise goes up.)
+        // OpenGL uses a right-hand system! So, all values must be negated. (Counter-clockwise goes up.)
+        float A = -1*currentAPR[0];
+        float P = -1*currentAPR[1];
+        float R = -1*currentAPR[2];
+
+        Vector eye = Vector.zero();
+        Vector upV = Vector.of(
+                (float)( -1.*Math.cos(A)*Math.sin(R)*Math.cos(P) + Math.sin(A)*Math.sin(P) ),
+                (float)(     Math.cos(R)*Math.cos(P) ),
+                (float)(     Math.sin(A)*Math.sin(R)*Math.cos(P) + Math.cos(A)*Math.sin(P) )
+        );
+        Vector toCoV = Vector.of(
+                (float)( -1.*Math.cos(A)*Math.sin(R)*Math.sin(P) - Math.sin(A)*Math.cos(P) ),
+                (float)(     Math.cos(R)*Math.sin(P) ),
+                (float)(     Math.sin(A)*Math.sin(R)*Math.sin(P) - Math.cos(A)*Math.cos(P) )
+        );
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0,
-                eye[0], eye[1], eye[2],
-                eye[0]+toCoV[0], eye[1]+toCoV[1], eye[2]+toCoV[2],
-                upV[0], upV[1], upV[2]);
+                eye.x(), eye.y(), eye.z(),
+                eye.x()+toCoV.x(), eye.y()+toCoV.y(), eye.z()+toCoV.z(),
+                upV.x(), upV.y(), upV.z());
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
