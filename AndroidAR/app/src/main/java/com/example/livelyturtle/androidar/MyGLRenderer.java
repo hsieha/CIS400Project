@@ -39,6 +39,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Context ctxt;
     private Triangle mTriangle;
+    private Square mSquare;
 
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
@@ -64,7 +65,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         // initialize a triangle
-        mTriangle = new Triangle(ctxt, CardinalDirection.NORTH);
+        //mTriangle = new Triangle(ctxt, CardinalDirection.SOUTH);
+        mSquare = new Square(ctxt, CardinalDirection.SOUTH);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -111,7 +113,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        mTriangle.draw(mMVPMatrix);
+        //mTriangle.draw(mMVPMatrix);
+        mSquare.draw(mMVPMatrix);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
