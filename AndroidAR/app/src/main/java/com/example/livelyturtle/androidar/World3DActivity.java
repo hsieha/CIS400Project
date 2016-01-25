@@ -67,8 +67,8 @@ public class World3DActivity extends Activity implements
 
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
     }
 
     protected void onPause() {
@@ -82,10 +82,14 @@ public class World3DActivity extends Activity implements
     float[] mGravity;
     float[] mGeomagnetic;
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values;
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values;
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            //mGravity = event.values;
+            mGravity = lowPass(event.values.clone(), mGravity);
+        }
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            //mGeomagnetic = event.values;
+            mGeomagnetic = lowPass(event.values.clone(), mGeomagnetic);
+        }
         if (mGravity != null && mGeomagnetic != null) {
             float R[] = new float[9];
             float I[] = new float[9];
@@ -109,5 +113,16 @@ public class World3DActivity extends Activity implements
         APR[1] = p;
         APR[2] = r;
         mGLView.mRenderer.updateAPR(APR);
+    }
+
+    // Low-pass filtering to reduce jitter
+    // Source: built.io/blog/2013/05/applying-low-pass-filter-to-android-sensors-readings/
+    static final float ALPHA = .325f;
+    private float[] lowPass(float[] input, float output[]) {
+        if (output == null) return input;
+        for (int i = 0; i < input.length; i++) {
+            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        }
+        return output;
     }
 }

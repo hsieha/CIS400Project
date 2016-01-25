@@ -1,7 +1,11 @@
-# CIS400Project
+Senior Project
+==============
+**_SOMBD_**
 
-Here are some names we should be aware of:
- * Unity
- * Moverio Cardboard
- * Vuforia
- * Moverio SDK
+*2015 - 2016*
+
+*University of Pennsylvania*
+
+---
+
+Hello we are doing something very cool

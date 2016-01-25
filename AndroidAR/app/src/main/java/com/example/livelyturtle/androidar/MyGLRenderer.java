@@ -65,7 +65,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         // initialize a triangle
-        //mTriangle = new Triangle(ctxt, CardinalDirection.SOUTH);
+        //mTriangle = new Triangle(ctxt, CardinalDirection.SOUTHWEST);
         mSquare = new Square(ctxt, CardinalDirection.SOUTH);
     }
 
