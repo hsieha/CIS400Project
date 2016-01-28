@@ -9,6 +9,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Created by Darren on 1/24/16.
@@ -16,19 +17,23 @@ import java.nio.FloatBuffer;
 public class Square {
 
     private FloatBuffer vertexBuffer;
+    private ShortBuffer drawListBuffer;
     private final int mProgram;
 
-    // number of coordinates per vertex in this array
     static final int TOTAL_VERTICES = 4;
     static final int COORDS_PER_VERTEX = 3;
+    static final int TOTAL_TRIANGLES_NEEDED = 2;
 
-    static final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-2f, -1f, -12.0f);
-    static final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(2f, -1f, -12.0f);
-    static final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-2f, -1f, 12.0f);
-    static final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(2f, -1f, 12.0f);
+    // meters
+    // OpenGL only draws triangles!
+    // Thus, the coordinates array must have 6 elements: TR,TL,BL,TR,BL,BR
+    static final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(1f, -1.75f, -10.0f);
+    static final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-1f, -1.75f, -10.0f);
+    static final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-1f, -1.75f, -3.0f);
+    static final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(1f, -1.75f, -3.0f);
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 1.0f };
+    float color[] = { 0.82265625f, 0.63671875f, 0.76953125f, 1.0f };
 
     public Square(Context ctxt, Moverio3D.CardinalDirection dir) {
         // place the Square
@@ -65,12 +70,10 @@ public class Square {
         Moverio3D.Vector bot_right = Moverio3D.rotateYAxis(BOT_RIGHT, (float)Math.toRadians(deg));
         Moverio3D.Vector bot_left = Moverio3D.rotateYAxis(BOT_LEFT,(float)Math.toRadians(deg));
 
-        float squareCoords[] = {   // in counterclockwise order:
-                top_right.x(), top_right.y(), top_right.z(), // top right
-                top_left.x(), top_left.y(), top_left.z(), // top left
-                bot_left.x(), bot_left.y(), bot_left.z(),
-                bot_right.x(), bot_right.y(), bot_right.z()  // bottom right
-        };
+        // in counterclockwise order...
+        float squareCoords[] = Vector.VectorsToFloatArray(
+                top_right, top_left, bot_left, bot_right);
+        short drawOrder[] = { 0, 1, 2, 0, 2, 3 };
 
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -78,13 +81,22 @@ public class Square {
                 squareCoords.length * 4);
         // use the device hardware's native byte order
         bb.order(ByteOrder.nativeOrder());
-
         // create a floating point buffer from the ByteBuffer
         vertexBuffer = bb.asFloatBuffer();
         // add the coordinates to the FloatBuffer
         vertexBuffer.put(squareCoords);
         // set the buffer to read the first coordinate
         vertexBuffer.position(0);
+
+
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 2 bytes per short)
+                drawOrder.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(drawOrder);
+        drawListBuffer.position(0);
 
 
 
@@ -127,7 +139,9 @@ public class Square {
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
+        // NOTE: glDrawElements must be used if not drawing a triangle
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 3*TOTAL_TRIANGLES_NEEDED,
+                              GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 

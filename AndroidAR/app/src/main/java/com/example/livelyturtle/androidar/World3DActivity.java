@@ -8,7 +8,11 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
+
+import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 
 public class World3DActivity extends Activity implements
         SensorEventListener {
@@ -37,6 +41,21 @@ public class World3DActivity extends Activity implements
         super.onCreate(savedInstanceState);
 
         System.out.println("***CREATION IS HAPPENING FOR WORLD 3D ACTIVITY :o :o :o");
+
+        // fullscreen as in the bt200 technical info pdf - REMOVE BOTTOM BAR
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
+        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
+        winParams.flags |= 0x80000000;
+        win.setAttributes(winParams);
+
+        // stackoverflow answer - REMOVE TOP BAR
+        // Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -67,8 +86,8 @@ public class World3DActivity extends Activity implements
 
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     protected void onPause() {
@@ -100,7 +119,12 @@ public class World3DActivity extends Activity implements
 
                 // remap for "facing forward" orientation
                 // without this, we would obtain APR values for DEFAULT ORIENTATION (facing ground)
-                SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, REMAP);
+                if (PhoneDebug.USING_PHONE) {
+                    SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_Z, SensorManager.AXIS_MINUS_X, REMAP);
+                }
+                else {
+                    SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, REMAP);
+                }
 
                 SensorManager.getOrientation(REMAP, orientation);
                 updateAPR(orientation[0], orientation[1], orientation[2]);

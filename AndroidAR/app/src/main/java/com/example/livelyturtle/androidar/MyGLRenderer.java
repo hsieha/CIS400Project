@@ -65,7 +65,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         // initialize a triangle
-        //mTriangle = new Triangle(ctxt, CardinalDirection.SOUTHWEST);
+        mTriangle = new Triangle(ctxt, CardinalDirection.WEST);
         mSquare = new Square(ctxt, CardinalDirection.SOUTH);
     }
 
@@ -74,7 +74,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // default upV is straight up (0,1,0)
-        // default toCoV is straight forward (0,0,-1)
+        // default toCoV is straight forward (0,0,-1) (magnitude DOES NOT MATTER, I have tested this)
         // these are the numbers that would be used when A,P,R are all 0
         // the eye is always at the origin
 
@@ -114,17 +114,29 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         //mTriangle.draw(mMVPMatrix);
+        mTriangle.draw(mMVPMatrix);
         mSquare.draw(mMVPMatrix);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
+        System.out.println("ONSURFACECHANGED: w: " + width);
+        System.out.println("ONSURFACECHANGED: h: " + height);
         GLES20.glViewport(0, 0, width, height);
 
-        float ratio = (float) width / height;
+        // As we are programming for just one device, we assume that the ratio is always 16/9
+        // float ratio = (float) width / height;
 
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+        // this projection matrix is applied to object coordinates in the onDrawFrame() method
+        // assuming that the viewing plane is 50cm in front of the user, we can define
+        // top, bottom, left, and right using Moverio3D constants
+        float nearPlaneDistance = .5f; // 50cm
+        float shrinkRatio = .5f/Moverio3D.VIRTUAL_SCREEN_DISTANCE;
+        float shrinkHalfW = shrinkRatio * Moverio3D.VIRTUAL_SCREEN_WIDTH / 2;
+        float shrinkHalfH = shrinkRatio * Moverio3D.VIRTUAL_SCREEN_HEIGHT / 2;
+        Matrix.frustumM(mProjectionMatrix, 0,
+                -1.f * shrinkHalfW, shrinkHalfW,
+                -1.f * shrinkHalfH, shrinkHalfH,
+                .5f, 500);
     }
 
     public static int loadShader(int type, int resource, Context ctxt) {

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;
 
+import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+
 public class OrientationDashboardActivity extends Activity implements
         SensorEventListener {
 
@@ -61,7 +63,12 @@ public class OrientationDashboardActivity extends Activity implements
 
                 // remap for "facing forward" orientation
                 // without this, we would obtain APR values for DEFAULT ORIENTATION (facing ground)
-                SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, REMAP);
+                if (PhoneDebug.USING_PHONE) {
+                    SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_Z, SensorManager.AXIS_MINUS_X, REMAP);
+                }
+                else {
+                    SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, REMAP);
+                }
 
                 SensorManager.getOrientation(REMAP, orientation);
                 writeAPRRadToDegrees(orientation[0], orientation[1], orientation[2]);

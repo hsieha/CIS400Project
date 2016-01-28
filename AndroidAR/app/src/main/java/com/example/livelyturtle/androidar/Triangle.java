@@ -22,9 +22,11 @@ public class Triangle {
     static final int TOTAL_VERTICES = 3;
     static final int COORDS_PER_VERTEX = 3;
 
-    static final Vector TOP = Vector.of(0f, -0.75f, -12.0f);
-    static final Vector LEFT = Vector.of(-1.2f, -1f, -2f);
-    static final Vector RIGHT = Vector.of(1.2f, -.5f, -2f);
+    // assuming a user height of about 175cm
+    // triangle starts on the ground and rises to eye height
+    static final Vector TOP = Vector.of(1.f, 0f, -10f);
+    static final Vector LEFT = Vector.of(-1.f, -1.75f, -5f);
+    static final Vector RIGHT = Vector.of(1.f, -1.75f, -5f);
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 1.0f };
@@ -63,11 +65,8 @@ public class Triangle {
         Vector left = Moverio3D.rotateYAxis(LEFT, (float)Math.toRadians(deg));
         Vector right = Moverio3D.rotateYAxis(RIGHT, (float)Math.toRadians(deg));
 
-        float triangleCoords[] = {   // in counterclockwise order:
-                top.x(), top.y(), top.z(), // top
-                left.x(), left.y(), left.z(), // bottom left
-                right.x(), right.y(), right.z()  // bottom right
-        };
+        // in counterclockwise order:
+        float triangleCoords[] = Vector.VectorsToFloatArray(top, left, right);
 
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(

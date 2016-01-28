@@ -1,17 +1,37 @@
 package com.example.livelyturtle.androidar.MoverioLibraries;
 
+import java.util.List;
+
 /**
  * Created by Michael on 1/23/2016.
+ *
+ * This is a utilities class for the Moverio BT-200 smartglasses.
+ *
+ * Most units of length will be in meters.
  *
  * "north" is -Z
  * "south" is +Z
  * "east" is +X
  * "west" is -X
  */
-public class Moverio3D {
+public final class Moverio3D {
 
     // like Math, this class is a support library and cannot be instantiated.
     private Moverio3D() {}
+
+    // constants
+    public static final int SCREEN_WIDTH                = 960;          // pixels
+    public static final int SCREEN_HEIGHT               = 540;          // pixels
+    public static final float VIRTUAL_SCREEN_SIZE       = 2.032f;       // m ("80in" in manual)
+    public static final float VIRTUAL_SCREEN_DISTANCE   = 5.f;          // m
+    public static final float VIRTUAL_SCREEN_WIDTH      = 1.771041f;    // m (pythagorean theorem)
+    public static final float VIRTUAL_SCREEN_HEIGHT     = .996211f;     // m (pythagorean theorem)
+    public static final float FOVX                      = .350573117f;  // radians (about 20 degrees)
+    public static final float FOVY                      = .198586948f;  // radians (about 11 degrees)
+
+    public static final String SCREEN_DENSITY           = "mdpi";       // (160dpi)
+    public static final String PROCESSOR                = "OMAP4460";   // (dual core ARM Cortex A9)
+
 
     public static class Vector {
         private float x, y, z;
@@ -39,16 +59,28 @@ public class Moverio3D {
         public float z() {
             return z;
         }
+        public float[] xyz() { return new float[] {x,y,z}; }
 
         // useful methods
-        public Vector scalarMultiply(float s) {
-            return of(s*x, s*y, s*z);
-        }
+        public Vector scalarMultiply(float s) { return of(s*x, s*y, s*z); }
         public float magnitude() {
             return (float) Math.sqrt(x*x + y*y + z*z);
         }
         public Vector normalized() {
             return this.scalarMultiply(1.f/this.magnitude());
+        }
+
+        // getting float arrays
+        // TODO: a candidate for parallelization with Java 8?
+        public static float[] VectorsToFloatArray(Vector... args) {
+            float[] result = new float[args.length*3];
+            int i = 0;
+            for (Vector v : args) {
+                for (float f : v.xyz()) {
+                    result[i++] = f;
+                }
+            }
+            return result;
         }
     }
 
