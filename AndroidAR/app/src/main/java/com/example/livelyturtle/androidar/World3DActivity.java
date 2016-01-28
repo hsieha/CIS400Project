@@ -40,8 +40,6 @@ public class World3DActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("***CREATION IS HAPPENING FOR WORLD 3D ACTIVITY :o :o :o");
-
         // fullscreen as in the bt200 technical info pdf - REMOVE BOTTOM BAR
         Window win = getWindow();
         WindowManager.LayoutParams winParams = win.getAttributes();

@@ -35,8 +35,6 @@ public class Home extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("***HELLO");
-
         setContentView(R.layout.activity_home);
 
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
@@ -69,12 +67,10 @@ public class Home extends Activity implements
             LocationListener locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
                     // Called when a new location is found by the network location provider.
-                    System.out.println("***LOCATION_CHANGED");
                     writeLatLongToScreen();
                 }
 
                 public void onStatusChanged(String provider, int status, Bundle extras) {
-                    System.out.println("***STATUS_CHANGED");
                     writeLatLongToScreen();
                 }
 
@@ -91,7 +87,6 @@ public class Home extends Activity implements
     }
 
     protected void writeLatLongToScreen() {
-        System.out.println("***WRITING NEW LAT/LONG VALUES...");
         Location l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (l != null) {
             mLatitudeText.setText(Double.valueOf(l.getLatitude()).toString());
@@ -107,7 +102,6 @@ public class Home extends Activity implements
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        System.out.println("***End of createLocationRequest reached");
     }
 
     protected void onStart() {
@@ -138,7 +132,6 @@ public class Home extends Activity implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        System.out.println("***NOW CONNECTED");
         mLastLocation = (mGoogleApiClient != null) ? LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient) : null;
         if (mLastLocation != null) {
@@ -148,7 +141,6 @@ public class Home extends Activity implements
             System.out.println("LONG: " + String.valueOf(mLastLocation.getLongitude()));
         }
         else {
-            System.out.println("WOMP WOMP");
             mLatitudeText.setText("NULL");
             mLongitudeText.setText("NULL");
         }

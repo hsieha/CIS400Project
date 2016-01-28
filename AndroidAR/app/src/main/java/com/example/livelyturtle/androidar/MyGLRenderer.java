@@ -119,8 +119,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-        System.out.println("ONSURFACECHANGED: w: " + width);
-        System.out.println("ONSURFACECHANGED: h: " + height);
         GLES20.glViewport(0, 0, width, height);
 
         // As we are programming for just one device, we assume that the ratio is always 16/9
@@ -130,7 +128,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // assuming that the viewing plane is 50cm in front of the user, we can define
         // top, bottom, left, and right using Moverio3D constants
         float nearPlaneDistance = .5f; // 50cm
-        float shrinkRatio = .5f/Moverio3D.VIRTUAL_SCREEN_DISTANCE;
+        float shrinkRatio = nearPlaneDistance/Moverio3D.VIRTUAL_SCREEN_DISTANCE;
         float shrinkHalfW = shrinkRatio * Moverio3D.VIRTUAL_SCREEN_WIDTH / 2;
         float shrinkHalfH = shrinkRatio * Moverio3D.VIRTUAL_SCREEN_HEIGHT / 2;
         Matrix.frustumM(mProjectionMatrix, 0,

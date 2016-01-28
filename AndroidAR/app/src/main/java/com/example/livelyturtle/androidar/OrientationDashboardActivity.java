@@ -23,8 +23,6 @@ public class OrientationDashboardActivity extends Activity implements
         setContentView(R.layout.activity_orientation_dashboard);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        System.out.println("***CREATION IS HAPPENING FOR ORIENTATION DASHBOARD :o :o :o");
-
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -48,7 +46,6 @@ public class OrientationDashboardActivity extends Activity implements
     float[] mGravity;
     float[] mGeomagnetic;
     public void onSensorChanged(SensorEvent event) {
-        System.out.println("***SENSOR CHANGED");
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = event.values;
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
@@ -77,7 +74,6 @@ public class OrientationDashboardActivity extends Activity implements
     }
 
     private void writeAPRRadToDegrees(float a, float p, float r) {
-        System.out.println("***writeAPR");
         int azimuth = (int) (a * 180 / (float) Math.PI);
         int pitch = (int) (p * 180 / (float) Math.PI);
         int roll = (int) (r * 180 / (float) Math.PI);
