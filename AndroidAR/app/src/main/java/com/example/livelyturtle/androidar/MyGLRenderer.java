@@ -45,13 +45,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
-    private float[] currentAPR = new float[3];
+    private float[] currentAPR = new float[] {0,0,0};
 
     public MyGLRenderer(Context c) {
         ctxt = c;
-        currentAPR[0] = 0;
-        currentAPR[1] = 0;
-        currentAPR[2] = 0;
     }
 
     public void updateAPR(float[] APRvalues) {
@@ -80,7 +77,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // the order of multiplication is around x first, then z, then y
         // so on paper, it goes y(azimuth), z(roll), x(pitch)
-        // I'm not too sure, but I believe the order doesn't matter (matrix mult is assoc)
+        // (This order doesn't agree with codeproject.com/Articles/729759/Android-Sensor-Fusion-Tutorial,
+        // but the results still seem correct.)
 
         // calculate correct vector values from currentAPR (orientation)
         // this is done with homogeneous coordinates and 4x4 matrices
@@ -113,7 +111,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        //mTriangle.draw(mMVPMatrix);
+        // draw the scene
         mTriangle.draw(mMVPMatrix);
         mSquare.draw(mMVPMatrix);
     }
@@ -121,24 +119,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        // As we are programming for just one device, we assume that the ratio is always 16/9
-        // float ratio = (float) width / height;
+        // As we are programming for just one device, we assume that the w/h ratio is always 16/9
 
-        // this projection matrix is applied to object coordinates in the onDrawFrame() method
+        // this projection matrix is applied to object coordinates in the onDrawFrame() method above
         // assuming that the viewing plane is 50cm in front of the user, we can define
         // top, bottom, left, and right using Moverio3D constants
-        float nearPlaneDistance = .5f; // 50cm
+        float nearPlaneDistance = .5f;  // 50cm
+        float farClipDistance = 500f;   // half a kilometer seems pretty good
         float shrinkRatio = nearPlaneDistance/Moverio3D.VIRTUAL_SCREEN_DISTANCE;
         float shrinkHalfW = shrinkRatio * Moverio3D.VIRTUAL_SCREEN_WIDTH / 2;
         float shrinkHalfH = shrinkRatio * Moverio3D.VIRTUAL_SCREEN_HEIGHT / 2;
         Matrix.frustumM(mProjectionMatrix, 0,
                 -1.f * shrinkHalfW, shrinkHalfW,
                 -1.f * shrinkHalfH, shrinkHalfH,
-                .5f, 500);
+                nearPlaneDistance, farClipDistance);
     }
 
     public static int loadShader(int type, int resource, Context ctxt) {
-
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
         int shader = GLES20.glCreateShader(type);
@@ -156,6 +153,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     // http://www.java2s.com/Code/Android/File/GetFileContentsasString.htm
+    // we use this to maintain shader code in separate files
+    // the shader files are in res/raw
     private static String getRawText(int resource, Context ctxt) throws IOException {
         final InputStream inputStream = ctxt.getResources().openRawResource(resource);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -174,4 +173,5 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         inputStream.close();
         return stringBuilder.toString();
     }
+
 }

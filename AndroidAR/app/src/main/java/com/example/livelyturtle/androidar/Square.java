@@ -27,10 +27,10 @@ public class Square {
     // meters
     // OpenGL only draws triangles!
     // Thus, the coordinates array must have 6 elements: TR,TL,BL,TR,BL,BR
-    static final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(1f, -1.75f, -10.0f);
-    static final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-1f, -1.75f, -10.0f);
-    static final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-1f, -1.75f, -3.0f);
-    static final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(1f, -1.75f, -3.0f);
+    static final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -50.0f);
+    static final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -50.0f);
+    static final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -20.0f);
+    static final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -20.0f);
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.82265625f, 0.63671875f, 0.76953125f, 1.0f };

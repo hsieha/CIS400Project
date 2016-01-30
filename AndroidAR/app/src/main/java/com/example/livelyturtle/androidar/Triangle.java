@@ -24,9 +24,9 @@ public class Triangle {
 
     // assuming a user height of about 175cm
     // triangle starts on the ground and rises to eye height
-    static final Vector TOP = Vector.of(1.f, 0f, -10f);
-    static final Vector LEFT = Vector.of(-1.f, -1.75f, -5f);
-    static final Vector RIGHT = Vector.of(1.f, -1.75f, -5f);
+    static final Vector TOP = Vector.of(1.f, 0f, -100f);
+    static final Vector LEFT = Vector.of(-1.f, -1.75f, -50f);
+    static final Vector RIGHT = Vector.of(1.f, -1.75f, -50f);
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 1.0f };
