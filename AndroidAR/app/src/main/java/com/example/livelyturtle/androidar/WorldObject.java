@@ -7,14 +7,14 @@ import java.util.ArrayList;
  */
 public class WorldObject {
     String name;
-    ArrayList<Double> coordinates;
+    ArrayList<Coordinate> coordinates;
 
     public WorldObject() {
         name = "";
-        coordinates = new ArrayList<Double>();
+        coordinates = new ArrayList<Coordinate>();
     }
 
-    public WorldObject(String name, ArrayList<Double> coordinates) {
+    public WorldObject(String name, ArrayList<Coordinate> coordinates) {
         this.name = name;
         this.coordinates = coordinates;
     }
@@ -23,7 +23,7 @@ public class WorldObject {
         this.name = name;
     }
 
-    public void setCoordinates(ArrayList<Double> coordinates) {
+    public void setCoordinates(ArrayList<Coordinate> coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -31,7 +31,7 @@ public class WorldObject {
         return name;
     }
 
-    public ArrayList<Double> getCoordinates() {
+    public ArrayList<Coordinate> getCoordinates() {
         return coordinates;
     }
 }
