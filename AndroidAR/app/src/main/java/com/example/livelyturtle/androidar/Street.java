@@ -11,6 +11,10 @@ public class Street extends WorldObject {
         setCoordinates(a,b,c,d);
     }
 
+    public Street(String name, ArrayList<Coordinate> coordinates) {
+        super(name,coordinates);
+    }
+
     public void setCoordinates(double a, double b, double c, double d) {
         Coordinate c1 = new Coordinate(a,b);
         Coordinate c2 = new Coordinate(c,d);

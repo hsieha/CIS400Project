@@ -104,6 +104,57 @@
 				</Polygon>
 			</Placemark>
 		</Folder>
+		<Folder>
+			<name>Streets</name>
+			<Placemark>
+				<name>Locust Walk</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.2028,39.9529487,0.0 -75.19500550000001,39.9520275,0.0 -75.19443690000001,39.95192060000001,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>Walnut Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.2050853,39.9544167,0.0 -75.1878333,39.9522948,0.0</coordinates>
+				</LineString>
+			</Placemark>
+		</Folder>
+		<Style id='line-000000-1-nodesc-normal'>
+			<LineStyle>
+				<color>ff000000</color>
+				<width>1</width>
+			</LineStyle>
+			<BalloonStyle>
+				<text><![CDATA[<h3>$[name]</h3>]]></text>
+			</BalloonStyle>
+		</Style>
+		<Style id='line-000000-1-nodesc-highlight'>
+			<LineStyle>
+				<color>ff000000</color>
+				<width>2.0</width>
+			</LineStyle>
+			<BalloonStyle>
+				<text><![CDATA[<h3>$[name]</h3>]]></text>
+			</BalloonStyle>
+		</Style>
+		<StyleMap id='line-000000-1-nodesc'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#line-000000-1-nodesc-normal</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#line-000000-1-nodesc-highlight</styleUrl>
+			</Pair>
+		</StyleMap>
 		<Style id='poly-DB4436-1-76-nodesc-normal'>
 			<LineStyle>
 				<color>ff3644DB</color>

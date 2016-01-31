@@ -35,6 +35,8 @@ public class Home extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MapData mapData = new MapData("UPennCampus.kml", this);
+
         setContentView(R.layout.activity_home);
 
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
@@ -226,4 +228,5 @@ public class Home extends Activity implements
         Intent intent = new Intent(this, World3DActivity.class);
         startActivity(intent);
     }
+
 }
