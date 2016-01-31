@@ -1,6 +1,5 @@
 package com.example.livelyturtle.androidar;
 
-import android.location.Location;
 import java.util.ArrayList;
 
 /**
@@ -8,14 +7,14 @@ import java.util.ArrayList;
  */
 public class WorldObject {
     String name;
-    ArrayList<Location> coordinates;
+    ArrayList<Coordinate> coordinates;
 
     public WorldObject() {
         name = "";
-        coordinates = new ArrayList<Location>();
+        coordinates = new ArrayList<Coordinate>();
     }
 
-    public WorldObject(String name, ArrayList<Location> coordinates) {
+    public WorldObject(String name, ArrayList<Coordinate> coordinates) {
         this.name = name;
         this.coordinates = coordinates;
     }
@@ -24,7 +23,7 @@ public class WorldObject {
         this.name = name;
     }
 
-    public void setCoordinates(ArrayList<Location> coordinates) {
+    public void setCoordinates(ArrayList<Coordinate> coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -32,7 +31,7 @@ public class WorldObject {
         return name;
     }
 
-    public ArrayList<Location> getCoordinates() {
+    public ArrayList<Coordinate> getCoordinates() {
         return coordinates;
     }
 }

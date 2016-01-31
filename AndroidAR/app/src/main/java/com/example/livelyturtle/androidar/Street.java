@@ -12,17 +12,17 @@ import java.awt.*;
  * Created by LivelyTurtle on 1/27/2016.
  */
 public class Street extends WorldObject {
-    public Street(String name, Location a, Location b) {
+    public Street(String name, double a, double b, double c, double d) {
         this.name = name;
-        this.coordinates = new ArrayList<Location>();
-        this.coordinates.add(a);
-        this.coordinates.add(b);
+        setCoordinates(a,b,c,d);
     }
 
-    public void setCoordinates(Location a, Location b) {
-        this.coordinates = new ArrayList<Location>();
-        this.coordinates.add(a);
-        this.coordinates.add(b);
+    public void setCoordinates(double a, double b, double c, double d) {
+        Coordinate c1 = new Coordinate(a,b);
+        Coordinate c2 = new Coordinate(c,d);
+        this.coordinates = new ArrayList<Coordinate>();
+        this.coordinates.add(c1);
+        this.coordinates.add(c2);
     }
 
     /// TODO: Darren, you can use this base to write your math code
@@ -41,19 +41,19 @@ public class Street extends WorldObject {
 
         double[] my_p2 = new double[]{500 * Math.cos(azimuth), Math.sin(500 * azimuth)};
 
-        ArrayList<Location> street_coordinates = this.getCoordinates();
-        Location street_loc1 = street_coordinates.get(0);
-        Location street_loc2 = street_coordinates.get(1);
+        ArrayList<Coordinate> street_coordinates = this.getCoordinates();
+        Coordinate street_loc1 = street_coordinates.get(0);
+        Coordinate street_loc2 = street_coordinates.get(1);
 
         float[] results = new float[3];
 
-        Location.distanceBetween(my_lat, my_long, street_loc1.getLatitude(), street_loc1.getLongitude(), results);
+        Location.distanceBetween(my_lat, my_long, street_loc1.latitude, street_loc1.longitude, results);
         float dist_to_loc1 = results[0];
         float loc1_angle = results[1];
 
         double[] street_p1 = new double[]{dist_to_loc1 * Math.cos((double) loc1_angle), dist_to_loc1 * Math.sin((double) loc1_angle)};
 
-        Location.distanceBetween(my_lat, my_long, street_loc2.getLatitude(), street_loc2.getLongitude(), results);
+        Location.distanceBetween(my_lat, my_long, street_loc2.latitude, street_loc2.longitude, results);
         float dist_to_loc2 = results[0];
         float loc2_angle = results[1];
 
