@@ -29,13 +29,7 @@ public class Street extends WorldObject {
         this.coordinates.add(c2);
     }
 
-    /// TODO: Darren, you can use this base to write your math code
-
-    //takes in azimuth and moverio gps location
-
-    //ASSUMPTION: arcs are so close, they are effectively lines, so use line intersection math
-    //GOING TO ASSUME THAT STREETS STORES 2 Location Objects
-    //Convert everything into a grid
+    //Not Reall Using this, but leaving code in
     public boolean doesIntersect(float azimuth, Location my_location) {
 
         double my_lat = my_location.getLatitude();
@@ -79,6 +73,8 @@ public class Street extends WorldObject {
                 } else {
                     return false;
                 }
+            } else {
+                return false;
             }
         }
         //if you are vertical (due east or west)
@@ -152,6 +148,5 @@ public class Street extends WorldObject {
         // 39.951793, -75.201080 (harrison college house)
         // 39.952357, -75.200123 (harnwell college house)
         // distance of roughly 320 or so meters
-        return false;
     }
 }
