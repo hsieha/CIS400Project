@@ -29,7 +29,7 @@ public class Street extends WorldObject {
         this.coordinates.add(c2);
     }
 
-    //Not Reall Using this, but leaving code in
+    //Not really using this, but leaving code in
     public boolean doesIntersect(float azimuth, Location my_location) {
 
         double my_lat = my_location.getLatitude();

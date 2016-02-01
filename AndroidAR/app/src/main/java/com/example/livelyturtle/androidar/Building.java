@@ -12,8 +12,9 @@ public class Building extends WorldObject {
         super(name, coordinates);
     }
 
-    /// TODO: Darren, you can use this base to write your math code
-    public boolean doesIntersect() {
-        return false;
+    //coordinates are held in counterclockwise order
+    public void openglify(){
+        
     }
+
 }
