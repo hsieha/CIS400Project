@@ -1,4 +1,4 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.activities;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 
 import java.util.Arrays;
 import java.util.Timer;

@@ -1,4 +1,4 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.livelyturtle.androidar.MapData;
+import com.example.livelyturtle.androidar.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;

@@ -6,7 +6,6 @@ import android.location.Location;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import static android.location.Location.distanceBetween;
-import java.awt.*;
 
 /**
  * Created by LivelyTurtle on 1/27/2016.

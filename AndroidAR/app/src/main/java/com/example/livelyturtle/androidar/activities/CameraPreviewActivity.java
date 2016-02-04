@@ -1,4 +1,4 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.activities;
 
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
+
+import com.example.livelyturtle.androidar.R;
 
 public class CameraPreviewActivity extends Activity {
 

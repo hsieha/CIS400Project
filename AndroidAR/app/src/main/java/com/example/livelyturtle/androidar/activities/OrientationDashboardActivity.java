@@ -1,4 +1,4 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.activities;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.widget.TextView;
 
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+import com.example.livelyturtle.androidar.R;
 
 public class OrientationDashboardActivity extends Activity implements
         SensorEventListener {
