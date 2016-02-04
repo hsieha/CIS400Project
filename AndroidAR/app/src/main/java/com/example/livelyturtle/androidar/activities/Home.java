@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.texample2.Texample2;
 import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.R;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -20,7 +21,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
-
 
 public class Home extends Activity implements
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -230,5 +230,16 @@ public class Home extends Activity implements
         Intent intent = new Intent(this, World3DActivity.class);
         startActivity(intent);
     }
+
+    public void toTextSampleActivity(View view) {
+        Intent intent = new Intent(this, TextSampleActivity.class);
+        startActivity(intent);
+    }
+
+    public void toTexample(View view) {
+        Intent intent = new Intent(this, Texample2.class);
+        startActivity(intent);
+    }
+
 
 }

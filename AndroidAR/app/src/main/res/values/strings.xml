@@ -4,10 +4,11 @@
     <string name="app_name">AndroidAR</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="advance">ADVANCE to: fullscreen pattern...</string>
-    <string name="go_to_camera">go to camera...</string>
-    <string name="orientation">see orientation/APR data...</string>
+    <string name="advance">(1) fullscreen</string>
+    <string name="go_to_camera">(2) camera</string>
+    <string name="orientation">(3) Orientation/APR data</string>
     <string name="example_ui">**BASIC EXAMPLE UI**</string>
+    <string name="text_sample">(4) text render</string>
     <string name="title_activity_black_screen">A Black Screen...</string>
     <string name="title_activity_camera_preview">CameraPreviewActivity</string>
     <string name="title_activity_orientation_dashboard">OrientationDashboardActivity</string>

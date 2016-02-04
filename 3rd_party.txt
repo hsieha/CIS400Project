@@ -1,0 +1,15 @@
+ 1. Android sample code at developer.android.com
+ 2. Nobile font
+ 3. Texample2 library
+ 4. Sensor fusion at codeproject.com/Articles/729759/Android-Sensor-Fusion-Tutorial
+ 5. google maps kml data
+ 6. camera feed from cwadvandroid github.com/commonsguy/cw-advandroid/tree/master/Camera/Preview
+
+LICENSES / SITES
+
+ 1. http://developer.android.com/license.html (apache 2.0)
+ 2. http://www.fontsquirrel.com/license/Nobile
+ 3. http://creativecommons.org/publicdomain/zero/1.0/legalcode
+ 4. MIT
+ 5. ??
+ 6. Apache 2.0

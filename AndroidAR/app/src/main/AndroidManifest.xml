@@ -68,6 +68,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.Home" />
         </activity>
+        <activity android:name=".activities.TextSampleActivity"></activity>
     </application>
 
 </manifest>
