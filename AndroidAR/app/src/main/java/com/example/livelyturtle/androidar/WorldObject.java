@@ -8,15 +8,18 @@ import java.util.ArrayList;
 public class WorldObject {
     String name;
     ArrayList<Coordinate> coordinates;
+    double height;
 
     public WorldObject() {
         name = "";
         coordinates = new ArrayList<Coordinate>();
+        height = 0;
     }
 
-    public WorldObject(String name, ArrayList<Coordinate> coordinates) {
+    public WorldObject(String name, ArrayList<Coordinate> coordinates, double height) {
         this.name = name;
         this.coordinates = coordinates;
+        this.height = height;
     }
 
     public void setName(String name) {
@@ -27,6 +30,10 @@ public class WorldObject {
         this.coordinates = coordinates;
     }
 
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
     public String getName() {
         return name;
     }
@@ -34,4 +41,6 @@ public class WorldObject {
     public ArrayList<Coordinate> getCoordinates() {
         return coordinates;
     }
+
+    public double getHeight() { return height; };
 }
