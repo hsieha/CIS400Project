@@ -31,7 +31,7 @@ public class GLText {
 	public final static int CHAR_UNKNOWN = ( CHAR_CNT - 1 );  // Index of the Unknown Character
 
 	public final static int FONT_SIZE_MIN = 6;         // Minumum Font Size (Pixels)
-	public final static int FONT_SIZE_MAX = 180;       // Maximum Font Size (Pixels)
+	public final static int FONT_SIZE_MAX = 240;       // Maximum Font Size (Pixels)
 
 	public final static int CHAR_BATCH_SIZE = 24;     // Number of Characters to Render Per Batch
 													  // must be the same as the size of u_MVPMatrix 
@@ -162,7 +162,6 @@ public class GLText {
 		charWidths[cnt] = w[0];                         // Get Width
 		if ( charWidths[cnt] > charWidthMax )           // IF Width Larger Than Max Width
 			charWidthMax = charWidths[cnt];              // Save New Max Width
-		cnt++;                                          // Advance Array Counter
 
 		// set character height to font height
 		charHeight = fontHeight;                        // Set Character Height
@@ -170,21 +169,24 @@ public class GLText {
 		// find the maximum size, validate, and setup cell sizes
 		cellWidth = (int)charWidthMax + ( 2 * fontPadX );  // Set Cell Width
 		cellHeight = (int)charHeight + ( 2 * fontPadY );  // Set Cell Height
-		int maxSize = cellWidth > cellHeight ? cellWidth : cellHeight;  // Save Max Size (Width/Height)
+		int maxSize = Math.max(cellWidth, cellHeight);  // Save Max Size (Width/Height)
+
+		System.out.println("CELL #s: " + cellWidth + ", " + cellHeight);
+
 		if ( maxSize < FONT_SIZE_MIN || maxSize > FONT_SIZE_MAX )  // IF Maximum Size Outside Valid Bounds
 			return false;                                // Return Error
 
 		// set texture size based on max font size (width or height)
 		// NOTE: these values are fixed, based on the defined characters. when
 		// changing start/end characters (CHAR_START/CHAR_END) this will need adjustment too!
-		if ( maxSize <= 24 )                            // IF Max Size is 18 or Less
-			textureSize = 256;                           // Set 256 Texture Size
-		else if ( maxSize <= 40 )                       // ELSE IF Max Size is 40 or Less
-			textureSize = 512;                           // Set 512 Texture Size
-		else if ( maxSize <= 80 )                       // ELSE IF Max Size is 80 or Less
-			textureSize = 1024;                          // Set 1024 Texture Size
-		else                                            // ELSE IF Max Size is Larger Than 80 (and Less than FONT_SIZE_MAX)
-			textureSize = 2048;                          // Set 2048 Texture Size
+		if ( maxSize <= 24 )
+			textureSize = 256;
+		else if ( maxSize <= 40 )
+			textureSize = 512;
+		else if ( maxSize <= 80 )
+			textureSize = 1024;
+		else
+			textureSize = 2048;
 
 		// create an empty bitmap (alpha only)
 		Bitmap bitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ALPHA_8 );  // Create Bitmap
@@ -254,7 +256,7 @@ public class GLText {
 	void initDraw(float red, float green, float blue, float alpha) {
 		GLES20.glUseProgram(mProgram.getHandle()); // specify the program to use
 		
-		// set color TODO: only alpha component works, text is always black #BUG
+		// set color
 		float[] color = {red, green, blue, alpha}; 
 		GLES20.glUniform4fv(mColorHandle, 1, color , 0); 
 		GLES20.glEnableVertexAttribArray(mColorHandle);
@@ -284,7 +286,7 @@ public class GLText {
 		int len = text.length();                        // Get String Length
 		x += ( chrWidth / 2.0f ) - ( fontPadX * scaleX );  // Adjust Start X
 		y += ( chrHeight / 2.0f ) - ( fontPadY * scaleY );  // Adjust Start Y
-		
+
 		// create a model matrix based on x, y and angleDeg
 		float[] modelMatrix = new float[16];
 		Matrix.setIdentityM(modelMatrix, 0);
@@ -300,7 +302,6 @@ public class GLText {
 			int c = (int)text.charAt(i) - CHAR_START;  // Calculate Character Index (Offset by First Char in Font)
 			if (c < 0 || c >= CHAR_CNT)                // IF Character Not In Font
 				c = CHAR_UNKNOWN;                         // Set to Unknown Character Index
-			//TODO: optimize - applying the same model matrix to all the characters in the string
 			batch.drawSprite(letterX, letterY, chrWidth, chrHeight, charRgn[c], modelMatrix);  // Draw the Character
 			letterX += (charWidths[c] + spaceX ) * scaleX;    // Advance X Position by Scaled Character Width
 		}

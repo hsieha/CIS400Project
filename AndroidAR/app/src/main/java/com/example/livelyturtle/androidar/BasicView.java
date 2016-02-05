@@ -18,9 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * TODO: document your custom view class.
- */
 public class BasicView extends View {
 
     private List<Rect> rectangles;

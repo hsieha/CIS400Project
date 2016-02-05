@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.android.texample2.GLText;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 
@@ -23,6 +24,9 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Context ctxt;
+
+    private GLText glText;
+
     private Triangle mTriangle;
     private Square mSquare;
 
@@ -46,7 +50,24 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame color
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        // initialize a triangle
+        // Create the GLText
+        glText = new GLText(ctxt.getAssets());
+
+        // Load the font from file (set size + padding), creates the texture
+        // NOTE: after a successful call to this the font is ready for rendering!
+        // font, int height, int padX, int padY
+        // size of 144 runs close to GLText's "MAX_FONT_SIZE".
+        if(!glText.load("nobile-bold.ttf", 144, 2, 2))
+            System.out.println("***GLTEXT LOAD FAILED. THE APP PROBABLY CRASHED.");
+
+        // enable texture + alpha blending
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+
+        // initialize demo shapes
         mTriangle = new Triangle(ctxt, CardinalDirection.WEST);
         mSquare = new Square(ctxt, CardinalDirection.SOUTH);
     }
@@ -99,6 +120,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // draw the scene
         mTriangle.draw(mMVPMatrix);
         mSquare.draw(mMVPMatrix);
+
+        // draw some text
+        // TODO: move this into a method!!
+
+        // white color, full opacity
+        glText.begin(1.0f, 1.0f, 1.0f, 1.0f, mMVPMatrix);
+
+        // for some reason, the default size is absolutely ENORMOUS. Thankfully scaling seems
+        // to work at any small order of magnitude
+        glText.setScale(.0002f);
+        glText.drawC("I WONDER WHERE", 0, 0, -1, 0, 0, 0); // a meter north
+
+        glText.end();
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {

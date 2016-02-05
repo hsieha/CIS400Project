@@ -72,7 +72,7 @@ public class Square {
         Moverio3D.Vector bot_left = Moverio3D.rotateYAxis(BOT_LEFT,(float)Math.toRadians(deg));
 
         // in counterclockwise order...
-        float squareCoords[] = Vector.VectorsToFloatArray(
+        float squareCoords[] = Vector.vectorsToFloatArray(
                 top_right, top_left, bot_left, bot_right);
         short drawOrder[] = { 0, 1, 2, 0, 2, 3 };
 

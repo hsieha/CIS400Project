@@ -8,8 +8,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
-import java.util.Random;
-
 public class Texample2Renderer implements GLSurfaceView.Renderer  {
 
 	private static final String TAG = "TexampleRenderer";
@@ -36,7 +34,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 
 		// Load the font from file (set size + padding), creates the texture
 		// NOTE: after a successful call to this the font is ready for rendering!
-		glText.load( "nobile.ttf", 48, 1, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+		glText.load( "nobile-bold.ttf", 48, 1, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
 
 		// enable texture + alpha blending
 		GLES20.glEnable(GLES20.GL_BLEND);
@@ -47,7 +45,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 		// Redraw background color
 		int clearMask = GLES20.GL_COLOR_BUFFER_BIT;
 
-		GLES20.glClear(clearMask);
+        GLES20.glClear(clearMask);
 	
 		Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
 		
@@ -56,22 +54,22 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 		
 		// TEST: render some strings with the font
 		glText.begin( 1.0f, 1.0f, 1.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color WHITE)
-		glText.drawC("Test String 3D!", 0f, 0f, 0f, 0, -30, 0);
+//		glText.drawC("Test String 3D!", 0f, 0f, 0f, 0, -30, 0);
 //		glText.drawC( "Test String :)", 0, 0, 0 );          // Draw Test String
-		glText.draw( "Diagonal 1", 40, 40, 40);                // Draw Test String
-		glText.draw( "Column 1", 100, 100, 90);              // Draw Test String
+//		glText.draw( "Diagonal 1", 40, 40, 40);                // Draw Test String
+//		glText.draw( "Column 1", 100, 100, 90);              // Draw Test String
 
 
 
-		glText.draw( "THIS IS MICHAEL", (float)Math.random()*100, 40, 0);                // Draw Test String
-		glText.draw( "I WONDER WHERE", 0, 0, 0, 0, 0, 0);                // Draw Test String
+//		glText.draw( "THIS IS MICHAEL", 0, 40, 0);                // Draw Test String
+		glText.drawC("I WONDER WHERE", 0, 0, -10, 0, 0, 0);                // Draw Test String
 
 		glText.end();                                   // End Text Rendering
 		
-		glText.begin( 0.0f, 0.0f, 1.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
-		glText.draw( "More Lines...", 50, 200 );        // Draw Test String
-		glText.draw( "The End.", 50, 200 + glText.getCharHeight(), 180);  // Draw Test String
-		glText.end();                                   // End Text Rendering
+//		glText.begin( 0.0f, 0.0f, 1.0f, 1.0f, mVPMatrix );         // Begin Text Rendering (Set Color BLUE)
+//		glText.draw( "More Lines...", 50, 200 );        // Draw Test String
+//		glText.draw( "The End.", 50, 200 + glText.getCharHeight(), 180);  // Draw Test String
+//		glText.end();                                   // End Text Rendering
 	}
 
 	public void onSurfaceChanged(GL10 unused, int width, int height) { //		gl.glViewport( 0, 0, width, height ); 
@@ -79,24 +77,27 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 		float ratio = (float) width / height;
 
 		// Take into account device orientation
-		if (width > height) {
-			Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 1, 10);
-		}
-		else {
-			Matrix.frustumM(mProjMatrix, 0, -1, 1, -1/ratio, 1/ratio, 1, 10);
-		}
+//		if (width > height) {
+			Matrix.frustumM(mProjMatrix, 0, -ratio*10, ratio*10, -10, 10, 1, 1000);
+//		}
+//		else {
+//			Matrix.frustumM(mProjMatrix, 0, -1, 1, -1/ratio, 1/ratio, 1, 10);
+//		}
 		
 		// Save width and height
 		this.width = width;                             // Save Current Width
 		this.height = height;                           // Save Current Height
 		
 		int useForOrtho = Math.min(width, height);
-		
-		//TODO: Is this wrong?
-		Matrix.orthoM(mVMatrix, 0,
-				-useForOrtho/2,
-				useForOrtho/2,
-				-useForOrtho/2,
-				useForOrtho/2, 0.1f, 100f);
+
+//		Matrix.orthoM(mVMatrix, 0,
+//				-useForOrtho/2,
+//				useForOrtho/2,
+//				-useForOrtho/2,
+//				useForOrtho/2, 0.1f, 100f);
+
+        // MICHAEL: use setLookAtM instead
+//		Matrix.setLookAtM(mVMatrix, 0, 0,0,0, 0,0,-5, 0,1,0);
+        Matrix.setLookAtM(mVMatrix, 0, 0,0,0, -1/(float)Math.sqrt(3),0,-2/(float)Math.sqrt(3), 0,1,0);
 	}
 }

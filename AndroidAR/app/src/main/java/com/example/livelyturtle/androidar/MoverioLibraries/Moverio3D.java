@@ -23,7 +23,7 @@ public final class Moverio3D {
     public static final int SCREEN_WIDTH                = 960;          // pixels
     public static final int SCREEN_HEIGHT               = 540;          // pixels
     public static final float VIRTUAL_SCREEN_SIZE       = 2.032f;       // m ("80in" in manual)
-    public static final float VIRTUAL_SCREEN_DISTANCE   = 5.f;          // m
+    public static final float VIRTUAL_SCREEN_DISTANCE   = 5.f;          // m (in manual)
     public static final float VIRTUAL_SCREEN_WIDTH      = 1.771041f;    // m (pythagorean theorem)
     public static final float VIRTUAL_SCREEN_HEIGHT     = .996211f;     // m (pythagorean theorem)
     public static final float FOVX                      = .350573117f;  // radians (about 20 degrees)
@@ -72,7 +72,7 @@ public final class Moverio3D {
 
         // getting float arrays
         // TODO: a candidate for parallelization with Java 8?
-        public static float[] VectorsToFloatArray(Vector... args) {
+        public static float[] vectorsToFloatArray(Vector... args) {
             float[] result = new float[args.length*3];
             int i = 0;
             for (Vector v : args) {

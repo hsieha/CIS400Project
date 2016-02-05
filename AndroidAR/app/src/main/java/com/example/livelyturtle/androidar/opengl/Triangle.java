@@ -67,7 +67,7 @@ public class Triangle {
         Vector right = Moverio3D.rotateYAxis(RIGHT, (float)Math.toRadians(deg));
 
         // in counterclockwise order:
-        float triangleCoords[] = Vector.VectorsToFloatArray(top, left, right);
+        float triangleCoords[] = Vector.vectorsToFloatArray(top, left, right);
 
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
