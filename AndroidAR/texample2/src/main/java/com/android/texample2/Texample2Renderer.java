@@ -64,6 +64,7 @@ public class Texample2Renderer implements GLSurfaceView.Renderer  {
 
 
 		glText.draw( "THIS IS MICHAEL", (float)Math.random()*100, 40, 0);                // Draw Test String
+		glText.draw( "I WONDER WHERE", 0, 0, 0, 0, 0, 0);                // Draw Test String
 
 		glText.end();                                   // End Text Rendering
 		

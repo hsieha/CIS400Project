@@ -10,7 +10,65 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/linearLayout0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/InfoHeader1"
+            android:text="Importing world data from your location..."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/InfoHeader2"
+            android:text="Import complete! Press the button below to start."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_weight="2">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/augment"
+            android:textSize="24dp"
+            android:onClick="toWorldActivity" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/DebugHeader"
+            android:text="DEBUG MENU\t"
+            android:textSize="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout30"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -18,12 +76,14 @@
         <TextView
             android:id="@+id/LatitudeHeading"
             android:text="LAT\t\t"
+            android:textSize="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"/>
         <TextView
             android:id="@+id/mLatitudeText"
             android:text="\?????"
+            android:textSize="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="8"/>
@@ -31,7 +91,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayout40"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -39,20 +99,24 @@
         <TextView
             android:id="@+id/LongitudeHeading"
             android:text="LONG\t"
+            android:textSize="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"/>
         <TextView
             android:id="@+id/mLongitudeText"
             android:text="\?????"
+            android:textSize="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="8"/>
 
     </LinearLayout>
 
+
+
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayout50"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -61,39 +125,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/advance"
+            android:textSize="12dp"
             android:onClick="advanceFromHome" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/go_to_camera"
+            android:textSize="12dp"
             android:onClick="toCameraActivity" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/orientation"
+            android:textSize="12dp"
             android:onClick="toOrientationActivity" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_sample"
+            android:textSize="12dp"
             android:onClick="toTexample" />
     </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/example_ui"
-            android:onClick="toWorldActivity" />
-    </LinearLayout>
-
-
 
 </LinearLayout>
 
