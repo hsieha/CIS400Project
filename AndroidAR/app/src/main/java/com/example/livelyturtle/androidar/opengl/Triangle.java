@@ -1,42 +1,39 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.opengl;
 
 import android.content.Context;
 import android.opengl.GLES20;
 
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
+import com.example.livelyturtle.androidar.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 /**
- * Created by Darren on 1/24/16.
+ * Created by Michael on 1/12/2016.
  */
-public class Square {
+public class Triangle {
 
     private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
     private final int mProgram;
 
-    static final int TOTAL_VERTICES = 4;
+    // number of coordinates per vertex in this array
+    static final int TOTAL_VERTICES = 3;
     static final int COORDS_PER_VERTEX = 3;
-    static final int TOTAL_TRIANGLES_NEEDED = 2;
 
-    // meters
-    // OpenGL only draws triangles!
-    // Thus, the coordinates array must have 6 elements: TR,TL,BL,TR,BL,BR
-    static final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -50.0f);
-    static final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -50.0f);
-    static final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -20.0f);
-    static final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -20.0f);
+    // assuming a user height of about 175cm
+    // triangle starts on the ground and rises to eye height
+    static final Vector TOP = Vector.of(1.f, 0f, -100f);
+    static final Vector LEFT = Vector.of(-1.f, -1.75f, -50f);
+    static final Vector RIGHT = Vector.of(1.f, -1.75f, -50f);
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.82265625f, 0.63671875f, 0.76953125f, 1.0f };
+    float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 1.0f };
 
-    public Square(Context ctxt, Moverio3D.CardinalDirection dir) {
-        // place the Square
+    public Triangle(Context ctxt, CardinalDirection dir) {
+        // place the Triangle
         int deg;
         switch (dir) {
             case WEST:
@@ -65,38 +62,26 @@ public class Square {
                 deg = 0;
                 break;
         }
-        Moverio3D.Vector top_right = Moverio3D.rotateYAxis(TOP_RIGHT, (float) Math.toRadians(deg));
-        Moverio3D.Vector top_left = Moverio3D.rotateYAxis(TOP_LEFT, (float)Math.toRadians(deg));
-        Moverio3D.Vector bot_right = Moverio3D.rotateYAxis(BOT_RIGHT, (float)Math.toRadians(deg));
-        Moverio3D.Vector bot_left = Moverio3D.rotateYAxis(BOT_LEFT,(float)Math.toRadians(deg));
+        Vector top = Moverio3D.rotateYAxis(TOP, (float) Math.toRadians(deg));
+        Vector left = Moverio3D.rotateYAxis(LEFT, (float)Math.toRadians(deg));
+        Vector right = Moverio3D.rotateYAxis(RIGHT, (float)Math.toRadians(deg));
 
-        // in counterclockwise order...
-        float squareCoords[] = Vector.VectorsToFloatArray(
-                top_right, top_left, bot_left, bot_right);
-        short drawOrder[] = { 0, 1, 2, 0, 2, 3 };
+        // in counterclockwise order:
+        float triangleCoords[] = Vector.vectorsToFloatArray(top, left, right);
 
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
-                squareCoords.length * 4);
+                triangleCoords.length * 4);
         // use the device hardware's native byte order
         bb.order(ByteOrder.nativeOrder());
+
         // create a floating point buffer from the ByteBuffer
         vertexBuffer = bb.asFloatBuffer();
         // add the coordinates to the FloatBuffer
-        vertexBuffer.put(squareCoords);
+        vertexBuffer.put(triangleCoords);
         // set the buffer to read the first coordinate
         vertexBuffer.position(0);
-
-
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 2 bytes per short)
-                drawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
 
 
 
@@ -139,9 +124,7 @@ public class Square {
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        // NOTE: glDrawElements must be used if not drawing a triangle
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 3*TOTAL_TRIANGLES_NEEDED,
-                              GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 

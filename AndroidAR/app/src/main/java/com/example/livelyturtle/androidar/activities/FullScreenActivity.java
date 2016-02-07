@@ -1,10 +1,11 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.example.livelyturtle.androidar.BasicView;
 
 public class FullScreenActivity extends Activity {
 

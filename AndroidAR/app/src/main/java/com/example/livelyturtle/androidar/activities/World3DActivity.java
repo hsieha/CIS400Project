@@ -1,4 +1,4 @@
-package com.example.livelyturtle.androidar;
+package com.example.livelyturtle.androidar.activities;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 
 import java.util.Arrays;
 import java.util.Timer;
@@ -101,11 +102,20 @@ public class World3DActivity extends Activity implements SensorEventListener {
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_FASTEST);
         mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        // The following call resumes a paused rendering thread.
+        // If you de-allocated graphic objects for onPause()
+        // this is a good place to re-allocate them.
+        mGLView.onResume();
     }
 
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+        // The following call pauses the rendering thread.
+        // If your OpenGL application is memory intensive,
+        // you should consider de-allocating objects that
+        // consume significant memory here.
+        mGLView.onPause();
     }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {

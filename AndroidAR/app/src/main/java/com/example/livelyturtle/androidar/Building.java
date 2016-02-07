@@ -9,7 +9,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
  */
 public class Building extends WorldObject {
     public Building(String name, ArrayList<Coordinate> coordinates) {
-        super(name, coordinates);
+        super(name, coordinates, 20);
     }
 
     //coordinates are held in counterclockwise order
