@@ -2,8 +2,6 @@ package com.example.livelyturtle.androidar;
 
 import android.location.Location;
 
-import static android.location.Location.distanceBetween;
-
 /**
  * Created by LivelyTurtle on 1/30/2016.
  */
@@ -11,8 +9,8 @@ import static android.location.Location.distanceBetween;
 public class Coordinate {
     public double latitude;
     public double longitude;
-    public double x;
-    public double y;
+    public double x; //longitude equivalent in opengl
+    public double z; //latitude equivalent in opengl
 
     //compass coordinates: 39.952258, -75.197008
     private double compass_lat = 39.952258;
@@ -31,8 +29,8 @@ public class Coordinate {
         float dist_to_coor = results[0];
         float angle_to_coor = results[1];
 
-        x = dist_to_coor * Math.cos((double) angle_to_coor);
-        y = dist_to_coor * Math.sin((double) angle_to_coor);
+        z = dist_to_coor * Math.cos((double) angle_to_coor);
+        x = dist_to_coor * Math.sin((double) angle_to_coor);
 
     }
 }
