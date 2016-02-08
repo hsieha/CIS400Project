@@ -11,8 +11,17 @@ public class Building extends WorldObject {
 
     private float y = 2.5f;  //All buildings are 2.5 meters tall (for now)
 
+    Coordinate textCoord;
+
     public Building(String name, ArrayList<Coordinate> coordinates) {
         super(name, coordinates, 20);
+        double lat = 0;
+        double lon = 0;
+        for (Coordinate coord : this.coordinates) {
+            lat += coord.latitude;
+            lon += coord.longitude;
+        }
+        textCoord = new Coordinate(lat/this.coordinates.size(),lon/this.coordinates.size());
     }
 
     //coordinates are held in counterclockwise order
