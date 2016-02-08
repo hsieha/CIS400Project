@@ -11,7 +11,6 @@ public class Coordinate {
     public double longitude;
     public double x; //longitude equivalent in opengl
     public double z; //latitude equivalent in opengl
-
     //compass coordinates: 39.952258, -75.197008
     private double compass_lat = 39.952258;
     private double compass_long = -75.197008;

@@ -3,18 +3,72 @@ package com.example.livelyturtle.androidar;
 import java.util.ArrayList;
 import java.lang.Math;
 import android.location.Location;
-import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 
 /**
  * Created by LivelyTurtle on 1/27/2016.
  */
 public class Street extends WorldObject {
+
+    int[] vector_order = {0,1,2,0,2,3};   //only 4 vertices, index order is easy to make
+    private float y = 0.0f;                   //streets height of 0 (might need to adjust)
+    private double width = 5;        //width of each street is 5 meters
+
     public Street(String name, ArrayList<Coordinate> coordinates) {
         super(name, coordinates, 0);
     }
 
-    //Not really using this, but leaving code in
+    //returns array_list of the vectors
+    public ArrayList<Vector> vectors(){
+
+        ArrayList<Vector> vectors = new ArrayList<Vector>();
+
+        Coordinate p1 = coordinates.get(1);
+        Coordinate p2 = coordinates.get(2);
+
+        //slope of street line
+        double m = (p2.z - p1.z) / (p2.x - p1.x);
+        //slope of perpendicular (negative reciprocal of m)
+        double other_m = -(1/m);
+        //find the b intercept for both perpendicular lines that intersect p1 and p2
+        double p1_other_b = other_m*p1.x - p1.z;
+        double p2_other_b = other_m*p2.x - p2.z;
+
+        //need to pick a random point along the line
+        double other_x = 0;
+        double other_z = other_m*other_x + p1_other_b;
+        //then find a unit vector
+        double norm_x = (p1.x - other_x);
+        double norm_z = (p1.z - other_z);
+        double norm_magnitude = Math.sqrt((Math.pow(norm_x, 2) + Math.pow(norm_z,2)));
+        double norm_unit_x = norm_x / norm_magnitude;
+        double norm_unit_z = norm_z / norm_magnitude;
+
+        boolean right;
+        if (other_x > p1.x){
+            right = true;
+        } else {
+            right = false;
+        }
+
+        if(right){
+            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), y, (float)(p1.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), y, (float)(p1.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), y, (float)(p2.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), y, (float)(p2.z - 2.5*norm_unit_z)));
+        } else {
+            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), y, (float)(p1.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), y, (float)(p1.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), y, (float)(p2.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), y, (float)(p2.z + 2.5*norm_unit_z)));
+        }
+
+        return vectors;
+    }
+
+    ////////////////////////
+    //NOT USING BELOW CODE//
+    ////////////////////////
     public boolean doesIntersect(float azimuth, Location my_location) {
 
         double my_lat = my_location.getLatitude();
