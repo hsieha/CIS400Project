@@ -10,7 +10,6 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
  */
 public class Street extends WorldObject {
 
-    int[] vector_order = {0,1,2,0,2,3};   //only 4 vertices, index order is easy to make
     private float y = 0.0f;                   //streets height of 0 (might need to adjust)
     private double width = 5;        //width of each street is 5 meters
 
@@ -65,6 +64,12 @@ public class Street extends WorldObject {
 
         return vectors;
     }
+
+    //order of vertices
+    public int[] vector_order() {
+        return new int[]{0, 1, 2, 0, 2, 3};   //only 4 vertices, index order is easy to make
+    }
+
 
     ////////////////////////
     //NOT USING BELOW CODE//

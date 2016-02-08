@@ -15,12 +15,17 @@ import android.widget.TextView;
 import com.android.texample2.Texample2;
 import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.R;
+import com.example.livelyturtle.androidar.WorldObject;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
+
+import com.example.livelyturtle.androidar.*;
+
+import java.util.ArrayList;
 
 public class Home extends Activity implements
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -43,6 +48,26 @@ public class Home extends Activity implements
 
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+
+        //part of locust from rodin to the tampons statue
+        ArrayList<Coordinate> street_coor = new ArrayList<Coordinate>();
+        street_coor.add(new Coordinate(39.952774, -75.201233));
+        street_coor.add(new Coordinate(39.952694, -75200521));
+
+        //Harrison front rectangle of Harrison
+        ArrayList<Coordinate> building_coor = new ArrayList<Coordinate>();
+        building_coor.add(new Coordinate(39.952125, -75.200935));
+        building_coor.add(new Coordinate(39.9521904, -75.200983));
+        building_coor.add(new Coordinate(39.9521935, -75.201207));
+        building_coor.add(new Coordinate(39.952200, -75.201141));
+
+        Street test_street = new Street("locust_piece", street_coor);
+        Building test_building = new Building("harrison_front", building_coor);
+
+        System.out.println("Street vectors" + test_street.vectors());
+        System.out.println("Street vector order" + test_street.vector_order());
+        System.out.println("Building vectors" + test_building.vectors());
+        System.out.println("Building vector order" + test_building.vector_order());
 
         if (false) {
             System.out.println("***ABOUT TO MAKE mGoogleApiClient");
