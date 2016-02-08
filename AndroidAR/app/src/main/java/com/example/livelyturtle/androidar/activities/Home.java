@@ -75,7 +75,7 @@ public class Home extends Activity implements
         System.out.println("Building vector order" + Arrays.toString(test_building.vector_order()));
 
         //OPENGLIFYING WORLD_OBJECTS TESTING ENDS HERE
-        
+
 
         if (false) {
             System.out.println("***ABOUT TO MAKE mGoogleApiClient");
