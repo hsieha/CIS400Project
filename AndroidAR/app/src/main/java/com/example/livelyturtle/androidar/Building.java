@@ -22,9 +22,9 @@ public class Building extends WorldObject {
 
         for(int i = 0; i < coordinates.size(); i++){
             //point given
-            vectors.add(Vector.of((float)(coordinates.get(1).x), 0, (float)(coordinates.get(1).z)));
+            vectors.add(Vector.of((float)(coordinates.get(i).x), 0, (float)(coordinates.get(i).z)));
             //point in the air
-            vectors.add(Vector.of((float)(coordinates.get(1).x), y, (float)(coordinates.get(1).z)));
+            vectors.add(Vector.of((float)(coordinates.get(i).x), y, (float)(coordinates.get(i).z)));
         }
 
         return vectors;
@@ -33,9 +33,9 @@ public class Building extends WorldObject {
     //order of vertices
     public int[] vector_order(){
 
-        int[] order = new int[coordinates.size()*2];
+        int[] order = new int[coordinates.size()*2*3];
 
-        for(int i = 0; i < coordinates.size()*2*3-6; i++){
+        for(int i = 0; i < coordinates.size()*2-2; i++){
             order[i*3] = i;
             order[i*3 + 1] = i+1;
             order[i*3 + 2] = i+2;

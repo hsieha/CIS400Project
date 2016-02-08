@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.example.livelyturtle.androidar.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Home extends Activity implements
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -49,6 +50,10 @@ public class Home extends Activity implements
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
 
+        //OPENGLIFYING WORLD_OBJECTS TEST
+        //HOW DO YOU PRINT OUT MOVERIO.VECTORS?
+        //VECTOR ORDER WORKS OUT! COO
+
         //part of locust from rodin to the tampons statue
         ArrayList<Coordinate> street_coor = new ArrayList<Coordinate>();
         street_coor.add(new Coordinate(39.952774, -75.201233));
@@ -65,9 +70,12 @@ public class Home extends Activity implements
         Building test_building = new Building("harrison_front", building_coor);
 
         System.out.println("Street vectors" + test_street.vectors());
-        System.out.println("Street vector order" + test_street.vector_order());
+        System.out.println("Street vector order" + Arrays.toString(test_street.vector_order()));
         System.out.println("Building vectors" + test_building.vectors());
-        System.out.println("Building vector order" + test_building.vector_order());
+        System.out.println("Building vector order" + Arrays.toString(test_building.vector_order()));
+
+        //OPENGLIFYING WORLD_OBJECTS TESTING ENDS HERE
+        
 
         if (false) {
             System.out.println("***ABOUT TO MAKE mGoogleApiClient");

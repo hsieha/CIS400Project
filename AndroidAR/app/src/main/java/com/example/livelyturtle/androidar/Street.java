@@ -22,8 +22,8 @@ public class Street extends WorldObject {
 
         ArrayList<Vector> vectors = new ArrayList<Vector>();
 
-        Coordinate p1 = coordinates.get(1);
-        Coordinate p2 = coordinates.get(2);
+        Coordinate p1 = coordinates.get(0);
+        Coordinate p2 = coordinates.get(1);
 
         //slope of street line
         double m = (p2.z - p1.z) / (p2.x - p1.x);
