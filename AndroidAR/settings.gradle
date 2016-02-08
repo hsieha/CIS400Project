@@ -1,2 +1,1 @@
-include ':app'
-include ':texample2'
+include ':app', ':texample2'

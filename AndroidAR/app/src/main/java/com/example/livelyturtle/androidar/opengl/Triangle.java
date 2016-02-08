@@ -24,13 +24,12 @@ public class Triangle {
     static final int COORDS_PER_VERTEX = 3;
 
     // assuming a user height of about 175cm
-    // triangle starts on the ground and rises to eye height
-    static final Vector TOP = Vector.of(1.f, 0f, -100f);
-    static final Vector LEFT = Vector.of(-1.f, -1.75f, -50f);
-    static final Vector RIGHT = Vector.of(1.f, -1.75f, -50f);
+    static final Vector TOP = Vector.of(0.f, .4f, -8f);
+    static final Vector LEFT = Vector.of(-1.f, -.2f, -3f);
+    static final Vector RIGHT = Vector.of(1.f, -.2f, -3f);
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 1.0f };
+    float color[] = { 0.22265625f, 0.63671875f, 0.76953125f, 0.5f };
 
     public Triangle(Context ctxt, CardinalDirection dir) {
         // place the Triangle

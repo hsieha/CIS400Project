@@ -41,6 +41,12 @@ public final class Moverio3D {
             this.z = z;
         }
 
+        // print
+        @Override
+        public String toString() {
+            return "(" + x + ", " + y + ", " + z + ")";
+        }
+
         // static factories
         public static Vector zero() {
             return new Vector(0,0,0);
@@ -62,7 +68,9 @@ public final class Moverio3D {
         public float[] xyz() { return new float[] {x,y,z}; }
 
         // useful methods
-        public Vector scalarMultiply(float s) { return of(s*x, s*y, s*z); }
+        public Vector scalarMultiply(float s) {
+            return of(s*x, s*y, s*z);
+        }
         public float magnitude() {
             return (float) Math.sqrt(x*x + y*y + z*z);
         }
@@ -70,10 +78,28 @@ public final class Moverio3D {
             return this.scalarMultiply(1.f/this.magnitude());
         }
 
+        // static methods
+        public static Vector sum(Vector addend1, Vector addend2) {
+            return of(addend1.x + addend2.x, addend1.y + addend2.y, addend1.z + addend2.z);
+        }
+        public static Vector difference(Vector end, Vector start) {
+            return of(end.x - start.x, end.y - start.y, end.z - start.z);
+        }
+
         // getting float arrays
         // TODO: a candidate for parallelization with Java 8?
         public static float[] vectorsToFloatArray(Vector... args) {
             float[] result = new float[args.length*3];
+            int i = 0;
+            for (Vector v : args) {
+                for (float f : v.xyz()) {
+                    result[i++] = f;
+                }
+            }
+            return result;
+        }
+        public static float[] vectorsToFloatArray(List<Vector> args) {
+            float[] result = new float[args.size()*3];
             int i = 0;
             for (Vector v : args) {
                 for (float f : v.xyz()) {

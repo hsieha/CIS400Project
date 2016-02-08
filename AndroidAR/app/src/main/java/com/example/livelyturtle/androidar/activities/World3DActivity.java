@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 
@@ -19,6 +20,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /*
+ * This Activity mostly handles sensor calculations.
+ * Drawing implementation can be found in MyGLRenderer.
+ *
  * Sensor fusion code found online at codeproject.com/Articles/729759/Android-Sensor-Fusion-Tutorial
  * and licensed with the MIT License.
  */
