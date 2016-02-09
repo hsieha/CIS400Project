@@ -5,6 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.app.Activity;
@@ -45,6 +48,10 @@ public class World3DActivity extends Activity implements SensorEventListener {
     // the final result of fusion sensor data, remapped to front view
     private float[] APR = new float[3];
 
+
+    private LocationManager locationManager;
+
+
     private MyGLSurfaceView mGLView;
 
     private void updateAPR(float a, float p, float r) {
@@ -72,13 +79,13 @@ public class World3DActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // fullscreen as in the bt200 technical info pdf - REMOVE BOTTOM BAR
-        Window win = getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
-        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
-        winParams.flags |= 0x80000000;
-        win.setAttributes(winParams);
+//        // fullscreen as in the bt200 technical info pdf - REMOVE BOTTOM BAR
+//        Window win = getWindow();
+//        WindowManager.LayoutParams winParams = win.getAttributes();
+//        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
+//        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
+//        winParams.flags |= 0x80000000;
+//        win.setAttributes(winParams);
 
         // stackoverflow answer - REMOVE TOP BAR
         // Remove title bar
@@ -99,6 +106,39 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
         // set off fusion sensor calculations at fixed intervals
         fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 3000, TIME_CONSTANT);
+
+
+
+        // -----LOCATION DATA-----
+        // Acquire a reference to the system Location Manager
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location provider.
+                mGLView.mRenderer.updateEye(location);
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            public void onProviderEnabled(String provider) {}
+
+            public void onProviderDisabled(String provider) {}
+        };
+
+        // Register the listener with the Location Manager to receive location updates
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, locationListener);
+        }
+        catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+//        Location f = new Location("");
+//        f.setLatitude(39.95);
+//        f.setLongitude(-75.2);
+//        mGLView.mRenderer.updateEye(f);
     }
 
     protected void onResume() {

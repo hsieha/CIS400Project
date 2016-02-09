@@ -94,7 +94,8 @@ public class Home extends Activity implements
             mRequestingLocationUpdates = true;
             createLocationRequest();
         }
-        else {
+        //else {
+        if (false) {
             System.out.println("***GoogleApiClient is not being used!");
             System.out.println("***Proceeding with android.location GPS functionality...");
             // Acquire a reference to the system Location Manager
