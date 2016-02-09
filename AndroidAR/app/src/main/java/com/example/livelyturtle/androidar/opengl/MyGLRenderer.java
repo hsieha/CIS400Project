@@ -1,6 +1,7 @@
 package com.example.livelyturtle.androidar.opengl;
 
 import android.content.Context;
+import android.location.Location;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -13,6 +14,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +25,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.android.texample2.GLText;
+import com.example.livelyturtle.androidar.Coordinate;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import com.example.livelyturtle.androidar.R;
@@ -69,9 +74,25 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private float[] currentAPR = new float[] {0,0,0};
 
-    Vector eye;
+    // user eye height assumed to be 1.75m
+    Vector eye = Vector.of(0,1.75f,0);
     Vector upV;
     Vector toCoV;
+
+    Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
+    private boolean noLocationDataAvailable = true;
+    private String locationStatus = "NO LOCATION DATA AVAILABLE";
+
+    public void updateEye(Location location) {
+        Coordinate c = new Coordinate(location.getLatitude(), location.getLongitude());
+        eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+        noLocationDataAvailable = false;
+
+        // the status is the time
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
+        Calendar cal = Calendar.getInstance();
+        locationStatus = "time of last update [" + df.format(cal.getTime()) + "]";
+    }
 
     // other variables
     private Triangle mTriangle;
@@ -111,8 +132,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // initialize demo shapes
         //mTriangle = new Triangle(ctxt, CardinalDirection.WEST);
-        //mSquare = new Square(ctxt, CardinalDirection.NORTHWEST);
+        mSquare = new Square(ctxt, CardinalDirection.NORTHWEST);
 
+        // ***DEMO DATA... you should use addDrawing and addText***
+        ///////////////////////////////////////////////////////////////
          final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -50.0f);
          final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -50.0f);
          final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -20.0f);
@@ -129,8 +152,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ss.add((short)0);
         ss.add((short)2);
         ss.add((short)3);
-        drawDirectory.put("Square", new DrawExecutor(vs, ss, LIGHT_BLUE, 1));
-        textDirectory.put("Sample1", new TextExecutor("HELLO", Vector.of(-20,5,2), BLUE, 1));
+        drawDirectory.put("Square", new DrawExecutor(vs, ss, WHITE, 1));
+
+        textDirectory.put("Sample1", new TextExecutor("WEST NEAR", Vector.of(-8,0,0), BLUE, 1));
+        textDirectory.put("Sample2", new TextExecutor("WEST HIGH", Vector.of(-8,10,0), BLUE, 1));
+        textDirectory.put("Sample3", new TextExecutor("WEST FAR (and up a bit)", Vector.of(-80,4,0), BLUE, 1));
+        textDirectory.put("Sample4", new TextExecutor("northwest", Vector.of(-20,0,-20), BLUE, 1));
+        textDirectory.put("Sample5", new TextExecutor("north", Vector.of(0,-3,-60), BLUE, 1));
+        textDirectory.put("Sample6", new TextExecutor("northeast", Vector.of(50,3,-50), BLUE, 1));
+        textDirectory.put("Sample7", new TextExecutor("east", Vector.of(35,0,0), BLUE, 1));
+
+        ///////////////////////////////////////////////////////////////
+        // -----END DEMO DATA-----
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -176,8 +209,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float P = -1*currentAPR[1];
         float R = -1*currentAPR[2];
 
-        eye = Vector.zero();//getEyeLocation functionality inline
-        // TODO: update based on user location, but with "DEMO" turned on, force a certain user location.
+        if (DataDebug.HARDCODE_LOCATION) {
+            eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
+            locationStatus = "LOCATION IS HARDCODED";
+        }
+
+        //System.out.println("***eye: " + eye);
+
         upV = Vector.of(
                 (float) (-1. * Math.cos(A) * Math.sin(R) * Math.cos(P) + Math.sin(A) * Math.sin(P)),
                 (float) (Math.cos(R) * Math.cos(P)),
@@ -205,6 +243,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         drawAll();
 
+        drawLocationStatus();
 
     }
 
@@ -307,7 +346,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
             // NOTE: glDrawElements must be used if not drawing a triangle
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, vertexArray.length,
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length,
                     GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
             GLES20.glDisableVertexAttribArray(mPositionHandle);
         }
@@ -345,10 +384,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // so, text calls come after everything else.
             glText.drawC(text,
                     adjustedLocation.x(), adjustedLocation.y(), adjustedLocation.z(), // location
-                    // TODO: the x and z values need to be calculated with respect to azimuth as well (unit circle)
-                    (float)(currentAPR[1] * 180./Math.PI),
+                    0,
                     (float)(currentAPR[0] * -180./Math.PI),
-                    (float)(currentAPR[2] * 180./Math.PI)); // rotation - text always directly faces user
+                    0); // rotation - text always directly faces user (azimuth only)
 
             // TODO: more functionality: if text would be occluded by a building, still draw it but make it gray
 
@@ -389,6 +427,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else return 0;
+    }
+    private void drawLocationStatus() {
+        if (noLocationDataAvailable) {
+            glText.begin(1, 0, 0, 1, mMVPMatrix);
+        }
+        else {
+            glText.begin(1, 1, 1, 1, mMVPMatrix);
+        }
+        glText.setScale(TEXT_SCALE_CONSTANT * .18f);
+
+        glText.draw(locationStatus,
+                eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
+                0,
+                (float)(currentAPR[0] * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
+                0);
+
+        glText.end();
     }
 
 
