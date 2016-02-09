@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <kml xmlns='http://www.opengis.net/kml/2.2'>
 	<Document>
-		<name>UPenn Campus</name>
+		<name>UPennCampus</name>
 		<description><![CDATA[for CIS401]]></description>
 		<Folder>
 			<name>Buildings</name>
@@ -103,6 +103,48 @@
 					</outerBoundaryIs>
 				</Polygon>
 			</Placemark>
+			<Placemark>
+				<name>Van Pelt Library</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1946756,39.9530247,0.0 -75.19474,39.952667,0.0 -75.1939353,39.9525806,0.0 -75.1939648,39.9524943,0.0 -75.1931709,39.9524017,0.0 -75.1930958,39.952778,0.0 -75.1946756,39.9530247,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Admissions College Hall</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1941928,39.9516759,0.0 -75.1942465,39.9513511,0.0 -75.1933211,39.95123799999999,0.0 -75.1932675,39.95154840000001,0.0 -75.1941928,39.9516759,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Huntsman</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1984763,39.9534853,0.0 -75.198656,39.952590900000004,0.0 -75.1978433,39.9524819,0.0 -75.1977924,39.95271019999999,0.0 -75.1979345,39.95272250000001,0.0 -75.1977977,39.9533763,0.0 -75.1984763,39.9534853,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
 		</Folder>
 		<Folder>
 			<name>Streets</name>
@@ -124,6 +166,106 @@
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.2050853,39.9544167,0.0 -75.1878333,39.9522948,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>Chestnut Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.2047634,39.9559382,0.0 -75.1874793,39.9538081,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>Spruce Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.205611,39.9520481,0.0 -75.1917279,39.9503291,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>Market Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.2041519,39.9574349,0.0 -75.1833701,39.9548608,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>40th Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.2019632,39.9571718,0.0 -75.2031004,39.9517438,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>39th Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.199635,39.9568593,0.0 -75.2007616,39.9514395,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>38th Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1980472,39.9566701,0.0 -75.1991737,39.9512503,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>37th Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1961052,39.9564399,0.0 -75.19723180000001,39.9510118,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>36th Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1941633,39.95620960000001,0.0 -75.195322,39.9507651,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>34th Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1914918,39.9558559,0.0 -75.1925969,39.9504361,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>33rd Street</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<ExtendedData>
+				</ExtendedData>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1894748,39.9556174,0.0 -75.1902366,39.9515546,0.0 -75.1917279,39.9503291,0.0</coordinates>
 				</LineString>
 			</Placemark>
 		</Folder>
