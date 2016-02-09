@@ -70,9 +70,9 @@ public class Home extends Activity implements
         Building test_building = new Building("harrison_front", building_coor);
 
         System.out.println("Street vectors" + test_street.vectors());
-        System.out.println("Street vector order" + Arrays.toString(test_street.vector_order()));
+        System.out.println("Street vector order" + test_street.vector_order());
         System.out.println("Building vectors" + test_building.vectors());
-        System.out.println("Building vector order" + Arrays.toString(test_building.vector_order()));
+        System.out.println("Building vector order" + test_building.vector_order());
 
         //OPENGLIFYING WORLD_OBJECTS TESTING ENDS HERE
 

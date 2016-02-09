@@ -10,11 +10,10 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
  */
 public class Street extends WorldObject {
 
-    private float y = 0.0f;                   //streets height of 0 (might need to adjust)
     private double width = 5;        //width of each street is 5 meters
 
     public Street(String name, ArrayList<Coordinate> coordinates) {
-        super(name, coordinates, 0);
+        super(name, coordinates, 0.0f);
     }
 
     //returns array_list of the vectors
@@ -51,15 +50,15 @@ public class Street extends WorldObject {
         }
 
         if(right){
-            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), y, (float)(p1.z - 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), y, (float)(p1.z + 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), y, (float)(p2.z + 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), y, (float)(p2.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), (float)(height), (float)(p1.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), (float)(height), (float)(p1.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
         } else {
-            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), y, (float)(p1.z + 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), y, (float)(p1.z - 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), y, (float)(p2.z - 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), y, (float)(p2.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), (float)(height), (float)(p1.z + 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), (float)(height), (float)(p1.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
+            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
         }
 
         return vectors;

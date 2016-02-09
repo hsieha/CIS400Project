@@ -1,7 +1,6 @@
 package com.example.livelyturtle.androidar;
 
 import java.util.ArrayList;
-import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 
 /**
@@ -9,12 +8,10 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
  */
 public class Building extends WorldObject {
 
-    private float y = 2.5f;  //All buildings are 2.5 meters tall (for now)
-
     Coordinate textCoord;
 
     public Building(String name, ArrayList<Coordinate> coordinates) {
-        super(name, coordinates, 20);
+        super(name, coordinates, 2.5f);
         double lat = 0;
         double lon = 0;
         for (Coordinate coord : this.coordinates) {
@@ -33,7 +30,7 @@ public class Building extends WorldObject {
             //point given
             vectors.add(Vector.of((float)(coordinates.get(i).x), 0, (float)(coordinates.get(i).z)));
             //point in the air
-            vectors.add(Vector.of((float)(coordinates.get(i).x), y, (float)(coordinates.get(i).z)));
+            vectors.add(Vector.of((float)(coordinates.get(i).x), (float)(height), (float)(coordinates.get(i).z)));
         }
 
         return vectors;
