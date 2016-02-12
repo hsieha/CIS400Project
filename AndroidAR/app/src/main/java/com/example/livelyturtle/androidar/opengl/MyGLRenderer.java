@@ -17,6 +17,7 @@ import java.nio.ShortBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,14 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.android.texample2.GLText;
+import com.example.livelyturtle.androidar.Building;
 import com.example.livelyturtle.androidar.Coordinate;
+import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import com.example.livelyturtle.androidar.R;
+import com.example.livelyturtle.androidar.Street;
 
 
 /*
@@ -49,6 +53,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
     final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
     final Vector BLUE = Vector.of(.45f,.45f,.8f);
+    final Vector RED = Vector.of(.8f, .45f, .45f);
 
 
     // call setScale on glText with this value for default text size
@@ -270,6 +275,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return true;
     }
 
+    public boolean addMapData(MapData mapData) {
+        HashSet<Building> buildings = mapData.getBuildings();
+        HashSet<Street> streets = mapData.getStreets();
+        for (Building building : buildings) {
+            addDrawing(building.getName(), building.vectors(), building.vector_order(), BLUE, 1);
+            Coordinate tcoord = building.getTextCoord();
+            addText(building.getName(), building.getName(), Vector.of((float)tcoord.x,1.5f,(float)tcoord.z), WHITE, 1);
+        }
+        for (Street street : streets) {
+            addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
+        }
+        return true;
+    }
 
 
 

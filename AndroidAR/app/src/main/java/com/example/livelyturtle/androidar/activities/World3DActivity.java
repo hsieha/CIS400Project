@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
@@ -53,6 +54,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
 
     private MyGLSurfaceView mGLView;
+
+    private MapData mapData;
 
     private void updateAPR(float a, float p, float r) {
         APR[0] = a;
@@ -102,6 +105,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         mGLView = new MyGLSurfaceView(this);
+        mapData = new MapData("UPennCampus.kml", this);
+        mGLView.mRenderer.addMapData(mapData);
         setContentView(mGLView);
 
         // set off fusion sensor calculations at fixed intervals

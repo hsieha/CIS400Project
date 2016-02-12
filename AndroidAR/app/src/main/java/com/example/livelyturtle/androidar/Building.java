@@ -1,6 +1,10 @@
 package com.example.livelyturtle.androidar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 
@@ -40,25 +44,29 @@ public class Building extends WorldObject {
     }
 
     //order of vertices
-    public int[] vector_order(){
+    public ArrayList<Short> vector_order(){
 
-        int[] order = new int[coordinates.size()*2*3];
+        ArrayList<Short> order = new ArrayList<Short>(Collections.nCopies(coordinates.size()*2*3,(short) 0));
 
         for(int i = 0; i < coordinates.size()*2-2; i++){
-            order[i*3] = i;
-            order[i*3 + 1] = i+1;
-            order[i*3 + 2] = i+2;
+            order.set(i*3,(short) i);
+            order.set(i*3 + 1,(short) (i+1));
+            order.set(i*3 + 2,(short) (i+2));
         }
         //last 2 triangles double back onto first two vertices
         int j = coordinates.size()*2*3;
-        order[j-6] = coordinates.size()*2-2;
-        order[j-5] = coordinates.size()*2-1;
-        order[j-4] = 0;
-        order[j-3] = coordinates.size()*2-1;
-        order[j-2] = 0;
-        order[j-1] = 1;
+        order.set(j-6, (short) (coordinates.size()*2-2));
+        order.set(j-5, (short) (coordinates.size()*2-1));
+        order.set(j-4, (short) 0);
+        order.set(j-3, (short) (coordinates.size()*2-1));
+        order.set(j-2, (short) 0);
+        order.set(j-1, (short) 1);
 
         return order;
+    }
+
+    public Coordinate getTextCoord() {
+        return textCoord;
     }
 
 }
