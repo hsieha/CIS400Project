@@ -18,12 +18,29 @@ public class Coordinate {
     //NOTE from Darren: if the lat/long gets too large
     // errors will become larger further away from origin
     //if it happens, need to use something like mercator projection to fix
-    public Coordinate (double la, double lo) {
+    public Coordinate (double lo, double la) {
         latitude = la;
         longitude = lo;
 
         float[] results = new float[3];
         Location.distanceBetween(compass_lat, compass_long, la, lo, results);
+
+        System.out.println(results[0]);
+
+        System.out.println("trying out distanceTo");
+        Location compass = new Location("compass");
+        compass.setLatitude(compass_lat);
+        compass.setLongitude(compass_long);
+        Location point = new Location("point");
+        point.setLatitude(la);
+        System.out.println("object la: " + la);
+        point.setLongitude(lo);
+        System.out.println("object lo: " + lo);
+
+        float distanceto = compass.distanceTo(point);
+        System.out.println("distance from compass: " + distanceto);
+
+
 
         float dist_to_coor = results[0];
         float angle_to_coor = results[1];

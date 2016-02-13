@@ -35,7 +35,6 @@ public class MapData {
             ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
             while((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
-                System.out.println(line);
                 if(line.equals("<name>Buildings</name>")) {
                     isBuilding = true;
                 }

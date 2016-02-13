@@ -65,8 +65,15 @@ public class Street extends WorldObject {
     }
 
     //order of vertices
-    public int[] vector_order() {
-        return new int[]{0, 1, 2, 0, 2, 3};   //only 4 vertices, index order is easy to make
+    public ArrayList<Short> vector_order() {
+        ArrayList<Short> order = new ArrayList<Short>();   //only 4 vertices, index order is easy to make
+        order.add((short) 0);
+        order.add((short) 1);
+        order.add((short) 2);
+        order.add((short) 0);
+        order.add((short) 2);
+        order.add((short) 3);
+        return order;
     }
 
 
