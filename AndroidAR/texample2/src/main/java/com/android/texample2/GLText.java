@@ -171,8 +171,6 @@ public class GLText {
 		cellHeight = (int)charHeight + ( 2 * fontPadY );  // Set Cell Height
 		int maxSize = Math.max(cellWidth, cellHeight);  // Save Max Size (Width/Height)
 
-		System.out.println("CELL #s: " + cellWidth + ", " + cellHeight);
-
 		if ( maxSize < FONT_SIZE_MIN || maxSize > FONT_SIZE_MAX )  // IF Maximum Size Outside Valid Bounds
 			return false;                                // Return Error
 

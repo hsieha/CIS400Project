@@ -1,5 +1,6 @@
 package com.example.livelyturtle.androidar.MoverioLibraries;
 
+import java.text.Format;
 import java.util.List;
 
 /**
@@ -44,7 +45,9 @@ public final class Moverio3D {
         // print
         @Override
         public String toString() {
-            return "(" + x + ", " + y + ", " + z + ")";
+            return "(" + String.format("%12.3f", x) + ", " +
+                         String.format("%12.3f", y) + ", " +
+                         String.format("%12.3f", z) + ")";
         }
 
         // static factories
