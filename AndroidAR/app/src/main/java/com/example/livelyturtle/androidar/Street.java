@@ -19,46 +19,95 @@ public class Street extends WorldObject {
     //returns array_list of the vectors
     public ArrayList<Vector> vectors(){
 
+        boolean first = true;
         ArrayList<Vector> vectors = new ArrayList<Vector>();
 
-        Coordinate p1 = coordinates.get(0);
-        Coordinate p2 = coordinates.get(1);
+        for (int i = 0; i < coordinates.size()-1; i++){
 
-        //slope of street line
-        double m = (p2.z - p1.z) / (p2.x - p1.x);
-        //slope of perpendicular (negative reciprocal of m)
-        double other_m = -(1/m);
-        //find the b intercept for both perpendicular lines that intersect p1 and p2
-        double p1_other_b = other_m*p1.x - p1.z;
-        double p2_other_b = other_m*p2.x - p2.z;
+            Coordinate p1 = coordinates.get(i);
+            Coordinate p2 = coordinates.get(i+1);
 
-        //need to pick a random point along the line
-        double other_x = 0;
-        double other_z = other_m*other_x + p1_other_b;
-        //then find a unit vector
-        double norm_x = (p1.x - other_x);
-        double norm_z = (p1.z - other_z);
-        double norm_magnitude = Math.sqrt((Math.pow(norm_x, 2) + Math.pow(norm_z,2)));
-        double norm_unit_x = norm_x / norm_magnitude;
-        double norm_unit_z = norm_z / norm_magnitude;
+            double dx = p1.x - p2.x;
+            double dy = p1.z - p2.z;
+            double dist = Math.sqrt(Math.abs(dx*dx - dy*dy));
+            dx /= dist;
+            dy /= dist;
 
-        boolean right;
-        if (other_x > p1.x){
-            right = true;
-        } else {
-            right = false;
-        }
+            //create perpendicular points
+            //first point's perpendicular line
+            double p3_x = p1.x + (width/2)*dy;
+            double p3_z = p1.z - (width/2)*dx;
+            double p4_x = p1.x - (width/2)*dy;
+            double p4_z = p1.z + (width/2)*dx;
 
-        if(right){
-            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), (float)(height), (float)(p1.z - 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), (float)(height), (float)(p1.z + 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
-        } else {
-            vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), (float)(height), (float)(p1.z + 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), (float)(height), (float)(p1.z - 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
-            vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
+            //second point's perpendicular line
+            double p5_x = p2.x + (width/2)*dy;
+            double p5_z = p2.z - (width/2)*dx;
+            double p6_x = p2.x - (width/2)*dy;
+            double p6_z = p2.z + (width/2)*dx;
+
+            if(first){
+                vectors.add(Vector.of((float) p3_x, (float)height, (float) p3_z));
+                vectors.add(Vector.of((float) p4_x, (float)height, (float) p4_z));
+                vectors.add(Vector.of((float) p5_x, (float)height, (float) p5_z));
+                vectors.add(Vector.of((float) p6_x, (float)height, (float) p6_z));
+            } else {
+                vectors.add(Vector.of((float) p5_x, (float)height, (float) p5_z));
+                vectors.add(Vector.of((float) p6_x, (float)height, (float) p6_z));
+            }
+
+
+
+//            //slope of street line
+//            double m = (p2.z - p1.z) / (p2.x - p1.x);
+//            //slope of perpendicular (negative reciprocal of m)
+//            double other_m = -(1/m);
+//            //find the b intercept for both perpendicular lines that intersect p1 and p2
+//            double p1_other_b = other_m*p1.x - p1.z;
+//            double p2_other_b = other_m*p2.x - p2.z;
+//
+//            //need to pick a random point along the line
+//            double other_x = 0;
+//            double other_z = other_m*other_x + p1_other_b;
+//            //then find a unit vector
+//            double norm_x = (p1.x - other_x);
+//            double norm_z = (p1.z - other_z);
+//            double norm_magnitude = Math.sqrt((Math.pow(norm_x, 2) + Math.pow(norm_z,2)));
+//            double norm_unit_x = norm_x / norm_magnitude;
+//            double norm_unit_z = norm_z / norm_magnitude;
+//
+//            boolean right;
+//            if (other_x > p1.x){
+//                right = true;
+//            } else {
+//                right = false;
+//            }
+//
+//            //if it's the first time need to add both sides for the endpoint
+//            //otherwise just add the new point
+//            if(first){
+//                if(right){
+//                    vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), (float)(height), (float)(p1.z - 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), (float)(height), (float)(p1.z + 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
+//                } else {
+//                    vectors.add(Vector.of((float)(p1.x + width/2.0*norm_unit_x), (float)(height), (float)(p1.z + 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p1.x - width/2.0*norm_unit_x), (float)(height), (float)(p1.z - 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
+//                }
+//            } else {
+//                if(right){
+//                    vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
+//                } else {
+//                    vectors.add(Vector.of((float)(p2.x - width/2.0*norm_unit_x), (float)(height), (float)(p2.z - 2.5*norm_unit_z)));
+//                    vectors.add(Vector.of((float)(p2.x + width/2.0*norm_unit_x), (float)(height), (float)(p2.z + 2.5*norm_unit_z)));
+//                }
+//            }
+
+
         }
 
         return vectors;
@@ -67,12 +116,14 @@ public class Street extends WorldObject {
     //order of vertices
     public ArrayList<Short> vector_order() {
         ArrayList<Short> order = new ArrayList<Short>();   //only 4 vertices, index order is easy to make
-        order.add((short) 0);
-        order.add((short) 1);
-        order.add((short) 2);
-        order.add((short) 0);
-        order.add((short) 2);
-        order.add((short) 3);
+        for (int i = 1; i <= (coordinates.size()*2)-2; i += 2) {
+            order.add((short) i);
+            order.add((short) (i-1));
+            order.add((short) (i+1));
+            order.add((short) i);
+            order.add((short) (i+1));
+            order.add((short) (i+2));
+        }
         return order;
     }
 

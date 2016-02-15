@@ -279,7 +279,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         drawLocationStatus();
 
-        System.out.println("*** ===DRAW CYCLE OVER===");
+        //System.out.println("*** ===DRAW CYCLE OVER===");
 
     }
 
@@ -312,22 +312,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         for (Building building : buildings) {
 
-            System.out.println(building.getName() + ": ");
-            System.out.println("vectors: " + building.vectors());
-            System.out.println("vector_order:" + building.vector_order());
+//            System.out.println(building.getName() + ": ");
+//            System.out.println("vectors: " + building.vectors());
+//            System.out.println("vector_order:" + building.vector_order());
 
             addDrawing(building.getName(), building.vectors(), building.vector_order(), BLUE, 1);
             Coordinate tcoord = building.getTextCoord();
             addText(building.getName(), building.getName(), Vector.of((float)tcoord.x,1.5f,(float)tcoord.z), WHITE, 1);
         }
-//        for (Street street : streets) {
-//
-//            System.out.println(street.getName() + ": ");
-//            System.out.println("vectors: " + street.vectors());
-//            System.out.println("vector_order:" + street.vector_order());
-//
-//            addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
-//        }
+        for (Street street : streets) {
+
+            System.out.println(street.getName() + ": ");
+            System.out.println("vectors: " + street.vectors());
+            System.out.println("vector_order:" + street.vector_order());
+
+            addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
+        }
         return true;
     }
 
@@ -391,7 +391,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         private short[] drawOrder;
 
         private void draw() {
-            System.out.println("***draw being called on building: " + vertices + " ; " + order);
+            //System.out.println("***draw being called on building: " + vertices + " ; " + order);
+            //System.out.println("***draw being called on street: " + vertices + " ; " + order);
             GLES20.glUseProgram(mProgram);
 
             int mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
