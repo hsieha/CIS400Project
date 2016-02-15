@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.livelyturtle.androidar.MapData;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
@@ -76,6 +77,15 @@ public class World3DActivity extends Activity implements SensorEventListener {
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(mRenderer);
         }
+
+        public MyGLSurfaceView(Context context, MapData mapData){
+            super(context);
+            // Create an OpenGL ES 2.0 context
+            setEGLContextClientVersion(2);
+            mRenderer = new MyGLRenderer(context, mapData);
+            // Set the Renderer for drawing on the GLSurfaceView
+            setRenderer(mRenderer);
+        }
     }
 
     @Override
@@ -104,9 +114,10 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
-        mGLView = new MyGLSurfaceView(this);
         mapData = new MapData("UPennCampus.kml", this);
-        mGLView.mRenderer.addMapData(mapData);
+        mGLView = new MyGLSurfaceView(this, mapData);
+
+        //mGLView.mRenderer.addMapData(mapData);
         setContentView(mGLView);
 
         // set off fusion sensor calculations at fixed intervals
@@ -122,7 +133,9 @@ public class World3DActivity extends Activity implements SensorEventListener {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 // Called when a new location is found by the network location provider.
-                mGLView.mRenderer.updateEye(location);
+                if(!DataDebug.HARDCODE_LOCATION) {
+                    mGLView.mRenderer.updateEye(location);
+                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}

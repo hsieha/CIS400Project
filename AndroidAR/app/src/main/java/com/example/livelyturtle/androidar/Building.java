@@ -20,8 +20,10 @@ public class Building extends WorldObject {
             lat += coord.latitude;
             lon += coord.longitude;
         }
+        lat -= this.coordinates.get(0).latitude;
+        lon -= this.coordinates.get(0).longitude;
         // average of summation of all lat/long vals
-        textCoord = new Coordinate(lat/this.coordinates.size(),lon/this.coordinates.size());
+        textCoord = new Coordinate(lat/(this.coordinates.size()-1),lon/(this.coordinates.size()-1));
     }
 
     //coordinates are held in counterclockwise order
@@ -41,23 +43,15 @@ public class Building extends WorldObject {
 
     //order of vertices
     public ArrayList<Short> vector_order(){
-
-        ArrayList<Short> order = new ArrayList<Short>(Collections.nCopies(coordinates.size()*2*3,(short) 0));
-
-        for(int i = 0; i < coordinates.size()*2-2; i++){
-            order.set(i*3,(short) i);
-            order.set(i*3 + 1,(short) (i+1));
-            order.set(i*3 + 2,(short) (i+2));
+        ArrayList<Short> order = new ArrayList<Short>();
+        for (int i = 1; i <= (coordinates.size()*2)-2; i += 2) {
+            order.add((short) i);
+            order.add((short) (i-1));
+            order.add((short) (i+1));
+            order.add((short) i);
+            order.add((short) (i+1));
+            order.add((short) (i+2));
         }
-        //last 2 triangles double back onto first two vertices
-        int j = coordinates.size()*2*3;
-        order.set(j-6, (short) (coordinates.size()*2-2));
-        order.set(j-5, (short) (coordinates.size()*2-1));
-        order.set(j-4, (short) 0);
-        order.set(j-3, (short) (coordinates.size()*2-1));
-        order.set(j-2, (short) 0);
-        order.set(j-1, (short) 1);
-
         return order;
     }
 

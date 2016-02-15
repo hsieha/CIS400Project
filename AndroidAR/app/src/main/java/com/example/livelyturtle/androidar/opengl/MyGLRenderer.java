@@ -103,10 +103,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Triangle mTriangle;
     private Square mSquare;
 
+    private MapData mapData;
 
     // string the Context through the constructor
     public MyGLRenderer(Context c) {
         ctxt = c;
+    }
+    public MyGLRenderer(Context c, MapData mapData) {
+        ctxt = c; this.mapData = mapData;
     }
 
 
@@ -141,11 +145,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // ***DEMO DATA... you should use addDrawing and addText***
         ///////////////////////////////////////////////////////////////
+/*
          final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -50.0f);
          final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -50.0f);
          final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(-2f, -1.75f, -20.0f);
          final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(2f, -1.75f, -20.0f);
-        List<Vector> vs = new LinkedList<>();
+
+         List<Vector> vs = new LinkedList<>();
         vs.add(TOP_RIGHT);
         vs.add(TOP_LEFT);
         vs.add(BOT_LEFT);
@@ -157,7 +163,32 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ss.add((short)0);
         ss.add((short)2);
         ss.add((short)3);
-        drawDirectory.put("Square", new DrawExecutor(vs, ss, WHITE, 1));
+
+         */
+/*
+        final Moverio3D.Vector BOT_LEFT = Moverio3D.Vector.of(  -390.77f,      0.00f,   -117.79f);
+        final Moverio3D.Vector TOP_LEFT = Moverio3D.Vector.of(  -390.77f,      2.50f,   -117.79f);
+        final Moverio3D.Vector BOT_RIGHT = Moverio3D.Vector.of(  -393.64f,      0.00f,    -95.30f);
+        final Moverio3D.Vector TOP_RIGHT = Moverio3D.Vector.of(  -393.64f,      2.50f,    -95.30f);
+
+        List<Vector> vs = new LinkedList<>();
+        vs.add(BOT_LEFT);
+        vs.add(TOP_LEFT);
+        vs.add(BOT_RIGHT);
+        vs.add(TOP_RIGHT);
+        List<Short> ss = new LinkedList<>();
+        ss.add((short)1);
+        ss.add((short)0);
+        ss.add((short)2);
+        ss.add((short)1);
+        ss.add((short)2);
+        ss.add((short) 3);
+
+        addDrawing("Square", vs, ss,BLUE, 1);*/
+
+        addMapData(mapData);
+        //drawDirectory.put("Square", new DrawExecutor(vs, ss, WHITE, 1));
+
 
         textDirectory.put("Sample1", new TextExecutor("WEST NEAR", Vector.of(-8,0,0), BLUE, 1));
         textDirectory.put("Sample2", new TextExecutor("WEST HIGH", Vector.of(-8,10,0), BLUE, 1));
@@ -278,9 +309,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public boolean addMapData(MapData mapData) {
         HashSet<Building> buildings = mapData.getBuildings();
         HashSet<Street> streets = mapData.getStreets();
-        for (Building building : buildings) {
 
-            if (!building.getName().contains("odin")) continue;
+        for (Building building : buildings) {
 
             System.out.println(building.getName() + ": ");
             System.out.println("vectors: " + building.vectors());
