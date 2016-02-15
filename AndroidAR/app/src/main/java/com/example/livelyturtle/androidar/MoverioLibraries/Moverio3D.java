@@ -45,9 +45,9 @@ public final class Moverio3D {
         // print
         @Override
         public String toString() {
-            return "(" + String.format("%12.3f", x) + ", " +
-                         String.format("%12.3f", y) + ", " +
-                         String.format("%12.3f", z) + ")";
+            return "(" + String.format("%9.2f", x) + ", " +
+                         String.format("%9.2f", y) + ", " +
+                         String.format("%9.2f", z) + ")";
         }
 
         // static factories
@@ -142,6 +142,51 @@ public final class Moverio3D {
         return rotateYAxis(in, -1.f * rads);
     }
 
+    /**
+     * This uses the default azimuth from the APR value, NOT the negated one necessary for matrix
+     * calculations
+     * @param a APR[0]
+     * @return direction
+     */
+    public static CardinalDirection getDirectionFromAzimuth(float a) {
 
+        int aDeg = (int) (a * 180 / (float) Math.PI);
+
+        // adjustments to make the following switch statement easier
+        if (aDeg < 0) aDeg += 360;
+        aDeg += 22;
+
+        switch (aDeg/45) {
+            case 0:
+            case 8:
+                return CardinalDirection.NORTH;
+                //break;
+            case 1:
+                return CardinalDirection.NORTHEAST;
+                //break;
+            case 2:
+                return CardinalDirection.EAST;
+                //break;
+            case 3:
+                return CardinalDirection.SOUTHEAST;
+                //break;
+            case 4:
+                return CardinalDirection.SOUTH;
+                //break;
+            case 5:
+                return CardinalDirection.SOUTHWEST;
+                //break;
+            case 6:
+                return CardinalDirection.WEST;
+                //break;
+            case 7:
+                return CardinalDirection.NORTHWEST;
+                //break;
+            default:
+                // error
+                return null;
+                //break;
+        }
+    }
 
 }

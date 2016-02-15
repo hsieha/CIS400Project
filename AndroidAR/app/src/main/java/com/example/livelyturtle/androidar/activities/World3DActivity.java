@@ -140,10 +140,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
             e.printStackTrace();
         }
 
-//        Location f = new Location("");
-//        f.setLatitude(39.95);
-//        f.setLongitude(-75.2);
-//        mGLView.mRenderer.updateEye(f);
     }
 
     protected void onResume() {

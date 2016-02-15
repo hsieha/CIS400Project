@@ -86,7 +86,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
     private boolean noLocationDataAvailable = true;
-    private String locationStatus = "NO LOCATION DATA AVAILABLE";
+    private String locationStatus = "NO LOC DTA";
 
     public void updateEye(Location location) {
         Coordinate c = new Coordinate(location.getLatitude(), location.getLongitude());
@@ -96,7 +96,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // the status is the time
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
         Calendar cal = Calendar.getInstance();
-        locationStatus = "time of last update [" + df.format(cal.getTime()) + "]";
+        locationStatus = "last up:[" + df.format(cal.getTime()) + "]";
     }
 
     // other variables
@@ -216,10 +216,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         if (DataDebug.HARDCODE_LOCATION) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            locationStatus = "LOCATION IS HARDCODED";
+            locationStatus = "LOC HRDCD";
         }
-
-        //System.out.println("***eye: " + eye);
 
         upV = Vector.of(
                 (float) (-1. * Math.cos(A) * Math.sin(R) * Math.cos(P) + Math.sin(A) * Math.sin(P)),
@@ -249,6 +247,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         drawAll();
 
         drawLocationStatus();
+
+        System.out.println("*** ===DRAW CYCLE OVER===");
 
     }
 
@@ -280,6 +280,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         HashSet<Street> streets = mapData.getStreets();
         for (Building building : buildings) {
 
+            if (!building.getName().contains("odin")) continue;
+
             System.out.println(building.getName() + ": ");
             System.out.println("vectors: " + building.vectors());
             System.out.println("vector_order:" + building.vector_order());
@@ -288,9 +290,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             Coordinate tcoord = building.getTextCoord();
             addText(building.getName(), building.getName(), Vector.of((float)tcoord.x,1.5f,(float)tcoord.z), WHITE, 1);
         }
-        for (Street street : streets) {
-            addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
-        }
+//        for (Street street : streets) {
+//
+//            System.out.println(street.getName() + ": ");
+//            System.out.println("vectors: " + street.vectors());
+//            System.out.println("vector_order:" + street.vector_order());
+//
+//            addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
+//        }
         return true;
     }
 
@@ -354,6 +361,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         private short[] drawOrder;
 
         private void draw() {
+            System.out.println("***draw being called on building: " + vertices + " ; " + order);
             GLES20.glUseProgram(mProgram);
 
             int mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
@@ -459,6 +467,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             glText.begin(1, 1, 1, 1, mMVPMatrix);
         }
         glText.setScale(TEXT_SCALE_CONSTANT * .18f);
+
+
+        locationStatus += "|E:" + eye;
+        locationStatus += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
 
         glText.draw(locationStatus,
                 eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location

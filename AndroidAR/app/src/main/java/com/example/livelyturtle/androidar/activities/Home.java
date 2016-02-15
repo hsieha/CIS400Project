@@ -48,35 +48,35 @@ public class Home extends Activity implements
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
 
-        //OPENGLIFYING WORLD_OBJECTS TEST
-        //HOW DO YOU PRINT OUT MOVERIO.VECTORS?
-        //VECTOR ORDER WORKS OUT! COO
-
-        //part of locust from rodin to the tampons statue
-        ArrayList<Coordinate> street_coor = new ArrayList<Coordinate>();
-        street_coor.add(new Coordinate(39.952774, -75.201233));
-        street_coor.add(new Coordinate(39.952694, -75200521));
-
-        //Harrison front rectangle of Harrison
-        ArrayList<Coordinate> building_coor = new ArrayList<Coordinate>();
-        building_coor.add(new Coordinate(39.952125, -75.200935));
-        building_coor.add(new Coordinate(39.9521904, -75.200983));
-        building_coor.add(new Coordinate(39.9521935, -75.201207));
-        building_coor.add(new Coordinate(39.952200, -75.201141));
-
-        Street test_street = new Street("locust_piece", street_coor);
-        Building test_building = new Building("harrison_front", building_coor);
-
-        System.out.println("Street vectors" + test_street.vectors());
-        System.out.println("Street vector order" + test_street.vector_order().toString());
-        System.out.println("Building vectors" + test_building.vectors());
-        System.out.println("Building vector order" + test_building.vector_order().toString());
-
-        //OPENGLIFYING WORLD_OBJECTS TESTING ENDS HERE
+//        //OPENGLIFYING WORLD_OBJECTS TEST
+//        //HOW DO YOU PRINT OUT MOVERIO.VECTORS?
+//        //VECTOR ORDER WORKS OUT! COO
+//
+//        //part of locust from rodin to the tampons statue
+//        ArrayList<Coordinate> street_coor = new ArrayList<Coordinate>();
+//        street_coor.add(new Coordinate(39.952774, -75.201233));
+//        street_coor.add(new Coordinate(39.952694, -75200521));
+//
+//        //Harrison front rectangle of Harrison
+//        ArrayList<Coordinate> building_coor = new ArrayList<Coordinate>();
+//        building_coor.add(new Coordinate(39.952125, -75.200935));
+//        building_coor.add(new Coordinate(39.9521904, -75.200983));
+//        building_coor.add(new Coordinate(39.9521935, -75.201207));
+//        building_coor.add(new Coordinate(39.952200, -75.201141));
+//
+//        Street test_street = new Street("locust_piece", street_coor);
+//        Building test_building = new Building("harrison_front", building_coor);
+//
+//        System.out.println("Street vectors" + test_street.vectors());
+//        System.out.println("Street vector order" + test_street.vector_order().toString());
+//        System.out.println("Building vectors" + test_building.vectors());
+//        System.out.println("Building vector order" + test_building.vector_order().toString());
+//
+//        //OPENGLIFYING WORLD_OBJECTS TESTING ENDS HERE
 
 
         if (false) {
-            System.out.println("***ABOUT TO MAKE mGoogleApiClient");
+            // mGoogleApiClient (gplay needed)
             if (mGoogleApiClient == null) {
                 mGoogleApiClient = new GoogleApiClient.Builder(this)
                         .addConnectionCallbacks(this)
@@ -86,7 +86,6 @@ public class Home extends Activity implements
             } else {
                 System.out.println("***mGoogleApiClient wasn't even null to begin with!");
             }
-            System.out.println("***mGoogleApiClient: " + mGoogleApiClient);
             setContentView(R.layout.activity_home);
 
             mRequestingLocationUpdates = true;
@@ -94,8 +93,7 @@ public class Home extends Activity implements
         }
         //else {
         if (false) {
-            System.out.println("***GoogleApiClient is not being used!");
-            System.out.println("***Proceeding with android.location GPS functionality...");
+            // older android.location GPS functionality
             // Acquire a reference to the system Location Manager
             locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -173,8 +171,8 @@ public class Home extends Activity implements
         if (mLastLocation != null) {
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-            System.out.println("LAT: " + String.valueOf(mLastLocation.getLatitude()));
-            System.out.println("LONG: " + String.valueOf(mLastLocation.getLongitude()));
+            System.out.println("LAT WRITTEN AS: " + String.valueOf(mLastLocation.getLatitude()));
+            System.out.println("LONG WRITTEN AS: " + String.valueOf(mLastLocation.getLongitude()));
         }
         else {
             mLatitudeText.setText("NULL");

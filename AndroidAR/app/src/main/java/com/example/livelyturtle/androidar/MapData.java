@@ -49,8 +49,8 @@ public class MapData {
                     String coordString = line.substring(13, line.length() - 14);
                     for(String oneCoord : coordString.split(",0.0 ")){
                         String[] latlong = oneCoord.split(",");
-                        Coordinate coord = new Coordinate(Double.parseDouble(latlong[0]),
-                                Double.parseDouble(latlong[1]));
+                        Coordinate coord = new Coordinate(Double.parseDouble(latlong[1]),
+                                Double.parseDouble(latlong[0]));
                         coordinates.add(coord);
                     }
                     if(isBuilding) {

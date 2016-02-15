@@ -20,6 +20,7 @@ public class Building extends WorldObject {
             lat += coord.latitude;
             lon += coord.longitude;
         }
+        // average of summation of all lat/long vals
         textCoord = new Coordinate(lat/this.coordinates.size(),lon/this.coordinates.size());
     }
 

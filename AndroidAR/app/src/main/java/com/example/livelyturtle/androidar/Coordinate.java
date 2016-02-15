@@ -26,7 +26,10 @@ public class Coordinate {
         float[] results = new float[3];
         Location.distanceBetween(COMPASS_LAT, COMPASS_LONG, la, lo, results);
 
-        //System.out.println(results[0]);
+        System.out.println("***COORD START DEBUG OUT");
+        System.out.println(results[0]);
+        System.out.println(results[1]);
+        System.out.println(results[2]);
 
         //System.out.println("trying out distanceTo");
         Location compass = new Location("compass");
@@ -34,20 +37,20 @@ public class Coordinate {
         compass.setLongitude(COMPASS_LONG);
         Location point = new Location("point");
         point.setLatitude(la);
-        //System.out.println("object la: " + la);
+        System.out.println("object la: " + la);
         point.setLongitude(lo);
-        //System.out.println("object lo: " + lo);
+        System.out.println("object lo: " + lo);
 
         float distanceto = compass.distanceTo(point);
-        //System.out.println("distance from compass: " + distanceto);
-
+        System.out.println("distance from compass: " + distanceto);
+        System.out.println("***COORD END DEBUG OUT");
 
 
         float dist_to_coor = results[0];
         float angle_to_coor = results[1];
 
-        z = dist_to_coor * Math.cos((double) angle_to_coor);
-        x = dist_to_coor * Math.sin((double) angle_to_coor);
+        z = -dist_to_coor * Math.cos((double) angle_to_coor * Math.PI / 180.);
+        x = dist_to_coor * Math.sin((double) angle_to_coor * Math.PI / 180.);
 
     }
 }
