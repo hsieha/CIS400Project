@@ -131,6 +131,12 @@ public class Home extends Activity implements
         }
     }
 
+    // anything data that comes from the phone can be thrown into the mix as well
+    void writeExternalLatLongToScreen() {
+        mLatitudeText.setText(Double.valueOf(0).toString());
+        mLongitudeText.setText(Double.valueOf(0).toString());
+    }
+
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000);
