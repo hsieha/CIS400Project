@@ -1,5 +1,8 @@
 package com.example.sombd.externalgpsreceiver;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -15,8 +18,14 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,110 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView latitudeText;
     private TextView longitudeText;
     private TextView statusText;
+    private double latDouble;
+    private double longDouble;
 
     private boolean locationUpdatesAvailable = false;
-
-    public WifiP2pDevice moverioDevice;
-
-    public void setMoverioDevice(WifiP2pDevice m) {
-        moverioDevice = m;
-        state = ConnectionState.MOVERIO_FOUND;
-    }
-
-    // attempt to advance state or send data at regular intervals
-    public enum ConnectionState {
-        SEARCHING,
-        MOVERIO_FOUND,
-        CONNECTED
-    }
-    public void setConnectionState (ConnectionState s) {
-        state = s;
-    }
-    private ConnectionState state;
-    private Timer timer = new Timer();
-
-    class MainAction extends TimerTask {
-        public void run() {
-
-            if (state == null) return;
-
-            // if searching, try to find
-            if (state == ConnectionState.SEARCHING) {
-                if (mManager == null || mChannel == null) return;
-                mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        setMessage("Wifi Direct discovery initialized...");
-                    }
-
-                    @Override
-                    public void onFailure(int reasonCode) {
-                    }
-                });
-            }
-
-            // if found, try to connect
-            else if (state == ConnectionState.MOVERIO_FOUND) {
-                // this means moverioDevice is properly set
-
-                // see http://stackoverflow.com/questions/5161951
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setMessage("Moverio has been detected");
-                    }
-                });
-
-                WifiP2pConfig config = new WifiP2pConfig();
-                config.deviceAddress = moverioDevice.deviceAddress;
-                mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        state = ConnectionState.CONNECTED;
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-                    }
-                });
-            }
-
-            // if connected, AND GPS IS WORKING, push location update
-            else if (state == ConnectionState.CONNECTED) {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setSuccessMessage("Moverio is connected!");
-                    }
-                });
-
-                if (locationUpdatesAvailable) {
-                    Location l;
-
-                    try {
-                        l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                        // communicate change to peer device (i.e. Moverio)
-
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    void pushLocationUpdate() {
-        this.getApplicationContext();
-    }
-
-    // Wi-Fi Direct apparatus
-    WifiP2pManager mManager;
-    Channel mChannel;
-    BroadcastReceiver mReceiver;
-    IntentFilter mIntentFilter;
 
     public void setErrorMessage(String message) {
         statusText.setText(message);
@@ -152,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             latitudeText.setText(Double.valueOf(l.getLatitude()).toString());
             longitudeText.setText(Double.valueOf(l.getLongitude()).toString());
+            latDouble = Double.valueOf(l.getLatitude());
+            longDouble = Double.valueOf(l.getLongitude());
             locationUpdatesAvailable = true;
         }
         catch (SecurityException e) {
@@ -167,18 +78,6 @@ public class MainActivity extends AppCompatActivity {
         latitudeText = (TextView) findViewById(R.id.latitudeText);
         longitudeText = (TextView) findViewById(R.id.longitudeText);
         statusText = (TextView) findViewById(R.id.statusText);
-
-        state = ConnectionState.SEARCHING;
-
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -207,23 +106,171 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        timer.scheduleAtFixedRate(new MainAction(), 0L, UPDATE_PERIOD);
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                if ("88:33:14:1F:04:1B".equals(device.getAddress())) {
+                    mMoverioBTDevice = device;
+                    System.out.println("***BLUETOOTH DEVICE FOUND");
+                    break;
+                }
+            }
+            if (mMoverioBTDevice == null) {
+                System.out.println("***MOVERIO NOT FOUND IN BLUETOOTH PAIRED DEVICES");
+            }
+        }
+
+        ConnectThread t = new ConnectThread(mMoverioBTDevice);
+        t.start();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // register the broadcast receiver with the intent values to be matched
-        registerReceiver(mReceiver, mIntentFilter);
-        (timer = new Timer()).scheduleAtFixedRate(new MainAction(), 0L, UPDATE_PERIOD);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // unregister the broadcast receiver
-        unregisterReceiver(mReceiver);
-        timer.cancel();
     }
+
+    // bluetooth stuff
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    BluetoothDevice mMoverioBTDevice = null;
+
+    private class ConnectThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final BluetoothDevice mmDevice;
+
+        public ConnectThread(BluetoothDevice device) {
+            // Use a temporary object that is later assigned to mmSocket,
+            // because mmSocket is final
+            BluetoothSocket tmp = null;
+            mmDevice = device;
+
+            // Get a BluetoothSocket to connect with the given BluetoothDevice
+            try {
+                // MY_UUID is the app's UUID string, also used by the server code
+                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("cb34d9bc-9523-4846-bfac-ac47730eecfe"));
+            } catch (IOException e) { }
+            mmSocket = tmp;
+        }
+
+        public void run() {
+            // Cancel discovery because it will slow down the connection
+            mBluetoothAdapter.cancelDiscovery();
+
+            try {
+                // Connect the device through the socket. This will block
+                // until it succeeds or throws an exception
+                System.out.println("***CONNECTION ATTEMPT START");
+                mmSocket.connect();
+                System.out.println("***CONNECTION SUCCEEDED");
+
+                // allow a UI change while in this thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setMessage("Connected; data is not being transferred...");
+                    }
+                });
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and get out
+                try {
+                    mmSocket.close();
+                } catch (IOException closeException) { }
+                return;
+            }
+
+            // Do work to manage the connection (in a separate thread)
+            manageConnectedSocket(mmSocket);
+        }
+
+        /** Will cancel an in-progress connection, and close the socket */
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    private Timer timer = new Timer();
+    class sendGPSDataTask extends TimerTask {
+
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public sendGPSDataTask(BluetoothSocket s) {
+            mmSocket = s;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            try {
+                tmpIn = s.getInputStream();
+                tmpOut = s.getOutputStream();
+            } catch (IOException e) { }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            System.out.println("***SEND GPS DATA TASK");
+
+            if (locationUpdatesAvailable) {
+
+                System.out.println("*** WRITING GPS DATA NOW...");
+
+                byte[] latBytes = toByteArray(latDouble);
+                byte[] longBytes = toByteArray(longDouble);
+
+                byte[] data = byteConcat(latBytes, longBytes);
+                System.out.println("***DATA LEN: " + data.length);
+
+                try {
+                    mmOutStream.write(data);
+                } catch (IOException e) { }
+
+            }
+        }
+    }
+    void manageConnectedSocket(BluetoothSocket socket) {
+        // if GPS data is available, start writing to the socket - THREAD
+        System.out.println("***MANAGING SOCKET");
+
+        // allow a UI change while in this thread
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setSuccessMessage("CONNECTED");
+            }
+        });
+
+        // set off timer to send GPS data
+        timer.scheduleAtFixedRate(new sendGPSDataTask(socket), 0, 1000L);
+
+    }
+
+    // http://stackoverflow.com/questions/2905556
+    public static byte[] toByteArray(double value) {
+        byte[] bytes = new byte[8];
+        ByteBuffer.wrap(bytes).putDouble(value);
+        return bytes;
+    }
+
+    // http://stackoverflow.com/questions/80476
+    public byte[] byteConcat(byte[] a, byte[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        byte[] c = new byte[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
+    }
+
 }

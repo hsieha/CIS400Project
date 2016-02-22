@@ -1,6 +1,9 @@
 package com.example.livelyturtle.androidar.activities;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -25,8 +28,15 @@ import com.google.android.gms.location.LocationRequest;
 
 import com.example.livelyturtle.androidar.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
 public class Home extends Activity implements
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -34,6 +44,7 @@ public class Home extends Activity implements
     private Location mLastLocation;
     private TextView mLatitudeText;
     private TextView mLongitudeText;
+    private TextView mBTText;
     private LocationRequest mLocationRequest;
     private boolean mRequestingLocationUpdates;
 
@@ -47,6 +58,7 @@ public class Home extends Activity implements
 
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+        mBTText = (TextView) findViewById(R.id.BTYesNo);
 
 //        //OPENGLIFYING WORLD_OBJECTS TEST
 //        //HOW DO YOU PRINT OUT MOVERIO.VECTORS?
@@ -118,6 +130,8 @@ public class Home extends Activity implements
 
             writeLatLongToScreen();
         }
+
+        (new AcceptThread()).start();
     }
 
     protected void writeLatLongToScreen() {
@@ -132,9 +146,9 @@ public class Home extends Activity implements
     }
 
     // anything data that comes from the phone can be thrown into the mix as well
-    void writeExternalLatLongToScreen() {
-        mLatitudeText.setText(Double.valueOf(0).toString());
-        mLongitudeText.setText(Double.valueOf(0).toString());
+    void writeExternalLatLongToScreen(double la, double lo) {
+        mLatitudeText.setText(Double.valueOf(la).toString());
+        mLongitudeText.setText(Double.valueOf(lo).toString());
     }
 
     protected void createLocationRequest() {
@@ -275,6 +289,138 @@ public class Home extends Activity implements
     public void toTexample(View view) {
         Intent intent = new Intent(this, Texample2.class);
         startActivity(intent);
+    }
+
+
+    // bluetooth stuff
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public AcceptThread() {
+            // Use a temporary object that is later assigned to mmServerSocket,
+            // because mmServerSocket is final
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code
+                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("moverio", UUID.fromString("cb34d9bc-9523-4846-bfac-ac47730eecfe"));
+            } catch (IOException e) { }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            BluetoothSocket socket = null;
+            // Keep listening until exception occurs or a socket is returned
+            while (true) {
+                try {
+                    socket = mmServerSocket.accept();
+                } catch (IOException e) {
+                    break;
+                }
+                // If a connection was accepted
+                if (socket != null) {
+                    // Do work to manage the connection (in a separate thread)
+                    manageConnectedSocket(socket);
+                    try {
+                        mmServerSocket.close();
+                    } catch (IOException e) { }
+                    break;
+                }
+            }
+        }
+
+        /** Will cancel the listening socket, and cause the thread to finish */
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    void manageConnectedSocket(BluetoothSocket socket) {
+        // this needs to run in its own THREAD
+        System.out.println("***manage socket");
+
+        // allow a UI change while in this thread
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mBTText.setText("CONNECTED");
+            }
+        });
+
+        // set off timer to receive GPS data. This has a while(true) loop, so it only needs to be set off once.
+        timer.schedule(new receiveGPSDataTask(socket), 0L);
+
+    }
+    private Timer timer = new Timer();
+    class receiveGPSDataTask extends TimerTask {
+
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public receiveGPSDataTask(BluetoothSocket s) {
+            mmSocket = s;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            try {
+                tmpIn = s.getInputStream();
+                tmpOut = s.getOutputStream();
+            } catch (IOException e) { }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[4096];  // buffer store for the stream
+            int bytes; // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs
+            while (true) {
+                try {
+                    // Read from the InputStream
+                    bytes = mmInStream.read(buffer);
+
+
+                    // obtain the last 16 bytes from buffer
+                    if (buffer.length < 16) { continue; }
+                    System.out.println("***BUFFER HAS DATA");
+                    byte[] d2Bytes = Arrays.copyOfRange(buffer, bytes-8, bytes);
+                    byte[] d1Bytes = Arrays.copyOfRange(buffer, bytes-16, bytes-8);
+                    // convert into two doubles
+                    double d1 = toDouble(d1Bytes);
+                    double d2 = toDouble(d2Bytes);
+
+                    // allow a UI change while in this thread
+                    runOnUiThread(new UIVariableChangeRunnable(d1, d2));
+
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+    }
+    class UIVariableChangeRunnable implements Runnable {
+        private final double D1;
+        private final double D2;
+        public UIVariableChangeRunnable(double d1, double d2) {
+            D1 = d1;
+            D2 = d2;
+        }
+
+        @Override
+        public void run() {
+            // write them
+            writeExternalLatLongToScreen(D1, D2);
+        }
+    }
+
+    // http://stackoverflow.com/questions/2905556
+    public static double toDouble(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getDouble();
     }
 
 

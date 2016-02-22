@@ -18,14 +18,14 @@
 
     <TextView
         android:id="@+id/status"
-        android:text="Peer connection status:\t\t"
+        android:text="Bluetooth peer connection status:\t\t"
         android:textSize="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="2"/>
     <TextView
         android:id="@+id/statusText"
-        android:text="\?????"
+        android:text="NOT CONNECTED"
         android:textSize="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
