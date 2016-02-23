@@ -1,0 +1,21 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=49:83:E5:94:8F:72:E4:1B:97:2E:E8:A1:72:01:C0:1A:96:73:FF:5C%3Bcom.example.livelyturtle.androidar.activities
+
+    You can also add your credentials to an existing key, using this line:
+    49:83:E5:94:8F:72:E4:1B:97:2E:E8:A1:72:01:C0:1A:96:73:FF:5C;com.example.livelyturtle.androidar.activities
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyAe_-T0OUgK1WHutjxfVvRh9wWayqcwu-E
+    </string>
+</resources>

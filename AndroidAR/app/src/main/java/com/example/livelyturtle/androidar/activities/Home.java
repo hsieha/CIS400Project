@@ -291,6 +291,11 @@ public class Home extends Activity implements
         startActivity(intent);
     }
 
+    public void toMapsActivity(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
 
     // bluetooth stuff
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -313,7 +318,9 @@ public class Home extends Activity implements
             // Keep listening until exception occurs or a socket is returned
             while (true) {
                 try {
-                    socket = mmServerSocket.accept();
+                    if (mmServerSocket != null) {
+                        socket = mmServerSocket.accept();
+                    }
                 } catch (IOException e) {
                     break;
                 }
