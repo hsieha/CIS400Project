@@ -100,12 +100,12 @@ public class World3DActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
 
 //        // fullscreen as in the bt200 technical info pdf - REMOVE BOTTOM BAR
-//        Window win = getWindow();
-//        WindowManager.LayoutParams winParams = win.getAttributes();
-//        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
-//        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
-//        winParams.flags |= 0x80000000;
-//        win.setAttributes(winParams);
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
+        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
+        winParams.flags |= 0x80000000;
+        win.setAttributes(winParams);
 
         // stackoverflow answer - REMOVE TOP BAR
         // Remove title bar
