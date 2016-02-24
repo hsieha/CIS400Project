@@ -59,7 +59,7 @@
 
         <TextView
             android:id="@+id/DebugHeader"
-            android:text="DEBUG MENU\t"
+            android:text="DEBUG MENU - if you start the External GPS Receiver now, you must RESTART it after opening AUGMENT YOUR WORLD\t"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

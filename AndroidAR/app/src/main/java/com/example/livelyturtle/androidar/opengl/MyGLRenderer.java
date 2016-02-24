@@ -86,17 +86,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
     private boolean noLocationDataAvailable = true;
-    private String locationStatus = "NO LOC DTA";
+    private String locationStatus = "NO LOC DATA";
 
-    public void updateEye(Location location) {
-        Coordinate c = new Coordinate(location.getLatitude(), location.getLongitude());
+    /**
+     * updateEye is only called when location updates are available - NOT for manual setting
+     * @param la the latitude obtained from the location sensor
+     * @param lo the longitude obtained from the location sensor
+     */
+    public void updateEye(double la, double lo) {
+        Coordinate c = new Coordinate(la, lo);
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
         noLocationDataAvailable = false;
 
         // the status is the time
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        locationStatus = "last up:[" + df.format(cal.getTime()) + "]";
+        locationStatus = "lst upd:[" + df.format(cal.getTime()) + "]";
     }
 
     // other variables
@@ -492,18 +497,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
     private void drawLocationStatus() {
         if (noLocationDataAvailable) {
+            // red text
             glText.begin(1, 0, 0, 1, mMVPMatrix);
         }
         else {
+            // white text
             glText.begin(1, 1, 1, 1, mMVPMatrix);
         }
-        glText.setScale(TEXT_SCALE_CONSTANT * .18f);
+        glText.setScale(TEXT_SCALE_CONSTANT * .16f, TEXT_SCALE_CONSTANT * .325f);
 
+        // I can't use the same string or else it will keep appending to itself, which is a bug
+        // that is very bad for text-drawing performance
+        String locationStatusDisplayString = locationStatus;
+        locationStatusDisplayString += "|E:" + eye;
+        locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
 
-        locationStatus += "|E:" + eye;
-        locationStatus += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
-
-        glText.draw(locationStatus,
+        glText.draw(locationStatusDisplayString,
                 eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
                 0,
                 (float)(currentAPR[0] * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
