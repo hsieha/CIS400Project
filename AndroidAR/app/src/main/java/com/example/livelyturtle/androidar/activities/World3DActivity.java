@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -76,14 +78,14 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
     class MyGLSurfaceView extends GLSurfaceView {
         private final MyGLRenderer mRenderer;
-        public MyGLSurfaceView(Context context){
-            super(context);
-            // Create an OpenGL ES 2.0 context
-            setEGLContextClientVersion(2);
-            mRenderer = new MyGLRenderer(context);
-            // Set the Renderer for drawing on the GLSurfaceView
-            setRenderer(mRenderer);
-        }
+//        public MyGLSurfaceView(Context context){
+//            super(context);
+//            // Create an OpenGL ES 2.0 context
+//            setEGLContextClientVersion(2);
+//            mRenderer = new MyGLRenderer(context);
+//            // Set the Renderer for drawing on the GLSurfaceView
+//            setRenderer(mRenderer);
+//        }
 
         public MyGLSurfaceView(Context context, MapData mapData){
             super(context);
@@ -129,7 +131,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
         // set off fusion sensor calculations at fixed intervals
         fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 2000, TIME_CONSTANT);
-
 
 
         // -----LOCATION DATA-----
@@ -207,6 +208,35 @@ public class World3DActivity extends Activity implements SensorEventListener {
             mGyro = event.values;
             processGyroData(event);
         }
+
+//        // DEBUG DYNAMIC DRAWING - remove soon
+//        if (Moverio3D.getDirectionFromAzimuth(APR[0]) == Moverio3D.CardinalDirection.SOUTHWEST) {
+//            System.out.println("*** DRAWING JUNK");
+//
+//            // add a large green square
+//            List<Moverio3D.Vector> vlist = new LinkedList<>();
+//            Moverio3D.Vector BL = Moverio3D.Vector.of(-400, 0, -50);
+//            Moverio3D.Vector TL = Moverio3D.Vector.of(-400, 30, -50);
+//            Moverio3D.Vector TR = Moverio3D.Vector.of(-400, 30, -20);
+//            Moverio3D.Vector BR = Moverio3D.Vector.of(-400, 0, -20);
+//            vlist.add(BL);vlist.add(TL);vlist.add(TR);vlist.add(BR);
+//            List<Short> order = new LinkedList<>();
+//            order.add((short)0);order.add((short)1);order.add((short)2);
+//            order.add((short)0);order.add((short)2);order.add((short)3);
+//            mGLView.mRenderer.addDrawing("hello1", vlist, order, MyGLRenderer.PURE_GREEN, 1f);
+//            //mGLView.mRenderer.doJunk();
+//
+//
+//            // add light blue text into the square, id "hello2"
+//            mGLView.mRenderer.addText("hello2", "TEST TEST TEST", Moverio3D.Vector.of(-390, 10, -35), MyGLRenderer.LIGHT_BLUE, 1f);
+//        }
+//        else {
+//            System.out.println("*** REMOVING JUNK");
+//            mGLView.mRenderer.removeDrawing("hello1");
+//            mGLView.mRenderer.removeText("hello2");
+//        }
+//        // END DEBUG DYNAMIC DRAWING - REMOVE SOON
+
     }
 
     public void calculateAccMagOrientation() {
@@ -607,7 +637,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
                     if (buffer.length < 16) {
                         continue;
                     }
-                    System.out.println("***BUFFER HAS DATA");
+                    //System.out.println("***BUFFER HAS DATA");
                     byte[] d2Bytes = Arrays.copyOfRange(buffer, bytes - 8, bytes);
                     byte[] d1Bytes = Arrays.copyOfRange(buffer, bytes - 16, bytes - 8);
                     // convert into two doubles
@@ -616,7 +646,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
                     double d2 = Home.toDouble(d2Bytes);
 
                     // allow a UI change while in this thread
-                    System.out.println("*** UPDATING EYE WITH DATA RIGHT NOW");
+                    //System.out.println("*** UPDATING EYE WITH DATA RIGHT NOW");
                     mGLView.mRenderer.updateEye(d1, d2);
                     //runOnUiThread(new UIVariableChangeRunnable(d1, d2));
 

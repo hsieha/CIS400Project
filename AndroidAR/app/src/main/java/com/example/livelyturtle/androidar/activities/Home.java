@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.android.texample2.Texample2;
 import com.example.livelyturtle.androidar.MapData;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.WorldObject;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -135,7 +136,9 @@ public class Home extends Activity implements
         }
 
         // launch the bluetooth listener
-        (myAcceptThread = new AcceptThread()).start();
+        if (!DataDebug.HARDCODE_LOCATION) {
+            (myAcceptThread = new AcceptThread()).start();
+        }
     }
 
     protected void writeLatLongToScreen() {
