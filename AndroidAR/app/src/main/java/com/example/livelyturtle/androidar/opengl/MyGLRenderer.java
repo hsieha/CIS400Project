@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -35,6 +36,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
+import com.example.livelyturtle.androidar.Beacon;
 
 
 /*
@@ -389,12 +391,27 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
         for (Street street : streets) {
 
-            System.out.println(street.getName() + ": ");
-            System.out.println("vectors: " + street.vectors());
-            System.out.println("vector_order:" + street.vector_order());
+//            System.out.println(street.getName() + ": ");
+//            System.out.println("vectors: " + street.vectors());
+//            System.out.println("vector_order:" + street.vector_order());
 
             addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
         }
+
+        //Beacon test draw
+        System.out.println("Drawing dah beacon");
+
+        Coordinate beacon_coordinate = new Coordinate(39.952258, -75.197008);
+        ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
+        beacon_list.add(beacon_coordinate);
+        Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
+
+        System.out.println(test_beacon.getName() + ": ");
+        System.out.println("vectors: " + test_beacon.vectors());
+        System.out.println("vector_order:" + test_beacon.vector_order());
+
+        addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
+
     }
 
 

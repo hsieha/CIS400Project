@@ -16,7 +16,7 @@ public class Beacon extends WorldObject{
 
     //NOTE: Arraylist coordinates only holds 1 coordinate
     public Beacon(String name, ArrayList<Coordinate> coordinates){
-        super(name, coordinates, 15.0f);
+        super(name, coordinates, 16.0f);
 
         double lat = 0;
         double lon = 0;
@@ -32,18 +32,28 @@ public class Beacon extends WorldObject{
 
         ArrayList<Moverio3D.Vector> vectors = new ArrayList<Moverio3D.Vector>();
 
+        double x = this.coordinates.get(0).x;
+        double z = this.coordinates.get(0).z;
+
         //Store top cap vertices (vertex 0-19)
         for(int i = 0; i < 20; i++){
-            Moverio3D.rotateYAxis((i*18.0f), (float) Math.toRadians(deg))
-            vectors.add(Vector.of((float) (i*18.0f), 0, 1));
+            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f + (float) (x), (float) height, (float) (z)), (float) Math.toRadians(i * 18.0f)));
         }
 
         //Store bottom cap vertices (vertex 20-39)
+        for(int i = 20; i < 40; i++){
+            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f + (float) (x), 0f, (float) (z)), (float) Math.toRadians((i - 20.0f) * 18.0f)));
+        }
 
         //Store top cap vertices (vertex 40-59)
+        for(int i = 0; i < 20; i++){
+            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f + (float) (x), (float) height, (float) (z)), (float) Math.toRadians(i * 18.0f)));
+        }
 
-        //store bottom cap vertices (vertex 60-79)
-
+        //Store bottom cap vertices (vertex 60-79)
+        for(int i = 20; i < 40; i++){
+            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f+(float)(x), 0f, (float)(z)), (float) Math.toRadians((i-20.0f)*18.0f)));
+        }
 
         return vectors;
     }
