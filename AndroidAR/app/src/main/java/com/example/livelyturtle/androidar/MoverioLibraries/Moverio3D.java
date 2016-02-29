@@ -50,6 +50,19 @@ public final class Moverio3D {
                          String.format("%9.2f", z) + ")";
         }
 
+        // equals
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof Vector) {
+                Vector vo = (Vector) o;
+                float EPS = 0.0001f;
+                return (Math.abs(x-vo.x) < EPS) &&
+                       (Math.abs(y-vo.y) < EPS) &&
+                       (Math.abs(z-vo.z) < EPS);
+            }
+            return false;
+        }
+
         // static factories
         public static Vector zero() {
             return new Vector(0,0,0);

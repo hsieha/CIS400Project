@@ -13,7 +13,7 @@ public class Building extends WorldObject {
     Coordinate textCoord;
 
     public Building(String name, ArrayList<Coordinate> coordinates) {
-        super(name, coordinates, 2.5f);
+        super(name, coordinates, 6f);
         double lat = 0;
         double lon = 0;
         for (Coordinate coord : this.coordinates) {

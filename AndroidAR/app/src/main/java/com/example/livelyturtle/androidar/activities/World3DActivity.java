@@ -1,5 +1,8 @@
 package com.example.livelyturtle.androidar.activities;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -20,9 +23,15 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 /*
  * This Activity mostly handles sensor calculations.
@@ -51,7 +60,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
     private float[] APR = new float[3];
 
 
-    private LocationManager locationManager;
+    //private LocationManager locationManager;
 
 
     private MyGLSurfaceView mGLView;
@@ -69,14 +78,14 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
     class MyGLSurfaceView extends GLSurfaceView {
         private final MyGLRenderer mRenderer;
-        public MyGLSurfaceView(Context context){
-            super(context);
-            // Create an OpenGL ES 2.0 context
-            setEGLContextClientVersion(2);
-            mRenderer = new MyGLRenderer(context);
-            // Set the Renderer for drawing on the GLSurfaceView
-            setRenderer(mRenderer);
-        }
+//        public MyGLSurfaceView(Context context){
+//            super(context);
+//            // Create an OpenGL ES 2.0 context
+//            setEGLContextClientVersion(2);
+//            mRenderer = new MyGLRenderer(context);
+//            // Set the Renderer for drawing on the GLSurfaceView
+//            setRenderer(mRenderer);
+//        }
 
         public MyGLSurfaceView(Context context, MapData mapData){
             super(context);
@@ -93,12 +102,12 @@ public class World3DActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
 
 //        // fullscreen as in the bt200 technical info pdf - REMOVE BOTTOM BAR
-//        Window win = getWindow();
-//        WindowManager.LayoutParams winParams = win.getAttributes();
-//        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
-//        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
-//        winParams.flags |= 0x80000000;
-//        win.setAttributes(winParams);
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        // FLAG_SMARTFULLSCREEN is 0x80_00_00_00
+        // winParams.flags |= WindowManager.LayoutParams.FLAG_SMARTFULLSCREEN;
+        winParams.flags |= 0x80000000;
+        win.setAttributes(winParams);
 
         // stackoverflow answer - REMOVE TOP BAR
         // Remove title bar
@@ -121,36 +130,40 @@ public class World3DActivity extends Activity implements SensorEventListener {
         setContentView(mGLView);
 
         // set off fusion sensor calculations at fixed intervals
-        fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 3000, TIME_CONSTANT);
-
+        fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 2000, TIME_CONSTANT);
 
 
         // -----LOCATION DATA-----
         // Acquire a reference to the system Location Manager
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//
+//        // Define a listener that responds to location updates
+//        LocationListener locationListener = new LocationListener() {
+//            public void onLocationChanged(Location location) {
+//                // Called when a new location is found by the network location provider.
+//                if(!DataDebug.HARDCODE_LOCATION) {
+//                    mGLView.mRenderer.updateEye(location);
+//                }
+//            }
+//
+//            public void onStatusChanged(String provider, int status, Bundle extras) {}
+//
+//            public void onProviderEnabled(String provider) {}
+//
+//            public void onProviderDisabled(String provider) {}
+//        };
+//
+//        // Register the listener with the Location Manager to receive location updates
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, locationListener);
+//        }
+//        catch (SecurityException e) {
+//            e.printStackTrace();
+//        }
 
-        // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                if(!DataDebug.HARDCODE_LOCATION) {
-                    mGLView.mRenderer.updateEye(location);
-                }
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            public void onProviderEnabled(String provider) {}
-
-            public void onProviderDisabled(String provider) {}
-        };
-
-        // Register the listener with the Location Manager to receive location updates
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, locationListener);
-        }
-        catch (SecurityException e) {
-            e.printStackTrace();
+        // run the bluetooth listener
+        if (!DataDebug.HARDCODE_LOCATION) {
+            (new AcceptThread()).start();
         }
 
     }
@@ -195,6 +208,35 @@ public class World3DActivity extends Activity implements SensorEventListener {
             mGyro = event.values;
             processGyroData(event);
         }
+
+//        // DEBUG DYNAMIC DRAWING - remove soon
+//        if (Moverio3D.getDirectionFromAzimuth(APR[0]) == Moverio3D.CardinalDirection.SOUTHWEST) {
+//            System.out.println("*** DRAWING JUNK");
+//
+//            // add a large green square
+//            List<Moverio3D.Vector> vlist = new LinkedList<>();
+//            Moverio3D.Vector BL = Moverio3D.Vector.of(-400, 0, -50);
+//            Moverio3D.Vector TL = Moverio3D.Vector.of(-400, 30, -50);
+//            Moverio3D.Vector TR = Moverio3D.Vector.of(-400, 30, -20);
+//            Moverio3D.Vector BR = Moverio3D.Vector.of(-400, 0, -20);
+//            vlist.add(BL);vlist.add(TL);vlist.add(TR);vlist.add(BR);
+//            List<Short> order = new LinkedList<>();
+//            order.add((short)0);order.add((short)1);order.add((short)2);
+//            order.add((short)0);order.add((short)2);order.add((short)3);
+//            mGLView.mRenderer.addDrawing("hello1", vlist, order, MyGLRenderer.PURE_GREEN, 1f);
+//            //mGLView.mRenderer.doJunk();
+//
+//
+//            // add light blue text into the square, id "hello2"
+//            mGLView.mRenderer.addText("hello2", "TEST TEST TEST", Moverio3D.Vector.of(-390, 10, -35), MyGLRenderer.LIGHT_BLUE, 1f);
+//        }
+//        else {
+//            System.out.println("*** REMOVING JUNK");
+//            mGLView.mRenderer.removeDrawing("hello1");
+//            mGLView.mRenderer.removeText("hello2");
+//        }
+//        // END DEBUG DYNAMIC DRAWING - REMOVE SOON
+
     }
 
     public void calculateAccMagOrientation() {
@@ -494,5 +536,139 @@ public class World3DActivity extends Activity implements SensorEventListener {
      *
      *
      */
+
+
+    // bluetooth stuff
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public AcceptThread() {
+            // Use a temporary object that is later assigned to mmServerSocket,
+            // because mmServerSocket is final
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code
+                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("moverio", UUID.fromString("cb34d9bc-9523-4846-bfac-ac47730eecfe"));
+            } catch (IOException e) { }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            BluetoothSocket socket = null;
+            System.out.println("***AcceptThread running");
+            // Keep listening until exception occurs or a socket is returned
+            while (true) {
+                try {
+                    if (mmServerSocket != null) {
+                        System.out.println("***AcceptThread trying to obtain socket...");
+                        socket = mmServerSocket.accept();
+                        System.out.println("***AcceptThread obtained socket");
+                    }
+                    else {
+                        System.out.println("*** mmServerSocket is null...");
+                    }
+                } catch (IOException e) {
+                    break;
+                }
+                // If a connection was accepted
+                if (socket != null) {
+                    // Do work to manage the connection (in a separate thread)
+                    manageConnectedSocket(socket);
+                    try {
+                        mmServerSocket.close();
+                    } catch (IOException e) { }
+                    break;
+                }
+            }
+            System.out.println("***AcceptThread finished run()");
+        }
+
+        /** Will cancel the listening socket, and cause the thread to finish */
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    void manageConnectedSocket(BluetoothSocket socket) {
+        // this needs to run in its own THREAD
+        System.out.println("***World3DActivity manage socket");
+
+        // set off timer to receive GPS data. Since the timertask has a while(true), this only
+        // happens once.
+        timer.schedule(new receiveGPSDataTask(socket), 0L);
+
+    }
+    private Timer timer = new Timer();
+    private class receiveGPSDataTask extends TimerTask {
+
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public receiveGPSDataTask(BluetoothSocket s) {
+            mmSocket = s;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            try {
+                tmpIn = s.getInputStream();
+                tmpOut = s.getOutputStream();
+            } catch (IOException e) { }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[4096];  // buffer store for the stream
+            int bytes; // bytes returned from read()
+
+            while (true) {
+                try {
+                    System.out.println("*** Attempting to read from InputStream...");
+                    // Read from the InputStream
+                    bytes = mmInStream.read(buffer);
+                    System.out.println("*** InputStream read has occurred!");
+
+                    // obtain the last 16 bytes from buffer
+                    if (buffer.length < 16) {
+                        continue;
+                    }
+                    //System.out.println("***BUFFER HAS DATA");
+                    byte[] d2Bytes = Arrays.copyOfRange(buffer, bytes - 8, bytes);
+                    byte[] d1Bytes = Arrays.copyOfRange(buffer, bytes - 16, bytes - 8);
+                    // convert into two doubles
+                    System.out.println("***");
+                    double d1 = Home.toDouble(d1Bytes);
+                    double d2 = Home.toDouble(d2Bytes);
+
+                    // allow a UI change while in this thread
+                    //System.out.println("*** UPDATING EYE WITH DATA RIGHT NOW");
+                    mGLView.mRenderer.updateEye(d1, d2);
+                    //runOnUiThread(new UIVariableChangeRunnable(d1, d2));
+
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+    }
+//    private class UIVariableChangeRunnable implements Runnable {
+//        private final double D1;
+//        private final double D2;
+//        public UIVariableChangeRunnable(double d1, double d2) {
+//            D1 = d1;
+//            D2 = d2;
+//        }
+//
+//        @Override
+//        public void run() {
+//            // call updateEye
+//            mGLView.mRenderer.updateEye(D1, D2);
+//        }
+//    }
 
 }

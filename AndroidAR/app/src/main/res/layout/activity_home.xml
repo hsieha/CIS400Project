@@ -59,7 +59,7 @@
 
         <TextView
             android:id="@+id/DebugHeader"
-            android:text="DEBUG MENU\t"
+            android:text="DEBUG MENU - if you start the External GPS Receiver now, you must RESTART it after opening AUGMENT YOUR WORLD\t"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -168,6 +168,14 @@
             android:text="@string/text_sample"
             android:textSize="12dp"
             android:onClick="toTexample" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_activity_maps"
+            android:textSize="12dp"
+            android:onClick="toMapsActivity"
+            android:id="@+id/button" />
     </LinearLayout>
 
 </LinearLayout>

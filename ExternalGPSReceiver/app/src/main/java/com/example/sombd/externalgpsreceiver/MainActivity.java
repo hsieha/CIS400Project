@@ -3,20 +3,10 @@ package com.example.sombd.externalgpsreceiver;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.net.wifi.p2p.WifiP2pManager.Channel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +17,23 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
+
+public class MainActivity extends AppCompatActivity implements
+        ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
     // period in ms of attempted updates to the other device (Moverio)
-    private final long UPDATE_PERIOD = 1000L;
+    private final long UPDATE_PERIOD = 500L;
 
-    private LocationManager locationManager;
+    //private LocationManager locationManager;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mCurrLocation;
 
     private TextView latitudeText;
     private TextView longitudeText;
@@ -56,18 +57,68 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateLocalDashboard() {
-        Location l;
+        //l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location l = mCurrLocation;
+        latitudeText.setText(Double.valueOf(l.getLatitude()).toString());
+        longitudeText.setText(Double.valueOf(l.getLongitude()).toString());
+        latDouble = Double.valueOf(l.getLatitude());
+        longDouble = Double.valueOf(l.getLongitude());
+        locationUpdatesAvailable = true;
+
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+//        try {
+//            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                    mGoogleApiClient);
+//        }
+//        catch (SecurityException e) {}
+//
+//        if (mLastLocation != null) {
+//            updateLocalDashboard();
+//        }
+        startLocationUpdates();
+    }
+
+    protected void startLocationUpdates() {
+        LocationRequest r = LocationRequest.create();
+        r.setInterval(UPDATE_PERIOD);
+        r.setFastestInterval(UPDATE_PERIOD);
+        r.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         try {
-            l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            latitudeText.setText(Double.valueOf(l.getLatitude()).toString());
-            longitudeText.setText(Double.valueOf(l.getLongitude()).toString());
-            latDouble = Double.valueOf(l.getLatitude());
-            longDouble = Double.valueOf(l.getLongitude());
-            locationUpdatesAvailable = true;
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, r, this);
         }
-        catch (SecurityException e) {
-            e.printStackTrace();
-        }
+        catch (SecurityException e) {}
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrLocation = location;
+        updateLocalDashboard();
+    }
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        //mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        System.out.println("*** gplay connection failed...");
+    }
+
+    @Override
+    public void onConnectionSuspended(int x) {
+        System.out.println("*** gplay connection suspended...");
     }
 
     @Override
@@ -79,31 +130,40 @@ public class MainActivity extends AppCompatActivity {
         longitudeText = (TextView) findViewById(R.id.longitudeText);
         statusText = (TextView) findViewById(R.id.statusText);
 
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//
+//        // Define a listener that responds to location updates
+//        LocationListener locationListener = new LocationListener() {
+//
+//            // Called when a new location is found by the network location provider.
+//            public void onLocationChanged(Location location) {
+//                updateLocalDashboard();
+//            }
+//
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//            }
+//
+//            public void onProviderEnabled(String provider) {
+//            }
+//
+//            public void onProviderDisabled(String provider) {
+//            }
+//        };
+//
+//        // Register the listener with the Location Manager to receive location updates
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500L, 0F, locationListener);
+//        } catch (SecurityException e) {
+//            e.printStackTrace();
+//        }
 
-        // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-
-            // Called when a new location is found by the network location provider.
-            public void onLocationChanged(Location location) {
-                updateLocalDashboard();
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        // Register the listener with the Location Manager to receive location updates
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0F, locationListener);
-        } catch (SecurityException e) {
-            e.printStackTrace();
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
         }
 
 
@@ -252,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // set off timer to send GPS data
-        timer.scheduleAtFixedRate(new sendGPSDataTask(socket), 0, 1000L);
+        timer.scheduleAtFixedRate(new sendGPSDataTask(socket), 0, 500L);
 
     }
 

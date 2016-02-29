@@ -8,8 +8,6 @@
 			<Placemark>
 				<name>Sansom West</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -22,8 +20,6 @@
 			<Placemark>
 				<name>Sansom East</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -36,8 +32,6 @@
 			<Placemark>
 				<name>Harnwell</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -50,8 +44,6 @@
 			<Placemark>
 				<name>Harrison</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -64,8 +56,6 @@
 			<Placemark>
 				<name>Rodin</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -76,24 +66,8 @@
 				</Polygon>
 			</Placemark>
 			<Placemark>
-				<name>Engineering</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
-				<Polygon>
-					<outerBoundaryIs>
-						<LinearRing>
-							<tessellate>1</tessellate>
-							<coordinates>-75.1911378,39.9525807,0.0 -75.1912478,39.9521673,0.0 -75.1914006,39.9521776,0.0 -75.191516,39.9516656,0.0 -75.1904538,39.9515361,0.0 -75.1902634,39.952492199999995,0.0 -75.1911378,39.9525807,0.0</coordinates>
-						</LinearRing>
-					</outerBoundaryIs>
-				</Polygon>
-			</Placemark>
-			<Placemark>
 				<name>Houston Hall</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -106,8 +80,6 @@
 			<Placemark>
 				<name>Van Pelt Library</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -120,8 +92,6 @@
 			<Placemark>
 				<name>Admissions College Hall</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -134,13 +104,95 @@
 			<Placemark>
 				<name>Huntsman</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
 							<tessellate>1</tessellate>
 							<coordinates>-75.1984763,39.9534853,0.0 -75.198656,39.952590900000004,0.0 -75.1978433,39.9524819,0.0 -75.1977924,39.95271019999999,0.0 -75.1979345,39.95272250000001,0.0 -75.1977977,39.9533763,0.0 -75.1984763,39.9534853,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Towne</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1914033,39.9521838,0.0 -75.19151060000002,39.95165740000001,0.0 -75.1904672,39.9515238,0.0 -75.1903895,39.951902100000005,0.0 -75.1912665,39.952019299999996,0.0 -75.191237,39.9521694,0.0 -75.1914033,39.9521838,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Levine</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1911834,39.95237710000001,0.0 -75.1912531,39.9520501,0.0 -75.191009,39.9520255,0.0 -75.1909366,39.952342099999996,0.0 -75.1911834,39.95237710000001,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Moore</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1911458,39.952590900000004,0.0 -75.1911834,39.95237710000001,0.0 -75.1907167,39.95230509999999,0.0 -75.1907462,39.95219819999999,0.0 -75.1903304,39.952155,0.0 -75.1902768,39.9524778,0.0 -75.1911458,39.952590900000004,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Skirkanich</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1908079,39.95221459999999,0.0 -75.1908535,39.9519556,0.0 -75.1903895,39.951902100000005,0.0 -75.1903304,39.952155,0.0 -75.1908079,39.95221459999999,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>DRL</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1898852,39.9524285,0.0 -75.1899925,39.9519391,0.0 -75.18992810000002,39.9519391,0.0 -75.1899388,39.9518404,0.0 -75.1888794,39.9517458,0.0 -75.1888365,39.9519926,0.0 -75.1891422,39.9520255,0.0 -75.1891235,39.9521982,0.0 -75.1890457,39.9521838,0.0 -75.1890457,39.9521427,0.0 -75.18854410000002,39.9520913,0.0 -75.1885495,39.9521303,0.0 -75.1884717,39.9521242,0.0 -75.1884422,39.95226809999999,0.0 -75.1898852,39.9524285,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Department of Music</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1920041,39.9522496,0.0 -75.192039,39.9520296,0.0 -75.1916635,39.9520008,0.0 -75.1916206,39.95220640000001,0.0 -75.1920041,39.9522496,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>School of Design</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1928678,39.952420200000006,0.0 -75.1929295,39.9521129,0.0 -75.1927773,39.95208610000001,0.0 -75.1927739,39.9521052,0.0 -75.1926063,39.9520872,0.0 -75.1926097,39.9520635,0.0 -75.1924628,39.9520517,0.0 -75.1924092,39.9523688,0.0 -75.1925299,39.95237910000001,0.0 -75.1925165,39.9524408,0.0 -75.1927257,39.9524716,0.0 -75.19273100000001,39.9524038,0.0 -75.1928678,39.952420200000006,0.0</coordinates>
 						</LinearRing>
 					</outerBoundaryIs>
 				</Polygon>
@@ -151,8 +203,6 @@
 			<Placemark>
 				<name>Locust Walk</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.2028,39.9529487,0.0 -75.19500550000001,39.9520275,0.0 -75.19443690000001,39.95192060000001,0.0</coordinates>
@@ -161,8 +211,6 @@
 			<Placemark>
 				<name>Walnut Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.2050853,39.9544167,0.0 -75.1878333,39.9522948,0.0</coordinates>
@@ -171,8 +219,6 @@
 			<Placemark>
 				<name>Chestnut Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.2047634,39.9559382,0.0 -75.1874793,39.9538081,0.0</coordinates>
@@ -181,8 +227,6 @@
 			<Placemark>
 				<name>Spruce Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.205611,39.9520481,0.0 -75.1917279,39.9503291,0.0</coordinates>
@@ -191,8 +235,6 @@
 			<Placemark>
 				<name>Market Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.2041519,39.9574349,0.0 -75.1833701,39.9548608,0.0</coordinates>
@@ -201,8 +243,6 @@
 			<Placemark>
 				<name>40th Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.2019632,39.9571718,0.0 -75.2031004,39.9517438,0.0</coordinates>
@@ -211,8 +251,6 @@
 			<Placemark>
 				<name>39th Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.199635,39.9568593,0.0 -75.2007616,39.9514395,0.0</coordinates>
@@ -221,8 +259,6 @@
 			<Placemark>
 				<name>38th Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.1980472,39.9566701,0.0 -75.1991737,39.9512503,0.0</coordinates>
@@ -231,8 +267,6 @@
 			<Placemark>
 				<name>37th Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.1961052,39.9564399,0.0 -75.19723180000001,39.9510118,0.0</coordinates>
@@ -241,8 +275,6 @@
 			<Placemark>
 				<name>36th Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.1941633,39.95620960000001,0.0 -75.195322,39.9507651,0.0</coordinates>
@@ -251,8 +283,6 @@
 			<Placemark>
 				<name>34th Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.1914918,39.9558559,0.0 -75.1925969,39.9504361,0.0</coordinates>
@@ -261,8 +291,6 @@
 			<Placemark>
 				<name>33rd Street</name>
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
-				<ExtendedData>
-				</ExtendedData>
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.1894748,39.9556174,0.0 -75.1902366,39.9515546,0.0 -75.1917279,39.9503291,0.0</coordinates>

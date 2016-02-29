@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.android.texample2.Texample2;
 import com.example.livelyturtle.androidar.MapData;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.WorldObject;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,6 +50,9 @@ public class Home extends Activity implements
     private boolean mRequestingLocationUpdates;
 
     private LocationManager locationManager;
+
+    AcceptThread myAcceptThread = null;
+    TimerTask myGPSTimerTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +135,10 @@ public class Home extends Activity implements
             writeLatLongToScreen();
         }
 
-        (new AcceptThread()).start();
+        // launch the bluetooth listener
+        if (!DataDebug.HARDCODE_LOCATION) {
+            (myAcceptThread = new AcceptThread()).start();
+        }
     }
 
     protected void writeLatLongToScreen() {
@@ -164,16 +171,23 @@ public class Home extends Activity implements
     }
 
     protected void onStop() {
-        if (mGoogleApiClient != null) mGoogleApiClient.disconnect();
+//        if (mGoogleApiClient != null) mGoogleApiClient.disconnect();
+//        if (myAcceptThread != null) myAcceptThread.cancel();
+//        if (myGPSTimerTask != null) myGPSTimerTask.cancel();
+//        timer.cancel();
         super.onStop();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+
         if (mGoogleApiClient != null) {
             //stopLocationUpdates();
         }
+        if (myAcceptThread != null) myAcceptThread.cancel();
+        if (myGPSTimerTask != null) myGPSTimerTask.cancel();
+        timer.cancel();
+        super.onPause();
     }
 
     @Override
@@ -291,6 +305,11 @@ public class Home extends Activity implements
         startActivity(intent);
     }
 
+    public void toMapsActivity(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
 
     // bluetooth stuff
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -313,7 +332,9 @@ public class Home extends Activity implements
             // Keep listening until exception occurs or a socket is returned
             while (true) {
                 try {
-                    socket = mmServerSocket.accept();
+                    if (mmServerSocket != null) {
+                        socket = mmServerSocket.accept();
+                    }
                 } catch (IOException e) {
                     break;
                 }
@@ -332,6 +353,7 @@ public class Home extends Activity implements
         /** Will cancel the listening socket, and cause the thread to finish */
         public void cancel() {
             try {
+                System.out.println("*** Home's AcceptThread canceled...");
                 mmServerSocket.close();
             } catch (IOException e) { }
         }
@@ -339,7 +361,7 @@ public class Home extends Activity implements
 
     void manageConnectedSocket(BluetoothSocket socket) {
         // this needs to run in its own THREAD
-        System.out.println("***manage socket");
+        System.out.println("*** Home manage socket");
 
         // allow a UI change while in this thread
         runOnUiThread(new Runnable() {
@@ -350,11 +372,11 @@ public class Home extends Activity implements
         });
 
         // set off timer to receive GPS data. This has a while(true) loop, so it only needs to be set off once.
-        timer.schedule(new receiveGPSDataTask(socket), 0L);
+        timer.schedule((myGPSTimerTask = new receiveGPSDataTask(socket)), 0L);
 
     }
     private Timer timer = new Timer();
-    class receiveGPSDataTask extends TimerTask {
+    private class receiveGPSDataTask extends TimerTask {
 
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
@@ -387,7 +409,7 @@ public class Home extends Activity implements
 
                     // obtain the last 16 bytes from buffer
                     if (buffer.length < 16) { continue; }
-                    System.out.println("***BUFFER HAS DATA");
+                    System.out.println("*** Home: BUFFER HAS DATA");
                     byte[] d2Bytes = Arrays.copyOfRange(buffer, bytes-8, bytes);
                     byte[] d1Bytes = Arrays.copyOfRange(buffer, bytes-16, bytes-8);
                     // convert into two doubles
@@ -402,8 +424,17 @@ public class Home extends Activity implements
                 }
             }
         }
+
+        @Override
+        public boolean cancel() {
+            try {
+                mmSocket.close();
+                mmInStream.close();
+            } catch (IOException e) {}
+            return super.cancel();
+        }
     }
-    class UIVariableChangeRunnable implements Runnable {
+    private class UIVariableChangeRunnable implements Runnable {
         private final double D1;
         private final double D2;
         public UIVariableChangeRunnable(double d1, double d2) {

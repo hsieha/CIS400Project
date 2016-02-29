@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -46,14 +47,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
     // colors (I just made these up, there is no standardization
-    final Vector BLACK = Vector.of(0,0,0);
-    final Vector WHITE = Vector.of(1,1,1);
-    final Vector DARK_GRAY = Vector.of(.3f,.3f,.3f);
-    final Vector GRAY = Vector.of(.55f,.55f,.55f);
-    final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
-    final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
-    final Vector BLUE = Vector.of(.45f,.45f,.8f);
-    final Vector RED = Vector.of(.8f, .45f, .45f);
+    public static final Vector BLACK = Vector.of(0,0,0);
+    public static final Vector WHITE = Vector.of(1,1,1);
+    public static final Vector DARK_GRAY = Vector.of(.3f,.3f,.3f);
+    public static final Vector GRAY = Vector.of(.55f,.55f,.55f);
+    public static final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
+    public static final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
+    public static final Vector BLUE = Vector.of(.45f,.45f,.8f);
+    public static final Vector RED = Vector.of(.8f, .45f, .45f);
+    public static final Vector PURE_GREEN = Vector.of(0, 1f, 0);
 
 
     // call setScale on glText with this value for default text size
@@ -86,29 +88,35 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
     private boolean noLocationDataAvailable = true;
-    private String locationStatus = "NO LOC DTA";
+    private String locationStatus = "NO LOC DATA";
 
-    public void updateEye(Location location) {
-        Coordinate c = new Coordinate(location.getLatitude(), location.getLongitude());
+    /**
+     * updateEye is only called when location updates are available - NOT for manual setting
+     * @param la the latitude obtained from the location sensor
+     * @param lo the longitude obtained from the location sensor
+     */
+    public void updateEye(double la, double lo) {
+        Coordinate c = new Coordinate(la, lo);
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
         noLocationDataAvailable = false;
 
         // the status is the time
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        locationStatus = "last up:[" + df.format(cal.getTime()) + "]";
+        locationStatus = "lst upd:[" + df.format(cal.getTime()) + "]";
     }
 
     // other variables
-    private Triangle mTriangle;
-    private Square mSquare;
+    //private Triangle mTriangle;
+    //private Square mSquare;
 
     private MapData mapData;
 
     // string the Context through the constructor
-    public MyGLRenderer(Context c) {
-        ctxt = c;
-    }
+//    public MyGLRenderer(Context c) {
+//        ctxt = c;
+//    }
+    private int mProgram;
     public MyGLRenderer(Context c, MapData mapData) {
         ctxt = c; this.mapData = mapData;
     }
@@ -120,6 +128,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // -----DRAWING METHODS-----
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+
+
+        // -- start opengl program creation code --
+        mProgram = GLES20.glCreateProgram();
+        int vertexShader = MyGLRenderer.loadShader(GLES20.GL_VERTEX_SHADER,
+                R.raw.vertexshader, ctxt);
+        int fragmentShader = MyGLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER,
+                R.raw.fragmentshader, ctxt);
+        GLES20.glAttachShader(mProgram, vertexShader);
+        GLES20.glAttachShader(mProgram, fragmentShader);
+        GLES20.glLinkProgram(mProgram);
+        // -- end opengl program creation code --
+
+
         // Set the background frame color
         GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
 
@@ -141,7 +163,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // initialize demo shapes
         //mTriangle = new Triangle(ctxt, CardinalDirection.WEST);
-        mSquare = new Square(ctxt, CardinalDirection.NORTHWEST);
+        //mSquare = new Square(ctxt, CardinalDirection.NORTHWEST);
 
         // ***DEMO DATA... you should use addDrawing and addText***
         ///////////////////////////////////////////////////////////////
@@ -190,13 +212,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //drawDirectory.put("Square", new DrawExecutor(vs, ss, WHITE, 1));
 
 
-        textDirectory.put("Sample1", new TextExecutor("WEST NEAR", Vector.of(-8,0,0), BLUE, 1));
-        textDirectory.put("Sample2", new TextExecutor("WEST HIGH", Vector.of(-8,10,0), BLUE, 1));
-        textDirectory.put("Sample3", new TextExecutor("WEST FAR (and up a bit)", Vector.of(-80,4,0), BLUE, 1));
-        textDirectory.put("Sample4", new TextExecutor("northwest", Vector.of(-20,0,-20), BLUE, 1));
-        textDirectory.put("Sample5", new TextExecutor("north", Vector.of(0,-3,-60), BLUE, 1));
-        textDirectory.put("Sample6", new TextExecutor("northeast", Vector.of(50,3,-50), BLUE, 1));
-        textDirectory.put("Sample7", new TextExecutor("east", Vector.of(35,0,0), BLUE, 1));
+//        textDirectory.put("Sample1", new TextExecutor("WEST NEAR", Vector.of(-8,0,0), BLUE, 1));
+//        textDirectory.put("Sample2", new TextExecutor("WEST HIGH", Vector.of(-8,10,0), BLUE, 1));
+//        textDirectory.put("Sample3", new TextExecutor("WEST FAR (and up a bit)", Vector.of(-80,4,0), BLUE, 1));
+//        textDirectory.put("Sample4", new TextExecutor("northwest", Vector.of(-20,0,-20), BLUE, 1));
+//        textDirectory.put("Sample5", new TextExecutor("north", Vector.of(0,-3,-60), BLUE, 1));
+//        textDirectory.put("Sample6", new TextExecutor("northeast", Vector.of(50,3,-50), BLUE, 1));
+//        textDirectory.put("Sample7", new TextExecutor("east", Vector.of(35,0,0), BLUE, 1));
 
         ///////////////////////////////////////////////////////////////
         // -----END DEMO DATA-----
@@ -271,6 +293,37 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
 
+        // DEBUG DYNAMIC DRAWING - remove soon
+//        if (Moverio3D.getDirectionFromAzimuth(currentAPR[0]) == CardinalDirection.SOUTHWEST) {
+//            System.out.println("*** LOOKING SW");
+//
+//            // add a bright green square somewhere, id "hello1"
+//            List<Vector> vlist = new LinkedList<>();
+//            Vector BL = Vector.of(-400,0,-50);
+//            Vector TL = Vector.of(-400,30,-50);
+//            Vector TR = Vector.of(-400,30,-20);
+//            Vector BR = Vector.of(-400,0,-20);
+//            vlist.add(BL);vlist.add(TL);vlist.add(TR);vlist.add(BR);
+//            List<Short> order = new LinkedList<>();
+//            order.add((short)0);order.add((short)1);order.add((short)2);
+//            order.add((short)0);order.add((short)2);order.add((short)3);
+//            addDrawing("hello1", vlist, order, PURE_GREEN, 1f);
+//
+//            // add light blue text into the square, id "hello2"
+//            addText("hello2", "TEST TEST TEST", Vector.of(-390,10,-35), LIGHT_BLUE, 1f);
+//        }
+//        else {
+//            System.out.println("*** NOT");
+//            // remove id "hello1"
+//            removeDrawing("hello1");
+//            // remove id "hello2"
+//            removeText("hello2");
+//        }
+//        if (Moverio3D.getDirectionFromAzimuth(currentAPR[0]) == CardinalDirection.SOUTHWEST) {
+//            doJunk();
+//        }
+        // END DEBUG DYNAMIC DRAWING - remove soon
+
         // -----DRAWING THE SCENE-----
         //mTriangle.draw(mMVPMatrix);
         //mSquare.draw(mMVPMatrix);
@@ -283,30 +336,44 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     }
 
-
-
+//    public void doJunk() {
+//        List<Moverio3D.Vector> vlist = new LinkedList<>();
+//        Moverio3D.Vector BL = Moverio3D.Vector.of(-400, 0, -50);
+//        Moverio3D.Vector TL = Moverio3D.Vector.of(-400, 30, -50);
+//        Moverio3D.Vector TR = Moverio3D.Vector.of(-400, 30, -20);
+//        Moverio3D.Vector BR = Moverio3D.Vector.of(-400, 0, -20);
+//        vlist.add(BL);vlist.add(TL);vlist.add(TR);vlist.add(BR);
+//        List<Short> order = new LinkedList<>();
+//        order.add((short)0);order.add((short)1);order.add((short)2);
+//        order.add((short) 0);
+//        order.add((short) 2);
+//        order.add((short)3);
+//        addDrawing("hello1", vlist, order, MyGLRenderer.PURE_GREEN, 1f);
+//        System.out.println("*** JUNK DONE");
+//    }
 
     // -----EXPOSED METHODS-----
 
-    /**
-     *
-     * @return true on success
-     */
-    public boolean addDrawing(String id, List<Vector> vertices, List<Short> order, Vector color, float opacity) {
-        drawDirectory.put(id, new DrawExecutor(vertices, order, color, opacity));
-        return true;
+
+    public void addDrawing(String id, List<Vector> vertices, List<Short> order, Vector color, float opacity) {
+        if (!drawDirectory.containsKey(id)) {
+            drawDirectory.put(id, new DrawExecutor(vertices, order, color, opacity));
+        }
+    }
+    public void removeDrawing(String id) {
+        drawDirectory.remove(id);
     }
 
-    /**
-     *
-     * @return true on success
-     */
-    public boolean addText(String id, String text, Vector location, Vector color, float opacity) {
-        textDirectory.put(id, new TextExecutor(text, location, color, opacity));
-        return true;
+    public void addText(String id, String text, Vector location, Vector color, float opacity) {
+        if (!textDirectory.containsKey(id)) {
+            textDirectory.put(id, new TextExecutor(text, location, color, opacity));
+        }
+    }
+    public void removeText(String id) {
+        textDirectory.remove(id);
     }
 
-    public boolean addMapData(MapData mapData) {
+    public void addMapData(MapData mapData) {
         HashSet<Building> buildings = mapData.getBuildings();
         HashSet<Street> streets = mapData.getStreets();
 
@@ -328,7 +395,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
             addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
         }
-        return true;
     }
 
 
@@ -336,9 +402,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // -----CALCULATION IMPLEMENTATION-----
 
     // holds all openGL non-text things to draw
-    private Map<String, DrawExecutor> drawDirectory = new HashMap<>();
+    private Map<String, DrawExecutor> drawDirectory = new ConcurrentHashMap<>();
     // holds all text to draw (text is drawn with texample2)
-    private Map<String, TextExecutor> textDirectory = new HashMap<>();
+    private Map<String, TextExecutor> textDirectory = new ConcurrentHashMap<>();
 
 
     // inner classes
@@ -368,14 +434,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             drawListBuffer = dlb.asShortBuffer();
             drawListBuffer.put(drawOrder);
             drawListBuffer.position(0);
-
-            int vertexShader = MyGLRenderer.loadShader(GLES20.GL_VERTEX_SHADER,
-                    R.raw.vertexshader, ctxt);
-            int fragmentShader = MyGLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER,
-                    R.raw.fragmentshader, ctxt);
-            GLES20.glAttachShader(mProgram, vertexShader);
-            GLES20.glAttachShader(mProgram, fragmentShader);
-            GLES20.glLinkProgram(mProgram);
         };
 
         List<Vector> vertices;
@@ -385,14 +443,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         private FloatBuffer vertexBuffer;
         private ShortBuffer drawListBuffer;
-        private final int mProgram = GLES20.glCreateProgram();
 
         private float[] vertexArray;
         private short[] drawOrder;
 
         private void draw() {
-            //System.out.println("***draw being called on building: " + vertices + " ; " + order);
-            //System.out.println("***draw being called on street: " + vertices + " ; " + order);
+            // -- "glUseProgram" code starts below --
             GLES20.glUseProgram(mProgram);
 
             int mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
@@ -492,18 +548,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
     private void drawLocationStatus() {
         if (noLocationDataAvailable) {
+            // red text
             glText.begin(1, 0, 0, 1, mMVPMatrix);
         }
         else {
+            // white text
             glText.begin(1, 1, 1, 1, mMVPMatrix);
         }
-        glText.setScale(TEXT_SCALE_CONSTANT * .18f);
+        glText.setScale(TEXT_SCALE_CONSTANT * .16f, TEXT_SCALE_CONSTANT * .325f);
 
+        // I can't use the same string or else it will keep appending to itself, which is a bug
+        // that is very bad for text-drawing performance
+        String locationStatusDisplayString = locationStatus;
+        locationStatusDisplayString += "|E:" + eye;
+        locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
 
-        locationStatus += "|E:" + eye;
-        locationStatus += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
-
-        glText.draw(locationStatus,
+        glText.draw(locationStatusDisplayString,
                 eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
                 0,
                 (float)(currentAPR[0] * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
