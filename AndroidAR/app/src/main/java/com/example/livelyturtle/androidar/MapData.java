@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.PriorityQueue;
+
 import android.app.Activity;
 
 /**
@@ -89,5 +91,180 @@ public class MapData {
 
     public HashSet<Street> getStreets() {
         return streets;
+    }
+
+    private class Node implements Comparable<Node> {
+        Coordinate c;
+        Street s0;
+        Street s1;
+        HashSet<Node> neighbors;
+        Node end;
+
+        public Node() {
+            c = null;
+            s0 = null;
+            s1 = null;
+            neighbors = new HashSet<Node>();
+            end = null;
+        }
+
+        public Node(Coordinate c, Street s0, Street s1, Node end) {
+            this.c = c;
+            this.s0 = s0;
+            this.s1 = s1;
+            this.end = end;
+            neighbors = new HashSet<Node>();
+        }
+
+        public double dist() {
+            return c.dist(end.c);
+        }
+
+        @Override
+        public int compareTo(Node other) {
+            Double dist = dist();
+            return dist.compareTo(other.dist());
+        }
+    }
+
+    private class PQElem implements Comparable<PQElem> {
+        Node cur;
+        ArrayList<Node> path;
+        Double pathDist;
+
+        public PQElem(ArrayList<Node> path, Node cur, double dist) {
+            this.cur = cur;
+            this.path = path;
+            this.pathDist = dist;
+        }
+
+        @Override
+        public int compareTo(PQElem other) {
+            Double total = pathDist + cur.dist();
+            return total.compareTo(other.pathDist+other.cur.dist());
+        }
+    }
+
+    // does a*
+    public HashSet<Street> getStreetsPath(Coordinate start, Coordinate end) {
+        Node startStreetNode = coordToNode(start);
+        Node endStreetNode = coordToNode(end);
+        startStreetNode.end = endStreetNode;
+        endStreetNode.end = endStreetNode;
+        HashSet<Node> nodes = initNodes(startStreetNode, endStreetNode);
+        if(nodes == null) {
+            return null;
+        }
+        ArrayList<Node> path = getPath(startStreetNode, endStreetNode);
+        if(path == null) {
+            return null;
+        }
+        HashSet<Street> streetPath = new HashSet<>();
+        for(int i = 0; i < path.size()-1; i++) {
+            ArrayList<Coordinate> coord = new ArrayList<>();
+            Node n0 = path.get(i);
+            Node n1 = path.get(i+1);
+            coord.add(n0.c);
+            coord.add(n1.c);
+            Street s = new Street(n0.s0.name+n0.s1.name+n1.s0.name+n1.s1.name,coord);
+            streetPath.add(s);
+        }
+        return streetPath;
+    }
+
+    private ArrayList<Node> getPath(Node startNode, Node endNode) {
+        PriorityQueue<PQElem> pq = new PriorityQueue<>();
+        HashSet<Node> seen = new HashSet<Node>();
+        seen.add(startNode);
+        pq.add(new PQElem(new ArrayList<Node>(), startNode, 0));
+        while(!pq.isEmpty()) {
+            PQElem elem = pq.poll();
+            if(elem.cur.equals(endNode)){
+                return elem.path;
+            }
+            HashSet<Node> neighbors = elem.cur.neighbors;
+            for(Node neighbor : neighbors) {
+                if(seen.contains(neighbor)) {
+                    continue;
+                }
+                seen.add(neighbor);
+                ArrayList<Node> newPath = elem.path;
+                newPath.add(neighbor);
+                pq.add(new PQElem(newPath, neighbor, elem.pathDist+elem.cur.c.dist(neighbor.c)));
+            }
+        }
+        return null;
+    }
+
+    private HashSet<Node> initNodes(Node startNode, Node endNode) {
+        HashSet<Coordinate> cIntersection = new HashSet<Coordinate>();
+        HashSet<Node> nodes = new HashSet<Node>();
+        nodes.add(startNode);
+        nodes.add(endNode);
+        for(Street street : streets) {
+            for(Street other : streets) {
+                if(street.equals(other)) {
+                    continue;
+                }
+                Coordinate c = street.findIntersection(other);
+                if(c != null && !cIntersection.contains(c)) {
+                    cIntersection.add(c);
+                    nodes.add(new Node(c, street, other, endNode));
+                }
+            }
+        }
+        for(Node node : nodes) {
+            for(Node other : nodes) {
+                if(node.equals(other)) {
+                    continue;
+                }
+                if(node.s0.equals(other.s0) || node.s0.equals(other.s1) ||
+                        node.s1.equals(other.s0) || node.s1.equals(other.s1)) {
+                    node.neighbors.add(other);
+                    other.neighbors.add(node);
+                }
+            }
+        }
+        return nodes;
+    }
+
+    private Node coordToNode(Coordinate coord) {
+        Node n = new Node();
+        double bestDist = Double.POSITIVE_INFINITY;
+        for(Street street : streets) {
+            Coordinate pot = pointNearestStreet(coord,street);
+            if(bestDist > pot.dist(coord)){
+                bestDist = pot.dist(coord);
+                n.c = pot;
+                n.s0 = street;
+                n.s1 = street;
+                // end is initialized somewhere else
+            }
+        }
+        return n;
+    }
+
+    private Coordinate pointNearestStreet(Coordinate point, Street wall) {
+        double bestDist = Double.POSITIVE_INFINITY;
+        Coordinate bestC = null;
+        for(int i = 0; i < wall.getCoordinates().size()-1; i++) {
+            Coordinate v = wall.getCoordinates().get(i);
+            Coordinate w = wall.getCoordinates().get(i+1);
+            Coordinate p = point;
+            double l2 = Math.pow(v.dist(w), 2);
+            if (Coordinate.closeTo(l2, 0)) {
+                if(bestDist > point.dist(v)) {
+                    bestDist = point.dist(v);
+                    bestC = v;
+                }
+            }
+            double t = Math.max(0, Math.min(1, Coordinate.dot(Coordinate.subtract(p, v), Coordinate.subtract(w, v)) / l2));
+            Coordinate ans = Coordinate.add(v, Coordinate.mult(Coordinate.subtract(w, v), t));
+            if(bestDist > point.dist(ans)) {
+                bestDist = point.dist(ans);
+                bestC = ans;
+            }
+        }
+        return bestC;
     }
 }

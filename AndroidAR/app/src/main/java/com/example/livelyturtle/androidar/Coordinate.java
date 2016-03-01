@@ -53,4 +53,36 @@ public class Coordinate {
         x = dist_to_coor * Math.sin((double) angle_to_coor * Math.PI / 180.);
 
     }
+
+    public double dist(Coordinate c) {
+        return Math.sqrt(Math.pow(this.latitude-c.latitude,2)+Math.pow(this.longitude-c.longitude,2));
+    }
+
+    public static double cross(Coordinate p1, Coordinate p2) {
+        return p1.latitude * p2.longitude - p1.longitude * p2.latitude;
+    }
+
+    public static Coordinate subtract(Coordinate p1, Coordinate p2) {
+        return new Coordinate(p2.latitude-p1.latitude,p2.longitude-p1.longitude);
+    }
+
+    public static Coordinate add(Coordinate p1, Coordinate p2) {
+        return new Coordinate(p2.latitude+p1.latitude,p2.longitude+p1.longitude);
+    }
+
+    public static Coordinate mult(Coordinate p, double s) {
+        return new Coordinate(p.latitude*s, p.longitude*s);
+    }
+
+    public static double dot(Coordinate p1, Coordinate p2) {
+        return p1.latitude * p2.latitude + p1.longitude * p2.longitude;
+    }
+
+    public static boolean closeTo(double x, double y) {
+        if (Math.abs(x - y) < 0.001) {
+            return true;
+        }
+        return false;
+    }
+
 }
