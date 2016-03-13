@@ -91,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements
         LatLng compass = new LatLng(39.952258, -75.197008);
         mMap.addMarker(new MarkerOptions().position(compass).title("Marker in Compass"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(17.5f));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(compass));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(compass));  //move camera to center on specific location
         mMap.setMyLocationEnabled(true);
     }
 

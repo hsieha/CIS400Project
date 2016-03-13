@@ -37,6 +37,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.Beacon;
+import com.example.livelyturtle.androidar.Chevron;
 
 
 /*
@@ -411,7 +412,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         System.out.println("vector_order:" + test_beacon.vector_order());
 
         addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
+        //end of beacon test draw code
 
+        //chevron test draw
+        System.out.println("Drawing dah chevron");
+
+        Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
+        ArrayList<Coordinate> chevron_list = new ArrayList<Coordinate>();
+        chevron_list.add(chevron_coordinate);
+        Chevron test_chevron = new Chevron("Test Chevron", chevron_list, 0.0f); //facing north
+
+        System.out.println(test_chevron.getName() + ": ");
+        System.out.println("vectors: " + test_chevron.vectors());
+        System.out.println("vector_order:" + test_chevron.vector_order());
+
+        addDrawing(test_chevron.getName(), test_chevron.vectors(), test_chevron.vector_order(), PURE_GREEN, 1);
+        //end of chevron test draw
     }
 
 
