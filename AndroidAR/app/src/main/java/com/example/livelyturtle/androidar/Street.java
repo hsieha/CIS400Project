@@ -115,7 +115,7 @@ public class Street extends WorldObject {
 
     //order of vertices
     public ArrayList<Short> vector_order() {
-        ArrayList<Short> order = new ArrayList<Short>();   //only 4 vertices, index order is easy to make
+        ArrayList<Short> order = new ArrayList<Short>();
         for (int i = 1; i <= (coordinates.size()*2)-2; i += 2) {
             order.add((short) i);
             order.add((short) (i-1));
@@ -127,6 +127,26 @@ public class Street extends WorldObject {
         return order;
     }
 
+    // assumes never colinear and only intersect at one point
+    public Coordinate findIntersection(Street other) {
+        for(int i = 0; i < this.getCoordinates().size()-1; i++) {
+            for(int j = 0; j < other.getCoordinates().size()-1; j++) {
+                Coordinate q = other.getCoordinates().get(j);
+                Coordinate p = this.getCoordinates().get(i);
+                Coordinate r = Coordinate.subtract(this.getCoordinates().get(i + 1), p);
+                Coordinate s = Coordinate.subtract(other.getCoordinates().get(j + 1), q);
+                double rxs = Coordinate.cross(r, s);
+                if (!Coordinate.closeTo(rxs, 0.0)) {
+                    double t = Coordinate.cross(Coordinate.subtract(q, p), s) / rxs;
+                    double u = Coordinate.cross(Coordinate.subtract(q, p), r) / rxs;
+                    if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+                        return Coordinate.add(p, Coordinate.mult(r, t));
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     ////////////////////////
     //NOT USING BELOW CODE//
