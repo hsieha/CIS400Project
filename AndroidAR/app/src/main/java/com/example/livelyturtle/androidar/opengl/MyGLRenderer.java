@@ -60,6 +60,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static final Vector GRAY = Vector.of(.55f,.55f,.55f);
     public static final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
     public static final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
+    public static final Vector PURE_BLUE = Vector.of(0,0,1f);
     public static final Vector BLUE = Vector.of(.45f,.45f,.8f);
     public static final Vector RED = Vector.of(.8f, .45f, .45f);
     public static final Vector PURE_GREEN = Vector.of(0, 1f, 0);
@@ -493,25 +494,39 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //chevron test draw
         System.out.println("Drawing dah chevron");
 
-        Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
-        ArrayList<Coordinate> chevron_list = new ArrayList<Coordinate>();
-        chevron_list.add(chevron_coordinate);
-        Chevron test_chevron = new Chevron("Test Chevron", chevron_list, 0.0f); //facing north
+        Coordinate chevron_coordinate_1 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00006, DataDebug.HARDCODE_LONG - 0.0003);
+        Coordinate chevron_coordinate_2 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00008, DataDebug.HARDCODE_LONG - 0.00033);
+        Coordinate chevron_coordinate_3 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00010, DataDebug.HARDCODE_LONG - 0.00036);
+        ArrayList<Coordinate> chevron_list_1 = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chevron_list_2 = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chevron_list_3 = new ArrayList<Coordinate>();
+        chevron_list_1.add(chevron_coordinate_1);
+        chevron_list_2.add(chevron_coordinate_2);
+        chevron_list_3.add(chevron_coordinate_3);
+        Chevron test_chevron_1 = new Chevron("Test Chevron 1", chevron_list_1, 0.0f); //facing north
+        Chevron test_chevron_2 = new Chevron("Test Chevron 2", chevron_list_2, 0.0f); //facing north
+        Chevron test_chevron_3 = new Chevron("Test Chevron 3", chevron_list_3, 0.0f); //facing north
 
-        System.out.println(test_chevron.getName() + ": ");
-        System.out.println("vectors: " + test_chevron.vectors());
-        System.out.println("vector_order:" + test_chevron.vector_order());
+//        System.out.println(test_chevron.getName() + ": ");
+//        System.out.println("vectors: " + test_chevron.vectors());
+//        System.out.println("vector_order:" + test_chevron.vector_order());
 
-        addDrawing(test_chevron.getName(), test_chevron.vectors(), test_chevron.vector_order(), PURE_GREEN, 1);
+        addDrawing(test_chevron_1.getName(), test_chevron_1.vectors(), test_chevron_1.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,0,500));
+        addDrawing(test_chevron_2.getName(), test_chevron_2.vectors(), test_chevron_2.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,500,1000));
+        addDrawing(test_chevron_3.getName(), test_chevron_3.vectors(), test_chevron_3.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,1000,1500));
+
         //end of chevron test draw
 
         // MICHAEL: testing effects on beacons
         Beacon effect1 = new Beacon("b1", new ArrayList<Coordinate>(){{add(new Coordinate(39.953, -75.203));}});
         Beacon effect2 = new Beacon("b2", new ArrayList<Coordinate>(){{add(new Coordinate(39.9545, -75.2025));}});
         addDrawing(effect1.getName(), effect1.vectors(), effect1.vector_order(), PURE_GREEN, 1,
-                new Blink(0,1000,0,500));
+                new Throb(WHITE,3667));
         addDrawing(effect2.getName(), effect2.vectors(), effect2.vector_order(), DARK_GRAY, 1,
-                new Throb(WHITE,2000));
+                new Blink(0,400,0,200));
         // END EFFECTS TESTING
     }
 
