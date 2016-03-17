@@ -67,7 +67,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
     // call setScale on glText with this value for default text size
-    private final float TEXT_SCALE_CONSTANT = 0.00022f;
+    private final float TEXT_SCALE_CONSTANT = 0.00055f;
     // font in assets folder
     private final String FONT = "nobile-bold.ttf";
     private final int FONT_SIZE = 144;
@@ -149,10 +149,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glLinkProgram(mProgram);
         // -- end opengl program creation code --
 
-
-        // Set the background frame color
-        GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
-
         // Create the GLText
         glText = new GLText(ctxt.getAssets());
 
@@ -166,6 +162,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // enable texture + alpha blending
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        // depth testing enabled
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        GLES20.glDepthMask(true);
 
 
 
@@ -249,8 +250,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onDrawFrame(GL10 unused) {
-        // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+        // Set the background frame color
+        // clear old depth buffer info (learnopengl.com/#!Getting-started/Coordinate-Systems)
+        GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 
         // -----3D VIEWING CALCULATIONS-----
@@ -660,11 +664,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // methods
     private void drawAll() {
         drawAllShapes();
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST); // text always on top
         drawAllText();
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
     private void drawAllShapes() {
         for (DrawExecutor dx : drawDirectory.values()) {
-            dx.draw();
+           dx.draw();
         }
     }
     private void drawAllText() {
@@ -677,14 +683,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // ***if you need to change stuff, ONLY CHANGE d AND p, and the # of else-if calls***
         // this represents a linear-piecewise function
-        int[] d = new int[] {5,20,50,500}; // distance anchors
-        float[] p = new float[] {1.f,.8f,.3f,.1f}; // corresponding percent anchors (size)
+        int[] d = new int[] {5,20,50,100,500}; // distance anchors
+        float[] p = new float[] {1.f,.9f,.75f,.15f,.03f}; // corresponding percent anchors (size)
 
         // DO NOT TOUCH - not that you want to, probably
         int ptr = 0;
         if (distance < 0) return -1;
         // # else-if = # anchors. First else-if returns TEXT_SCALE_CONSTANT. All other else-if lines are equal.
         else if (distance < d[ptr++]) return TEXT_SCALE_CONSTANT;
+        else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
@@ -699,7 +706,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // white text
             glText.begin(1, 1, 1, 1, mMVPMatrix);
         }
-        glText.setScale(TEXT_SCALE_CONSTANT * .16f, TEXT_SCALE_CONSTANT * .325f);
+        glText.setScale(TEXT_SCALE_CONSTANT * .064f, TEXT_SCALE_CONSTANT * .13f);
 
         // I can't use the same string or else it will keep appending to itself, which is a bug
         // that is very bad for text-drawing performance
