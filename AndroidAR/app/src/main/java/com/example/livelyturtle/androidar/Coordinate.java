@@ -62,7 +62,7 @@ public class Coordinate {
         return p1.latitude * p2.longitude - p1.longitude * p2.latitude;
     }
 
-    public static Coordinate subtract(Coordinate p1, Coordinate p2) {
+    public static Coordinate subtract(Coordinate p2, Coordinate p1) {
         return new Coordinate(p2.latitude-p1.latitude,p2.longitude-p1.longitude);
     }
 
@@ -79,10 +79,15 @@ public class Coordinate {
     }
 
     public static boolean closeTo(double x, double y) {
-        if (Math.abs(x - y) < 0.001) {
+        if (Math.abs(x - y) < 0.00001) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + latitude + "," + longitude + ")";
     }
 
 }

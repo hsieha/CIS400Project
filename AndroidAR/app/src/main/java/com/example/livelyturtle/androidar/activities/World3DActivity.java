@@ -17,16 +17,19 @@ import android.app.Activity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.livelyturtle.androidar.Coordinate;
 import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -165,7 +168,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
         if (!DataDebug.HARDCODE_LOCATION) {
             (new AcceptThread()).start();
         }
-
+        renderPath(new Coordinate(39.95247,-75.19053));
     }
 
     protected void onResume() {
@@ -616,7 +619,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
             try {
                 tmpIn = s.getInputStream();
                 tmpOut = s.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+            }
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
@@ -656,6 +660,11 @@ public class World3DActivity extends Activity implements SensorEventListener {
             }
         }
     }
+
+    public HashSet<Street> renderPath(Coordinate end) {
+        return mapData.getStreetsPath(mGLView.mRenderer.getEyeCoord(), end);
+    }
+
 //    private class UIVariableChangeRunnable implements Runnable {
 //        private final double D1;
 //        private final double D2;
