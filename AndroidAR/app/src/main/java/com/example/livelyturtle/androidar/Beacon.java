@@ -16,7 +16,7 @@ public class Beacon extends WorldObject{
 
     //NOTE: Arraylist coordinates only holds 1 coordinate
     public Beacon(String name, ArrayList<Coordinate> coordinates){
-        super(name, coordinates, 16.0f);
+        super(name, coordinates, 64.0f);
 
         double lat = 0;
         double lon = 0;
@@ -37,22 +37,26 @@ public class Beacon extends WorldObject{
 
         //Store top cap vertices (vertex 0-19)
         for(int i = 0; i < 20; i++){
-            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f + (float) (x), (float) height, (float) (z)), (float) Math.toRadians(i * 18.0f)));
+            Vector v = Moverio3D.rotateYAxis(Vector.of(1f, (float) height, 0), (float) Math.toRadians(i * 18.0f));
+            vectors.add(Vector.sum(v, Vector.of((float)x,0,(float)z)));
         }
 
         //Store bottom cap vertices (vertex 20-39)
         for(int i = 20; i < 40; i++){
-            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f + (float) (x), 0f, (float) (z)), (float) Math.toRadians((i - 20.0f) * 18.0f)));
+            Vector v = Moverio3D.rotateYAxis(Vector.of(1f, 0, 0), (float) Math.toRadians((i - 20.0f) * 18.0f));
+            vectors.add(Vector.sum(v, Vector.of((float) x, 0, (float) z)));
         }
 
         //Store top cap vertices (vertex 40-59)
         for(int i = 0; i < 20; i++){
-            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f + (float) (x), (float) height, (float) (z)), (float) Math.toRadians(i * 18.0f)));
+            Vector v = Moverio3D.rotateYAxis(Vector.of(1f, (float) height, 0), (float) Math.toRadians(i * 18.0f));
+            vectors.add(Vector.sum(v, Vector.of((float) x, 0, (float) z)));
         }
 
         //Store bottom cap vertices (vertex 60-79)
         for(int i = 20; i < 40; i++){
-            vectors.add(Moverio3D.rotateYAxis(Vector.of(1f+(float)(x), 0f, (float)(z)), (float) Math.toRadians((i-20.0f)*18.0f)));
+            Vector v = Moverio3D.rotateYAxis(Vector.of(1f, 0, 0), (float) Math.toRadians((i - 20.0f) * 18.0f));
+            vectors.add(Vector.sum(v, Vector.of((float) x, 0, (float) z)));
         }
 
         return vectors;

@@ -5,6 +5,7 @@ import android.location.Location;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +38,11 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.Beacon;
+import com.example.livelyturtle.androidar.Chevron;
 
+import org.w3c.dom.Text;
+
+import static com.example.livelyturtle.androidar.opengl.DefaultEffect.*;
 
 /*
  * MyGLRenderer mostly handles drawing implementation.
@@ -55,13 +60,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static final Vector GRAY = Vector.of(.55f,.55f,.55f);
     public static final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
     public static final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
+    public static final Vector PURE_BLUE = Vector.of(0,0,1f);
     public static final Vector BLUE = Vector.of(.45f,.45f,.8f);
     public static final Vector RED = Vector.of(.8f, .45f, .45f);
     public static final Vector PURE_GREEN = Vector.of(0, 1f, 0);
 
 
     // call setScale on glText with this value for default text size
-    private final float TEXT_SCALE_CONSTANT = 0.00022f;
+    private final float TEXT_SCALE_CONSTANT = 0.00055f;
     // font in assets folder
     private final String FONT = "nobile-bold.ttf";
     private final int FONT_SIZE = 144;
@@ -153,10 +159,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glLinkProgram(mProgram);
         // -- end opengl program creation code --
 
-
-        // Set the background frame color
-        GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
-
         // Create the GLText
         glText = new GLText(ctxt.getAssets());
 
@@ -170,6 +172,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // enable texture + alpha blending
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        // depth testing enabled
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        GLES20.glDepthMask(true);
 
 
 
@@ -254,8 +261,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onDrawFrame(GL10 unused) {
-        // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+        // Set the background frame color
+        // clear old depth buffer info (learnopengl.com/#!Getting-started/Coordinate-Systems)
+        GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 
         // -----3D VIEWING CALCULATIONS-----
@@ -366,25 +376,97 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //    }
 
     // -----EXPOSED METHODS-----
+    // changing drawings or text is expensive - don't do it often!
 
-
-    public void addDrawing(String id, List<Vector> vertices, List<Short> order, Vector color, float opacity) {
+    public boolean addDrawing(String id, List<Vector> vertices, List<Short> order, Vector color, float opacity) {
+        return addDrawing(id, vertices, order, color, opacity, DEFAULT_EFFECT);
+    }
+    public boolean addDrawing(String id,
+                           List<Vector> vertices,
+                           List<Short> order,
+                           Vector color,
+                           float opacity,
+                           DrawEffect eff) {
         if (!drawDirectory.containsKey(id)) {
-            drawDirectory.put(id, new DrawExecutor(vertices, order, color, opacity));
+            drawDirectory.put(id, new DrawExecutor(vertices, order, color, opacity, eff));
+            return true;
+        }
+        else {
+            System.out.println("addDrawing WARNING: id already exists. Call ignored.");
+            return false;
         }
     }
-    public void removeDrawing(String id) {
-        drawDirectory.remove(id);
+    public boolean changeDrawingVerticesAndOrder(String id, List<Vector> vertices, List<Short> order) {
+        DrawExecutor old = drawDirectory.get(id);
+        if (old != null) {
+            drawDirectory.put(id, new DrawExecutor(vertices, order, old.color, old.opacity, old.drawEffect));
+            return true;
+        }
+        return false;
+    }
+    public boolean changeDrawingColor(String id, Vector color) {
+        DrawExecutor old = drawDirectory.get(id);
+        if (old != null) {
+            drawDirectory.put(id, new DrawExecutor(old.vertices, old.order, color, old.opacity, old.drawEffect));
+            return true;
+        }
+        return false;
+    }
+    public boolean changeDrawingEffect(String id, DrawEffect eff) {
+        DrawExecutor old = drawDirectory.get(id);
+        if (old != null) {
+            drawDirectory.put(id, new DrawExecutor(old.vertices, old.order, old.color, old.opacity, eff));
+            return true;
+        }
+        return false;
+    }
+    public boolean removeDrawing(String id) {
+        if (drawDirectory.remove(id) == null) return false;
+        return true;
     }
 
-    public void addText(String id, String text, Vector location, Vector color, float opacity) {
+
+
+    public boolean addText(String id, String text, Vector location, Vector color, float opacity) {
         if (!textDirectory.containsKey(id)) {
             textDirectory.put(id, new TextExecutor(text, location, color, opacity));
+            return true;
+        }
+        else {
+            System.out.println("addText WARNING: id already exists. Call ignored.");
+            return false;
         }
     }
-    public void removeText(String id) {
-        textDirectory.remove(id);
+    public boolean changeTextString(String id, String text) {
+        TextExecutor old = textDirectory.get(id);
+        if (old != null) {
+            textDirectory.put(id, new TextExecutor(text, old.location, old.color, old.opacity));
+            return true;
+        }
+        return false;
     }
+    public boolean changeTextColor(String id, Vector color) {
+        TextExecutor old = textDirectory.get(id);
+        if (old != null) {
+            textDirectory.put(id, new TextExecutor(old.text, old.location, color, old.opacity));
+            return true;
+        }
+        return false;
+    }
+    public boolean changeTextLocation(String id, Vector location) {
+        TextExecutor old = textDirectory.get(id);
+        if (old != null) {
+            textDirectory.put(id, new TextExecutor(old.text, location, old.color, old.opacity));
+            return true;
+        }
+        return false;
+    }
+    public boolean removeText(String id) {
+        if (textDirectory.remove(id) == null) return false;
+        return true;
+    }
+
+
 
     public void addMapData(MapData mapData) {
         HashSet<Building> buildings = mapData.getBuildings();
@@ -422,7 +504,45 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         System.out.println("vector_order:" + test_beacon.vector_order());
 
         addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
+        //end of beacon test draw code
+        
+        //chevron test draw
+        System.out.println("Drawing dah chevron");
 
+        Coordinate chevron_coordinate_1 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00006, DataDebug.HARDCODE_LONG - 0.0003);
+        Coordinate chevron_coordinate_2 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00008, DataDebug.HARDCODE_LONG - 0.00033);
+        Coordinate chevron_coordinate_3 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00010, DataDebug.HARDCODE_LONG - 0.00036);
+        ArrayList<Coordinate> chevron_list_1 = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chevron_list_2 = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chevron_list_3 = new ArrayList<Coordinate>();
+        chevron_list_1.add(chevron_coordinate_1);
+        chevron_list_2.add(chevron_coordinate_2);
+        chevron_list_3.add(chevron_coordinate_3);
+        Chevron test_chevron_1 = new Chevron("Test Chevron 1", chevron_list_1, 0.0f); //facing north
+        Chevron test_chevron_2 = new Chevron("Test Chevron 2", chevron_list_2, 0.0f); //facing north
+        Chevron test_chevron_3 = new Chevron("Test Chevron 3", chevron_list_3, 0.0f); //facing north
+
+//        System.out.println(test_chevron.getName() + ": ");
+//        System.out.println("vectors: " + test_chevron.vectors());
+//        System.out.println("vector_order:" + test_chevron.vector_order());
+
+        addDrawing(test_chevron_1.getName(), test_chevron_1.vectors(), test_chevron_1.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,0,500));
+        addDrawing(test_chevron_2.getName(), test_chevron_2.vectors(), test_chevron_2.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,500,1000));
+        addDrawing(test_chevron_3.getName(), test_chevron_3.vectors(), test_chevron_3.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,1000,1500));
+
+        //end of chevron test draw
+
+        // MICHAEL: testing effects on beacons
+        Beacon effect1 = new Beacon("b1", new ArrayList<Coordinate>(){{add(new Coordinate(39.953, -75.203));}});
+        Beacon effect2 = new Beacon("b2", new ArrayList<Coordinate>(){{add(new Coordinate(39.9545, -75.2025));}});
+        addDrawing(effect1.getName(), effect1.vectors(), effect1.vector_order(), PURE_GREEN, 1,
+                new Throb(WHITE,3667));
+        addDrawing(effect2.getName(), effect2.vectors(), effect2.vector_order(), DARK_GRAY, 1,
+                new Blink(0,400,0,200));
+        // END EFFECTS TESTING
     }
 
     // -----CALCULATION IMPLEMENTATION-----
@@ -438,11 +558,27 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // and add it again
     // CALL TextExecutor draws LAST
     private final class DrawExecutor {
-        private DrawExecutor(List<Vector> v, List<Short> o, Vector c, float op){
+
+        List<Vector> vertices;
+        List<Short> order;
+        Vector color;
+        float opacity;
+
+        private FloatBuffer vertexBuffer;
+        private ShortBuffer drawListBuffer;
+
+        private float[] vertexArray;
+        private short[] drawOrder;
+
+        @NonNull
+        private DrawEffect drawEffect;
+
+        private DrawExecutor(List<Vector> v, List<Short> o, Vector c, float op, DrawEffect eff){
             vertices = v;
             order = o;
             color = c;
             opacity = op;
+            drawEffect = eff;
 
             vertexArray = Vector.vectorsToFloatArray(vertices);
             drawOrder = new short[order.size()];
@@ -460,20 +596,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             drawListBuffer = dlb.asShortBuffer();
             drawListBuffer.put(drawOrder);
             drawListBuffer.position(0);
-        };
-
-        List<Vector> vertices;
-        List<Short> order;
-        Vector color;
-        float opacity;
-
-        private FloatBuffer vertexBuffer;
-        private ShortBuffer drawListBuffer;
-
-        private float[] vertexArray;
-        private short[] drawOrder;
+        }
 
         private void draw() {
+
+            // don't draw if you can't see anything
+            if (!drawEffect.isVisible()) return;
+
             // -- "glUseProgram" code starts below --
             GLES20.glUseProgram(mProgram);
 
@@ -484,7 +613,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     12, vertexBuffer);
 
             int mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-            GLES20.glUniform4fv(mColorHandle, 1, new float[] {color.x(), color.y(), color.z(), opacity}, 0);
+            Vector modColor = drawEffect.getModifiedColor(color);
+            GLES20.glUniform4fv(mColorHandle, 1, new float[] {modColor.x(), modColor.y(), modColor.z(), opacity}, 0);
 
             int mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
@@ -497,17 +627,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     }
     private final class TextExecutor { // a simple class that just helps specify the proper GLText call
+
+        String text;
+        Vector location;
+        Vector color;
+        float opacity;
+
         private TextExecutor(String t, Vector l, Vector c, float op) {
             text = t;
             location = l;
             color = c;
             opacity = op;
         }
-
-        String text;
-        Vector location;
-        Vector color;
-        float opacity;
 
         private void draw() {
             glText.begin(color.x(), color.y(), color.z(), opacity, mMVPMatrix);
@@ -542,11 +673,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // methods
     private void drawAll() {
         drawAllShapes();
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST); // text always on top
         drawAllText();
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
     private void drawAllShapes() {
         for (DrawExecutor dx : drawDirectory.values()) {
-            dx.draw();
+           dx.draw();
         }
     }
     private void drawAllText() {
@@ -559,14 +692,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // ***if you need to change stuff, ONLY CHANGE d AND p, and the # of else-if calls***
         // this represents a linear-piecewise function
-        int[] d = new int[] {5,20,50,500}; // distance anchors
-        float[] p = new float[] {1.f,.8f,.3f,.1f}; // corresponding percent anchors (size)
+        int[] d = new int[] {5,20,50,100,500}; // distance anchors
+        float[] p = new float[] {1.f,.9f,.75f,.15f,.03f}; // corresponding percent anchors (size)
 
         // DO NOT TOUCH - not that you want to, probably
         int ptr = 0;
         if (distance < 0) return -1;
         // # else-if = # anchors. First else-if returns TEXT_SCALE_CONSTANT. All other else-if lines are equal.
         else if (distance < d[ptr++]) return TEXT_SCALE_CONSTANT;
+        else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
@@ -581,7 +715,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // white text
             glText.begin(1, 1, 1, 1, mMVPMatrix);
         }
-        glText.setScale(TEXT_SCALE_CONSTANT * .16f, TEXT_SCALE_CONSTANT * .325f);
+        glText.setScale(TEXT_SCALE_CONSTANT * .064f, TEXT_SCALE_CONSTANT * .13f);
 
         // I can't use the same string or else it will keep appending to itself, which is a bug
         // that is very bad for text-drawing performance
