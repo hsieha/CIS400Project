@@ -16,32 +16,36 @@ import android.app.Activity;
  * Created by LivelyTurtle on 1/27/2016.
  */
 public class MapData {
+    public enum DataType {
+        BUILDING, STREET, POI
+    }
+
     HashSet<Building> buildings;
     HashSet<Street> streets;
-
-    public MapData() {
-        buildings = new HashSet<Building>();
-        streets = new HashSet<Street>();
-    }
+    HashSet<POI> pois;
 
     // Parsing a .kml file from Google Maps
     public MapData(String filename, Activity activity) {
         String line = null;
         buildings = new HashSet<Building>();
         streets = new HashSet<Street>();
+        pois = new HashSet<POI>();
         try {
             InputStream iS = activity.getAssets().open("UPennCampus.kml");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(iS));
-            boolean isBuilding = true; // true if adding a building, false if adding a street
+            DataType type = DataType.BUILDING;
             String name = "";
             ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
             while((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
                 if(line.equals("<name>Buildings</name>")) {
-                    isBuilding = true;
+                    type = DataType.BUILDING;
                 }
                 else if(line.equals("<name>Streets</name>")) {
-                    isBuilding = false;
+                    type = DataType.STREET;
+                }
+                else if(line.equals("<name>POI</name>")) {
+                    type = DataType.POI;
                 }
                 else if(line.startsWith("<name>")) {
                     name = line.substring(6, line.length() - 7);
@@ -55,11 +59,14 @@ public class MapData {
                                 Double.parseDouble(latlong[0]));
                         coordinates.add(coord);
                     }
-                    if(isBuilding) {
+                    if(type == DataType.BUILDING) {
                         buildings.add(new Building(name,coordinates));
                     }
-                    else {
+                    else if(type == DataType.STREET) {
                         streets.add(new Street(name, coordinates));
+                    }
+                    else {
+                        pois.add(new POI(name, coordinates));
                     }
                 }
             }

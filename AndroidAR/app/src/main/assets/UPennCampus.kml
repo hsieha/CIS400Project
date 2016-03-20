@@ -197,6 +197,42 @@
 					</outerBoundaryIs>
 				</Polygon>
 			</Placemark>
+			<Placemark>
+				<name>ARCH</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1950645,39.952434600000004,0.0 -75.1952899,39.9524634,0.0 -75.1953301,39.9522558,0.0 -75.195365,39.9522619,0.0 -75.1953864,39.9521427,0.0 -75.1951128,39.9521057,0.0 -75.1950645,39.952434600000004,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Fisher Fine Arts Library</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1925808,39.9513058,0.0 -75.192546,39.951503200000005,0.0 -75.1924977,39.9515012,0.0 -75.192436,39.9517849,0.0 -75.1925218,39.9517952,0.0 -75.1925191,39.9518569,0.0 -75.1926264,39.9519227,0.0 -75.1927471,39.951904199999994,0.0 -75.1928195,39.9517767,0.0 -75.1928571,39.95178080000001,0.0 -75.1928893,39.951715,0.0 -75.1929751,39.9517273,0.0 -75.1929939,39.95169030000001,0.0 -75.1930314,39.9517006,0.0 -75.193069,39.9516245,0.0 -75.1929483,39.95161840000001,0.0 -75.1930287,39.9513696,0.0 -75.1925808,39.9513058,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
+				<name>Steinberg Dietrich Hall</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1955889,39.951979200000004,0.0 -75.1957069,39.9519936,0.0 -75.1957177,39.951935000000006,0.0 -75.1957485,39.9519412,0.0 -75.1957458,39.95196380000001,0.0 -75.1959684,39.9519926,0.0 -75.1959752,39.9519617,0.0 -75.1959899,39.9519648,0.0 -75.1960087,39.9519885,0.0 -75.1960731,39.9519957,0.0 -75.1961012,39.9519761,0.0 -75.1961106,39.9519782,0.0 -75.1961012,39.95200700000001,0.0 -75.1963346,39.9520378,0.0 -75.1963386,39.95201209999999,0.0 -75.1963748,39.952009,0.0 -75.1963721,39.952038800000004,0.0 -75.1964687,39.9520532,0.0 -75.1964687,39.95206449999999,0.0 -75.1969045,39.9521149,0.0 -75.1969448,39.951924700000006,0.0 -75.19682270000001,39.9519114,0.0 -75.1968133,39.9519525,0.0 -75.1966672,39.951935,0.0 -75.1966806,39.951882600000005,0.0 -75.1967034,39.9518867,0.0 -75.1967154,39.9518497,0.0 -75.1967503,39.9518322,0.0 -75.196753,39.9518075,0.0 -75.1967262,39.9517818,0.0 -75.1967369,39.9517314,0.0 -75.1967087,39.9517294,0.0 -75.1967221,39.9516914,0.0 -75.1968616,39.9517037,0.0 -75.1968522,39.9517469,0.0 -75.1969743,39.95176430000001,0.0 -75.1970212,39.951520699999996,0.0 -75.1969059,39.9515063,0.0 -75.1968911,39.95154949999999,0.0 -75.1966068,39.95151659999999,0.0 -75.1966162,39.95147440000001,0.0 -75.1964861,39.951457999999995,0.0 -75.1964794,39.9514837,0.0 -75.1963681,39.95146830000001,0.0 -75.196348,39.9515659,0.0 -75.1963949,39.951570000000004,0.0 -75.1963761,39.95164710000001,0.0 -75.1958477,39.95158239999999,0.0 -75.1958397,39.9516297,0.0 -75.1957834,39.9516245,0.0 -75.1957673,39.9517016,0.0 -75.1956519,39.95169030000001,0.0 -75.1955889,39.951979200000004,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
 		</Folder>
 		<Folder>
 			<name>Streets</name>
@@ -297,6 +333,134 @@
 				</LineString>
 			</Placemark>
 		</Folder>
+		<Folder>
+			<name>POI</name>
+			<Placemark>
+				<name>Button</name>
+				<styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+				<Point>
+					<coordinates>-75.19369,39.95221,0.0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Statue of Ben Franklin</name>
+				<styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+				<Point>
+					<coordinates>-75.19366600000001,39.951935,0.0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Compass</name>
+				<styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+				<Point>
+					<coordinates>-75.19700799999998,39.952258,0.0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Ben Franklin on Bench</name>
+				<styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+				<Point>
+					<coordinates>-75.1970018,39.9522172,0.0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Covenant</name>
+				<description><![CDATA[Dueling Tampons]]></description>
+				<styleUrl>#icon-503-DB4436</styleUrl>
+				<Point>
+					<coordinates>-75.20070099999998,39.952714,0.0</coordinates>
+				</Point>
+			</Placemark>
+			<Placemark>
+				<name>Eniac</name>
+				<styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+				<Point>
+					<coordinates>-75.190537,39.9524758,0.0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+		<Style id='icon-503-DB4436-normal'>
+			<IconStyle>
+				<color>ff3644DB</color>
+				<scale>1.1</scale>
+				<Icon>
+					<href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+				</Icon>
+				<hotSpot x='16' y='31' xunits='pixels' yunits='insetPixels'>
+				</hotSpot>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0.0</scale>
+			</LabelStyle>
+		</Style>
+		<Style id='icon-503-DB4436-highlight'>
+			<IconStyle>
+				<color>ff3644DB</color>
+				<scale>1.1</scale>
+				<Icon>
+					<href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+				</Icon>
+				<hotSpot x='16' y='31' xunits='pixels' yunits='insetPixels'>
+				</hotSpot>
+			</IconStyle>
+			<LabelStyle>
+				<scale>1.1</scale>
+			</LabelStyle>
+		</Style>
+		<StyleMap id='icon-503-DB4436'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#icon-503-DB4436-normal</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#icon-503-DB4436-highlight</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='icon-503-DB4436-nodesc-normal'>
+			<IconStyle>
+				<color>ff3644DB</color>
+				<scale>1.1</scale>
+				<Icon>
+					<href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+				</Icon>
+				<hotSpot x='16' y='31' xunits='pixels' yunits='insetPixels'>
+				</hotSpot>
+			</IconStyle>
+			<LabelStyle>
+				<scale>0.0</scale>
+			</LabelStyle>
+			<BalloonStyle>
+				<text><![CDATA[<h3>$[name]</h3>]]></text>
+			</BalloonStyle>
+		</Style>
+		<Style id='icon-503-DB4436-nodesc-highlight'>
+			<IconStyle>
+				<color>ff3644DB</color>
+				<scale>1.1</scale>
+				<Icon>
+					<href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+				</Icon>
+				<hotSpot x='16' y='31' xunits='pixels' yunits='insetPixels'>
+				</hotSpot>
+			</IconStyle>
+			<LabelStyle>
+				<scale>1.1</scale>
+			</LabelStyle>
+			<BalloonStyle>
+				<text><![CDATA[<h3>$[name]</h3>]]></text>
+			</BalloonStyle>
+		</Style>
+		<StyleMap id='icon-503-DB4436-nodesc'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#icon-503-DB4436-nodesc-normal</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#icon-503-DB4436-nodesc-highlight</styleUrl>
+			</Pair>
+		</StyleMap>
 		<Style id='line-000000-1-nodesc-normal'>
 			<LineStyle>
 				<color>ff000000</color>
