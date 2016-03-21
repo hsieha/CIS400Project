@@ -77,7 +77,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // gl viewport
     private final float NEAR_CLIP_DISTANCE = .5f; // 50cm
-    private final float FAR_CLIP_DISTANCE = 500f; // half a kilometer
+    private final float FAR_CLIP_DISTANCE = 2000f; // 2km
 
 
     // essential member variables
@@ -717,12 +717,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         int ptr = 0;
         if (distance < 0) return -1;
         // # else-if = # anchors. First else-if returns TEXT_SCALE_CONSTANT. All other else-if lines are equal.
-        else if (distance < d[ptr++]) return TEXT_SCALE_CONSTANT;
+        else if (distance < d[ptr++]) return p[0] * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
-        else return 0;
+        else                          return p[p.length-1] * TEXT_SCALE_CONSTANT;
     }
     private void drawLocationStatus() {
         if (noLocationDataAvailable) {
