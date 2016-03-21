@@ -43,6 +43,7 @@ import com.example.livelyturtle.androidar.Chevron;
 import org.w3c.dom.Text;
 
 import static com.example.livelyturtle.androidar.opengl.DefaultEffect.*;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
 
 /*
  * MyGLRenderer mostly handles drawing implementation.
@@ -76,7 +77,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // gl viewport
     private final float NEAR_CLIP_DISTANCE = .5f; // 50cm
-    private final float FAR_CLIP_DISTANCE = 500f; // half a kilometer
+    private final float FAR_CLIP_DISTANCE = 2000f; // 2km
 
 
     // essential member variables
@@ -90,14 +91,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] currentAPR = new float[] {0,0,0};
 
     // user eye height assumed to be 1.75m
-    Vector eye = Vector.of(0,1.75f,0);
+    Vector eye = Vector.of(0,1.75f,0); // default to 0 if no info available
+    Coordinate eyeCoord = Coordinate.COMPASS; // used for path rendering. Default to 0 (COMPASS) if no info available
     Vector upV;
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
-    Coordinate eyeCoord = hardCoord;
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
+
+
+
+
 
     public Coordinate getEyeCoord() {
         return eyeCoord;
@@ -110,8 +115,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void updateEye(double la, double lo) {
         Coordinate c = new Coordinate(la, lo);
-        eyeCoord = c;
+
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+        eyeCoord = c;
+
         noLocationDataAvailable = false;
 
         // the status is the time
@@ -133,10 +140,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int mProgram;
     public MyGLRenderer(Context c, MapData mapData) {
         ctxt = c; this.mapData = mapData;
-        if (DataDebug.HARDCODE_LOCATION) {
-            eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            locationStatus = "LOC HRDCD";
-        }
     }
 
 
@@ -242,6 +245,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         ///////////////////////////////////////////////////////////////
         // -----END DEMO DATA-----
+
+
+        // start the path simulation timer, if necessary
+        if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
+            System.out.println("STARTING PATH TIMER: " + DataDebug.startPathTimer(ctxt));
+        }
+
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -290,9 +300,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float P = -1*currentAPR[1];
         float R = -1*currentAPR[2];
 
-        if (DataDebug.HARDCODE_LOCATION) {
+        // for debug, insert eye location here (it's handled by a bluetooth thread for LocationMode.REAL)
+        if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            locationStatus = "LOC HRDCD";
+            eyeCoord = Coordinate.COMPASS;
+            locationStatus = "HRDCD";
+        }
+        else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
+            Coordinate c = DataDebug.getPathSimulationCoordinate();
+            eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+            eyeCoord = Coordinate.fromXZ(c.x, c.z);
+            locationStatus = "PATHSIM";
         }
 
         upV = Vector.of(
@@ -494,7 +512,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Beacon test draw
         System.out.println("Drawing dah beacon");
 
-        Coordinate beacon_coordinate = new Coordinate(39.952258, -75.197008);
+        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
         ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
         beacon_list.add(beacon_coordinate);
         Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
@@ -706,12 +724,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         int ptr = 0;
         if (distance < 0) return -1;
         // # else-if = # anchors. First else-if returns TEXT_SCALE_CONSTANT. All other else-if lines are equal.
-        else if (distance < d[ptr++]) return TEXT_SCALE_CONSTANT;
+        else if (distance < d[ptr++]) return p[0] * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
-        else return 0;
+        else                          return p[p.length-1] * TEXT_SCALE_CONSTANT;
     }
     private void drawLocationStatus() {
         if (noLocationDataAvailable) {
@@ -730,6 +748,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         locationStatusDisplayString += "|E:" + eye;
         locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
 
+        // TODO: if you want to start drawing text to the left of the screen center, use a cross product
         glText.draw(locationStatusDisplayString,
                 eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
                 0,

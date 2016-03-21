@@ -65,4 +65,57 @@ public class CoordinateTest {
 
     }
 
+    @Test
+    public void convertMetersToLatLong() {
+        double epsilon = 1.; // allow for 1m of inaccuracy
+
+        // these tests convert an x/z format into lat/long format, then
+        // convert BACK into x/z format (the "new" Coordinates).
+        // Since the 2 conversions are handled with entirely separate algorithms, the idea is
+        // to ensure that the values do not stray too far.
+
+        // some coordinates
+        Coordinate cN = Coordinate.fromXZ(0,-100);
+        Coordinate cNE = Coordinate.fromXZ(50,-50);
+        Coordinate cE = Coordinate.fromXZ(100,0);
+        Coordinate cSE = Coordinate.fromXZ(50,50);
+        Coordinate cS = Coordinate.fromXZ(0,100);
+        Coordinate cSW = Coordinate.fromXZ(-50,50);
+        Coordinate cW = Coordinate.fromXZ(-100,0);
+        Coordinate cNW = Coordinate.fromXZ(-50,-50);
+
+        Coordinate newN = new Coordinate(cN.latitude, cN.longitude);
+        Coordinate newNE = new Coordinate(cNE.latitude, cNE.longitude);
+        Coordinate newE = new Coordinate(cE.latitude, cE.longitude);
+        Coordinate newSE = new Coordinate(cSE.latitude, cSE.longitude);
+        Coordinate newS = new Coordinate(cS.latitude, cS.longitude);
+        Coordinate newSW = new Coordinate(cSW.latitude, cSW.longitude);
+        Coordinate newW = new Coordinate(cW.latitude, cW.longitude);
+        Coordinate newNW = new Coordinate(cNW.latitude, cNW.longitude);
+
+        Assert.assertEquals("N x value correct", cN.x, newN.x, epsilon);
+        Assert.assertEquals("N z value correct", cN.z, newN.z, epsilon);
+
+        Assert.assertEquals("NE x value correct", cNE.x, newNE.x, epsilon);
+        Assert.assertEquals("NE z value correct", cNE.z, newNE.z, epsilon);
+
+        Assert.assertEquals("E x value correct", cE.x, newE.x, epsilon);
+        Assert.assertEquals("E z value correct", cE.z, newE.z, epsilon);
+
+        Assert.assertEquals("SE x value correct", cSE.x, newSE.x, epsilon);
+        Assert.assertEquals("SE z value correct", cSE.z, newSE.z, epsilon);
+
+        Assert.assertEquals("S x value correct", cS.x, newS.x, epsilon);
+        Assert.assertEquals("S z value correct", cS.z, newS.z, epsilon);
+
+        Assert.assertEquals("SW x value correct", cSW.x, newSW.x, epsilon);
+        Assert.assertEquals("SW z value correct", cSW.z, newSW.z, epsilon);
+
+        Assert.assertEquals("W x value correct", cW.x, newW.x, epsilon);
+        Assert.assertEquals("W z value correct", cW.z, newW.z, epsilon);
+
+        Assert.assertEquals("NW x value correct", cNW.x, newNW.x, epsilon);
+        Assert.assertEquals("NW z value correct", cNW.z, newNW.z, epsilon);
+    }
+
 }

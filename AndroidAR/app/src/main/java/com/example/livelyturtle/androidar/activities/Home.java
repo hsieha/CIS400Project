@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 
 import com.example.livelyturtle.androidar.*;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -135,8 +136,8 @@ public class Home extends Activity implements
             writeLatLongToScreen();
         }
 
-        // launch the bluetooth listener
-        if (!DataDebug.HARDCODE_LOCATION) {
+        // launch the bluetooth listener, only for real location
+        if (DataDebug.LOCATION_MODE == LocationMode.REAL) {
             (myAcceptThread = new AcceptThread()).start();
         }
     }

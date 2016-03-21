@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // set off timer to send GPS data
-        timer.scheduleAtFixedRate(new sendGPSDataTask(socket), 0, 500L);
+        timer.scheduleAtFixedRate(new sendGPSDataTask(socket), 0, UPDATE_PERIOD);
 
     }
 
