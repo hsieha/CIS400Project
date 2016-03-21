@@ -24,7 +24,8 @@ public final class DataDebug {
 
     // change these as needed
     public static final LocationMode LOCATION_MODE  = LocationMode.PATH_SIMULATION;
-    public static final float NOISE_RADIUS          = 5f; // meters. noise if positive, else no noise
+    // noise parameters are for the PATH_SIMULATION mode only
+    public static final float NOISE_RADIUS          = 0f; // meters. noise if positive, else no noise
     public static final long NOISE_PERIOD           = 2500; // ms. invalid unless positive
 
     /*
@@ -48,7 +49,7 @@ public final class DataDebug {
 
     // HARDCODE: use the specified LAT and LONG above
     // REAL: use data from ExternalGPSReceiver... or just get placed at (0,0) if data not available
-    // PATH_SIMULATION: read data from text file
+    // PATH_SIMULATION: read data from text file (res/raw/pathsimulation)
     public enum LocationMode {
         HARDCODE,
         REAL,
@@ -173,8 +174,7 @@ public final class DataDebug {
                 double radius = rands[0] * NOISE_RADIUS;
                 double angle = rands[1] * Math.PI * 2;
                 Coordinate noise = Coordinate.fromXZ(Math.cos(angle) * radius, Math.sin(angle) * radius);
-                // DO NOT use Coordinate.add, as that method adds lat/long values, which are not
-                // properly filled with Coordinate.fromXZ as of now
+                // I did not use Coordinate.add because that method uses lat/long values, not x/z
                 result = Coordinate.fromXZ(result.x + noise.x, result.z + noise.z);
             }
 

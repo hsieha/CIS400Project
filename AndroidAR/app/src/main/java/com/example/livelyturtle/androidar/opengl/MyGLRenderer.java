@@ -91,14 +91,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] currentAPR = new float[] {0,0,0};
 
     // user eye height assumed to be 1.75m
-    Vector eye = Vector.of(0,1.75f,0);
+    Vector eye = Vector.of(0,1.75f,0); // default to 0 if no info available
+    Coordinate eyeCoord = Coordinate.COMPASS; // used for path rendering. Default to 0 (COMPASS) if no info available
     Vector upV;
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
-    Coordinate eyeCoord = hardCoord;
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
+
+
+
+
 
     public Coordinate getEyeCoord() {
         return eyeCoord;
@@ -111,8 +115,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void updateEye(double la, double lo) {
         Coordinate c = new Coordinate(la, lo);
-        eyeCoord = c;
+
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+        eyeCoord = c;
+
         noLocationDataAvailable = false;
 
         // the status is the time
@@ -134,10 +140,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int mProgram;
     public MyGLRenderer(Context c, MapData mapData) {
         ctxt = c; this.mapData = mapData;
-        if (DataDebug.HARDCODE_LOCATION) {
-            eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            locationStatus = "LOC HRDCD";
-        }
     }
 
 
@@ -301,11 +303,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // for debug, insert eye location here (it's handled by a bluetooth thread for LocationMode.REAL)
         if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
+            eyeCoord = Coordinate.COMPASS;
             locationStatus = "HRDCD";
         }
         else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
             Coordinate c = DataDebug.getPathSimulationCoordinate();
             eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+            eyeCoord = Coordinate.fromXZ(c.x, c.z);
             locationStatus = "PATHSIM";
         }
 
@@ -508,7 +512,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Beacon test draw
         System.out.println("Drawing dah beacon");
 
-        Coordinate beacon_coordinate = new Coordinate(39.952258, -75.197008);
+        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
         ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
         beacon_list.add(beacon_coordinate);
         Beacon test_beacon = new Beacon("Test Beacon", beacon_list);

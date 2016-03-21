@@ -169,7 +169,17 @@ public class World3DActivity extends Activity implements SensorEventListener {
         if (DataDebug.LOCATION_MODE == LocationMode.REAL) {
             (new AcceptThread()).start();
         }
-        renderPath(new Coordinate(39.95247,-75.19053));
+
+        // FOR DEBUG ONLY...
+        // wait 5s, then call renderPathTask
+        (new Timer()).schedule(new RenderPathTask(), 5000);
+    }
+    class RenderPathTask extends TimerTask {
+        @Override
+        public void run() {
+            renderPath(new Coordinate(39.95247,-75.19053));
+            System.out.println("renderPath called");
+        }
     }
 
     protected void onResume() {

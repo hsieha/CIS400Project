@@ -15,6 +15,8 @@ public class Coordinate {
     // compass coordinates: 39.952258, -75.197008
     public static final double COMPASS_LAT = 39.952258;
     public static final double COMPASS_LONG = -75.197008;
+    public static final Coordinate COMPASS = new Coordinate(COMPASS_LAT, COMPASS_LONG);
+
 
     //NOTE from Darren: if the lat/long gets too large
     // errors will become larger further away from origin
@@ -92,12 +94,11 @@ public class Coordinate {
         c.x = x;
         c.z = z;
 
-        // my belief is that latitude and longitude aren't used when the Coordinate is being
-        // processed within the GL rendering pipeline. Only x and z are used.
-        // If this is incorrect then it is relatively simple to get the true lat and long, given
-        // x, z, and the lat/long of (0,0) [the compass at 37th and Locust].
-        c.latitude = Double.NaN;
-        c.longitude = Double.NaN;
+        // gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
+        double latAdj = -(z/111111.);
+        double longAdj = x/(111111.*Math.cos(COMPASS_LAT*Math.PI/180.));
+        c.latitude = COMPASS_LAT + latAdj;
+        c.longitude = COMPASS_LONG + longAdj;
 
         return c;
     }

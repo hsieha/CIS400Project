@@ -1,10 +1,19 @@
 // INSTRUCTIONS
+//
 // Define the path you want the eye to take.
 // Each line will have 3 values, separated by commas.
 // [x-coordinate], [z-coordinate], [time (seconds)]
 //
-// x and z coordinates are in METERS, and (0,0) is the compass.
+// x and z coordinates are in **METERS**, and (0,0) is the compass.
 // Do NOT use latitude or longitude for these numbers.
+// **Use GenerateXZUtility (in androidTest) to easily convert lat/lon into XZ coordinates.**
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
 // Times must be monotonically increasing.
 //
 // The simulated location will be linearly interpolated between the points of the nearest two times.
@@ -27,9 +36,11 @@
 // Remember:
 // "east" is +X         "south" is +Z
 // "west" is -X         "north" is -Z
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        5 ,        5 ,   0
-       10 ,       10 ,   2
-       20 ,       20 ,   15
-      100 ,      100 ,   22
-      100 ,     -100 ,   38
+     -100 ,        0 ,   0
+      100 ,        0 ,   20
+       50 ,       50 ,   40
+      100 ,      100 ,   60
+      100 ,     -100 ,   80
