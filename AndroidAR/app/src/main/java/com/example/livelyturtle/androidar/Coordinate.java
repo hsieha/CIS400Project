@@ -15,6 +15,8 @@ public class Coordinate {
     // compass coordinates: 39.952258, -75.197008
     public static final double COMPASS_LAT = 39.952258;
     public static final double COMPASS_LONG = -75.197008;
+    public static final Coordinate COMPASS = new Coordinate(COMPASS_LAT, COMPASS_LONG);
+
 
     //NOTE from Darren: if the lat/long gets too large
     // errors will become larger further away from origin
@@ -62,7 +64,7 @@ public class Coordinate {
         return p1.latitude * p2.longitude - p1.longitude * p2.latitude;
     }
 
-    public static Coordinate subtract(Coordinate p1, Coordinate p2) {
+    public static Coordinate subtract(Coordinate p2, Coordinate p1) {
         return new Coordinate(p2.latitude-p1.latitude,p2.longitude-p1.longitude);
     }
 
@@ -79,10 +81,32 @@ public class Coordinate {
     }
 
     public static boolean closeTo(double x, double y) {
-        if (Math.abs(x - y) < 0.001) {
+        if (Math.abs(x - y) < 0.00001) {
             return true;
         }
         return false;
+    }
+
+    // get a coordinate by specifying xz values
+    private Coordinate() {}
+    public static Coordinate fromXZ(double x, double z) {
+        Coordinate c = new Coordinate();
+        c.x = x;
+        c.z = z;
+
+        // gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
+        double latAdj = -(z/111111.);
+        double longAdj = x/(111111.*Math.cos(COMPASS_LAT*Math.PI/180.));
+        c.latitude = COMPASS_LAT + latAdj;
+        c.longitude = COMPASS_LONG + longAdj;
+
+        return c;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + latitude + "," + longitude + ")";
+
     }
 
 }

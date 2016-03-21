@@ -44,6 +44,7 @@ import com.example.livelyturtle.androidar.Chevron;
 import org.w3c.dom.Text;
 
 import static com.example.livelyturtle.androidar.opengl.DefaultEffect.*;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
 
 /*
  * MyGLRenderer mostly handles drawing implementation.
@@ -61,13 +62,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static final Vector GRAY = Vector.of(.55f,.55f,.55f);
     public static final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
     public static final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
+    public static final Vector PURE_BLUE = Vector.of(0,0,1f);
     public static final Vector BLUE = Vector.of(.45f,.45f,.8f);
     public static final Vector RED = Vector.of(.8f, .45f, .45f);
     public static final Vector PURE_GREEN = Vector.of(0, 1f, 0);
 
 
     // call setScale on glText with this value for default text size
-    private final float TEXT_SCALE_CONSTANT = 0.00022f;
+    private final float TEXT_SCALE_CONSTANT = 0.00055f;
     // font in assets folder
     private final String FONT = "nobile-bold.ttf";
     private final int FONT_SIZE = 144;
@@ -76,7 +78,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // gl viewport
     private final float NEAR_CLIP_DISTANCE = .5f; // 50cm
-    private final float FAR_CLIP_DISTANCE = 500f; // half a kilometer
+    private final float FAR_CLIP_DISTANCE = 2000f; // 2km
 
 
     // essential member variables
@@ -90,13 +92,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] currentAPR = new float[] {0,0,0};
 
     // user eye height assumed to be 1.75m
-    Vector eye = Vector.of(0,1.75f,0);
+    Vector eye = Vector.of(0,1.75f,0); // default to 0 if no info available
+    Coordinate eyeCoord = Coordinate.COMPASS; // used for path rendering. Default to 0 (COMPASS) if no info available
     Vector upV;
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
+
+
+
+
+
+    public Coordinate getEyeCoord() {
+        return eyeCoord;
+    }
 
     /**
      * updateEye is only called when location updates are available - NOT for manual setting
@@ -105,7 +116,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void updateEye(double la, double lo) {
         Coordinate c = new Coordinate(la, lo);
+
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+        eyeCoord = c;
+
         noLocationDataAvailable = false;
 
         // the status is the time
@@ -149,10 +163,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glLinkProgram(mProgram);
         // -- end opengl program creation code --
 
-
-        // Set the background frame color
-        GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
-
         // Create the GLText
         glText = new GLText(ctxt.getAssets());
 
@@ -166,6 +176,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // enable texture + alpha blending
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        // depth testing enabled
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        GLES20.glDepthMask(true);
 
 
 
@@ -217,6 +232,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         addDrawing("Square", vs, ss,BLUE, 1);*/
 
         addMapData(mapData);
+
         //drawDirectory.put("Square", new DrawExecutor(vs, ss, WHITE, 1));
 
 
@@ -230,6 +246,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         ///////////////////////////////////////////////////////////////
         // -----END DEMO DATA-----
+
+
+        // start the path simulation timer, if necessary
+        if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
+            System.out.println("STARTING PATH TIMER: " + DataDebug.startPathTimer(ctxt));
+        }
+
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -249,8 +272,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onDrawFrame(GL10 unused) {
-        // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+        // Set the background frame color
+        // clear old depth buffer info (learnopengl.com/#!Getting-started/Coordinate-Systems)
+        GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 
         // -----3D VIEWING CALCULATIONS-----
@@ -275,9 +301,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float P = -1*currentAPR[1];
         float R = -1*currentAPR[2];
 
-        if (DataDebug.HARDCODE_LOCATION) {
+        // for debug, insert eye location here (it's handled by a bluetooth thread for LocationMode.REAL)
+        if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            locationStatus = "LOC HRDCD";
+            eyeCoord = Coordinate.COMPASS;
+            locationStatus = "HRDCD";
+        }
+        else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
+            Coordinate c = DataDebug.getPathSimulationCoordinate();
+            eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+            eyeCoord = Coordinate.fromXZ(c.x, c.z);
+            locationStatus = "PATHSIM";
         }
 
         upV = Vector.of(
@@ -479,7 +513,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Beacon test draw
         System.out.println("Drawing dah beacon");
 
-        Coordinate beacon_coordinate = new Coordinate(39.952258, -75.197008);
+        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
         ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
         beacon_list.add(beacon_coordinate);
         Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
@@ -535,19 +569,48 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         addDrawing(chev_list[1].getName(), test_chevron.vectors().get(1), test_chevron.vector_order(), PURE_GREEN, 1);
         addDrawing(chev_list[2].getName(), test_chevron.vectors().get(2), test_chevron.vector_order(), PURE_GREEN, 1);
 
+        Coordinate chevron_coordinate_1 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00006, DataDebug.HARDCODE_LONG - 0.0003);
+        Coordinate chevron_coordinate_2 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00008, DataDebug.HARDCODE_LONG - 0.00033);
+        Coordinate chevron_coordinate_3 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00010, DataDebug.HARDCODE_LONG - 0.00036);
+        ArrayList<Coordinate> chevron_list_1 = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chevron_list_2 = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chevron_list_3 = new ArrayList<Coordinate>();
+        chevron_list_1.add(chevron_coordinate_1);
+        chevron_list_2.add(chevron_coordinate_2);
+        chevron_list_3.add(chevron_coordinate_3);
+        Chevron test_chevron_1 = new Chevron("Test Chevron 1", chevron_list_1, 0.0f); //facing north
+        Chevron test_chevron_2 = new Chevron("Test Chevron 2", chevron_list_2, 0.0f); //facing north
+        Chevron test_chevron_3 = new Chevron("Test Chevron 3", chevron_list_3, 0.0f); //facing north
+
+//        System.out.println(test_chevron.getName() + ": ");
+//        System.out.println("vectors: " + test_chevron.vectors());
+//        System.out.println("vector_order:" + test_chevron.vector_order());
+
+        addDrawing(test_chevron_1.getName(), test_chevron_1.vectors(), test_chevron_1.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,0,500));
+        addDrawing(test_chevron_2.getName(), test_chevron_2.vectors(), test_chevron_2.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,500,1000));
+        addDrawing(test_chevron_3.getName(), test_chevron_3.vectors(), test_chevron_3.vector_order(), PURE_BLUE, 1,
+                new DrawEffect.Blink(0,2000,1000,1500));
+
         //end of chevron test draw
 
         // MICHAEL: testing effects on beacons
         Beacon effect1 = new Beacon("b1", new ArrayList<Coordinate>(){{add(new Coordinate(39.953, -75.203));}});
         Beacon effect2 = new Beacon("b2", new ArrayList<Coordinate>(){{add(new Coordinate(39.9545, -75.2025));}});
         addDrawing(effect1.getName(), effect1.vectors(), effect1.vector_order(), PURE_GREEN, 1,
-                new Blink(0,1000,0,500));
+                new Throb(WHITE,3667));
         addDrawing(effect2.getName(), effect2.vectors(), effect2.vector_order(), DARK_GRAY, 1,
-                new Throb(WHITE,2000));
+                new Blink(0,400,0,200));
         // END EFFECTS TESTING
     }
 
-
+    public void renderPath(Coordinate end) {
+        HashSet<Street> path = mapData.getStreetsPath(eyeCoord, end);
+        for (Street street : path) {
+            addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
+        }
+    }
 
     // -----CALCULATION IMPLEMENTATION-----
 
@@ -677,11 +740,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // methods
     private void drawAll() {
         drawAllShapes();
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST); // text always on top
         drawAllText();
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
     private void drawAllShapes() {
         for (DrawExecutor dx : drawDirectory.values()) {
-            dx.draw();
+           dx.draw();
         }
     }
     private void drawAllText() {
@@ -694,18 +759,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // ***if you need to change stuff, ONLY CHANGE d AND p, and the # of else-if calls***
         // this represents a linear-piecewise function
-        int[] d = new int[] {5,20,50,500}; // distance anchors
-        float[] p = new float[] {1.f,.8f,.3f,.1f}; // corresponding percent anchors (size)
+        int[] d = new int[] {5,20,50,100,500}; // distance anchors
+        float[] p = new float[] {1.f,.9f,.75f,.15f,.03f}; // corresponding percent anchors (size)
 
         // DO NOT TOUCH - not that you want to, probably
         int ptr = 0;
         if (distance < 0) return -1;
         // # else-if = # anchors. First else-if returns TEXT_SCALE_CONSTANT. All other else-if lines are equal.
-        else if (distance < d[ptr++]) return TEXT_SCALE_CONSTANT;
+        else if (distance < d[ptr++]) return p[0] * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
         else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
-        else return 0;
+        else if (distance < d[ptr++]) return (p[ptr-2]-((distance-d[ptr-2])*(p[ptr-2]-p[ptr-1])/(d[ptr-1]-d[ptr-2]))) * TEXT_SCALE_CONSTANT;
+        else                          return p[p.length-1] * TEXT_SCALE_CONSTANT;
     }
     private void drawLocationStatus() {
         if (noLocationDataAvailable) {
@@ -716,7 +782,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // white text
             glText.begin(1, 1, 1, 1, mMVPMatrix);
         }
-        glText.setScale(TEXT_SCALE_CONSTANT * .16f, TEXT_SCALE_CONSTANT * .325f);
+        glText.setScale(TEXT_SCALE_CONSTANT * .064f, TEXT_SCALE_CONSTANT * .13f);
 
         // I can't use the same string or else it will keep appending to itself, which is a bug
         // that is very bad for text-drawing performance
@@ -724,6 +790,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         locationStatusDisplayString += "|E:" + eye;
         locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
 
+        // TODO: if you want to start drawing text to the left of the screen center, use a cross product
         glText.draw(locationStatusDisplayString,
                 eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
                 0,

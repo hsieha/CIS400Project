@@ -16,32 +16,36 @@ import android.app.Activity;
  * Created by LivelyTurtle on 1/27/2016.
  */
 public class MapData {
+    public enum DataType {
+        BUILDING, STREET, POI
+    }
+
     HashSet<Building> buildings;
     HashSet<Street> streets;
-
-    public MapData() {
-        buildings = new HashSet<Building>();
-        streets = new HashSet<Street>();
-    }
+    HashSet<POI> pois;
 
     // Parsing a .kml file from Google Maps
     public MapData(String filename, Activity activity) {
         String line = null;
         buildings = new HashSet<Building>();
         streets = new HashSet<Street>();
+        pois = new HashSet<POI>();
         try {
             InputStream iS = activity.getAssets().open("UPennCampus.kml");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(iS));
-            boolean isBuilding = true; // true if adding a building, false if adding a street
+            DataType type = DataType.BUILDING;
             String name = "";
             ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
             while((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
                 if(line.equals("<name>Buildings</name>")) {
-                    isBuilding = true;
+                    type = DataType.BUILDING;
                 }
                 else if(line.equals("<name>Streets</name>")) {
-                    isBuilding = false;
+                    type = DataType.STREET;
+                }
+                else if(line.equals("<name>POI</name>")) {
+                    type = DataType.POI;
                 }
                 else if(line.startsWith("<name>")) {
                     name = line.substring(6, line.length() - 7);
@@ -55,11 +59,14 @@ public class MapData {
                                 Double.parseDouble(latlong[0]));
                         coordinates.add(coord);
                     }
-                    if(isBuilding) {
+                    if(type == DataType.BUILDING) {
                         buildings.add(new Building(name,coordinates));
                     }
-                    else {
+                    else if(type == DataType.STREET) {
                         streets.add(new Street(name, coordinates));
+                    }
+                    else {
+                        pois.add(new POI(name, coordinates));
                     }
                 }
             }
@@ -125,6 +132,11 @@ public class MapData {
             Double dist = dist();
             return dist.compareTo(other.dist());
         }
+
+        @Override
+        public String toString() {
+            return s0.name + "_" + s1.name + "_" + c;
+        }
     }
 
     private class PQElem implements Comparable<PQElem> {
@@ -143,9 +155,14 @@ public class MapData {
             Double total = pathDist + cur.dist();
             return total.compareTo(other.pathDist+other.cur.dist());
         }
+
+        @Override
+        public String toString() {
+            return cur.toString();
+        }
     }
 
-    // does a*
+    // returns a hashset of streets to be drawn
     public HashSet<Street> getStreetsPath(Coordinate start, Coordinate end) {
         Node startStreetNode = coordToNode(start);
         Node endStreetNode = coordToNode(end);
@@ -153,10 +170,12 @@ public class MapData {
         endStreetNode.end = endStreetNode;
         HashSet<Node> nodes = initNodes(startStreetNode, endStreetNode);
         if(nodes == null) {
+            System.out.println("MapData: getStreetPath - nodes are null");
             return null;
         }
         ArrayList<Node> path = getPath(startStreetNode, endStreetNode);
         if(path == null) {
+            System.out.println("MapData: getStreetPath - path are null");
             return null;
         }
         HashSet<Street> streetPath = new HashSet<>();
@@ -166,17 +185,30 @@ public class MapData {
             Node n1 = path.get(i+1);
             coord.add(n0.c);
             coord.add(n1.c);
-            Street s = new Street(n0.s0.name+n0.s1.name+n1.s0.name+n1.s1.name,coord);
+            Street s = new Street(n0.s0.name+n0.s1.name+"_"+n1.s0.name+n1.s1.name,coord);
             streetPath.add(s);
         }
+        ArrayList<Coordinate> coordStart = new ArrayList<>();
+        coordStart.add(start);
+        coordStart.add(startStreetNode.c);
+        Street first = new Street("start_"+startStreetNode.s0.name,coordStart);
+        ArrayList<Coordinate> coordEnd = new ArrayList<>();
+        coordEnd.add(endStreetNode.c);
+        coordEnd.add(end);
+        Street last = new Street("end_"+endStreetNode.s0.name,coordEnd);
+        streetPath.add(first);
+        streetPath.add(last);
         return streetPath;
     }
 
+    // a* - returns an arraylist of nodes in the path
     private ArrayList<Node> getPath(Node startNode, Node endNode) {
         PriorityQueue<PQElem> pq = new PriorityQueue<>();
         HashSet<Node> seen = new HashSet<Node>();
         seen.add(startNode);
-        pq.add(new PQElem(new ArrayList<Node>(), startNode, 0));
+        ArrayList<Node> startPath = new ArrayList<Node>();
+        startPath.add(startNode);
+        pq.add(new PQElem(startPath, startNode, 0));
         while(!pq.isEmpty()) {
             PQElem elem = pq.poll();
             if(elem.cur.equals(endNode)){
@@ -188,7 +220,7 @@ public class MapData {
                     continue;
                 }
                 seen.add(neighbor);
-                ArrayList<Node> newPath = elem.path;
+                ArrayList<Node> newPath = new ArrayList<Node>(elem.path);
                 newPath.add(neighbor);
                 pq.add(new PQElem(newPath, neighbor, elem.pathDist+elem.cur.c.dist(neighbor.c)));
             }
@@ -228,6 +260,7 @@ public class MapData {
         return nodes;
     }
 
+    // create node of coord closest to nearest street
     private Node coordToNode(Coordinate coord) {
         Node n = new Node();
         double bestDist = Double.POSITIVE_INFINITY;
@@ -252,17 +285,19 @@ public class MapData {
             Coordinate w = wall.getCoordinates().get(i+1);
             Coordinate p = point;
             double l2 = Math.pow(v.dist(w), 2);
-            if (Coordinate.closeTo(l2, 0)) {
+            if (l2 == 0) {
                 if(bestDist > point.dist(v)) {
                     bestDist = point.dist(v);
                     bestC = v;
                 }
             }
-            double t = Math.max(0, Math.min(1, Coordinate.dot(Coordinate.subtract(p, v), Coordinate.subtract(w, v)) / l2));
-            Coordinate ans = Coordinate.add(v, Coordinate.mult(Coordinate.subtract(w, v), t));
-            if(bestDist > point.dist(ans)) {
-                bestDist = point.dist(ans);
-                bestC = ans;
+            else {
+                double t = Math.max(0, Math.min(1, Coordinate.dot(Coordinate.subtract(p, v), Coordinate.subtract(w, v)) / l2));
+                Coordinate ans = Coordinate.add(v, Coordinate.mult(Coordinate.subtract(w, v), t));
+                if (bestDist > point.dist(ans)) {
+                    bestDist = point.dist(ans);
+                    bestC = ans;
+                }
             }
         }
         return bestC;

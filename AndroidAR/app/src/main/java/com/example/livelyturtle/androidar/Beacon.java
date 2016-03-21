@@ -12,7 +12,15 @@ public class Beacon extends WorldObject{
     static final int INDEX_COUNT = 240;
     static final int VERTEX_COUNT = 80;
 
+    //detection radius around the beacon
+    //triggers next event if within the detect radius
+    //radius of the beacon itself is 1 meter
+    double detect_radius = 5 + 1;
+
     Coordinate textCoord;
+
+    double x;
+    double z;
 
     //NOTE: Arraylist coordinates only holds 1 coordinate
     public Beacon(String name, ArrayList<Coordinate> coordinates){
@@ -26,14 +34,14 @@ public class Beacon extends WorldObject{
         }
         lat -= this.coordinates.get(0).latitude;
         lon -= this.coordinates.get(0).longitude;
+
+        x = this.coordinates.get(0).x;
+        z = this.coordinates.get(0).z;
     }
 
     public ArrayList<Moverio3D.Vector> vectors() {
 
         ArrayList<Moverio3D.Vector> vectors = new ArrayList<Moverio3D.Vector>();
-
-        double x = this.coordinates.get(0).x;
-        double z = this.coordinates.get(0).z;
 
         //Store top cap vertices (vertex 0-19)
         for(int i = 0; i < 20; i++){
@@ -104,6 +112,15 @@ public class Beacon extends WorldObject{
 
     public Coordinate getTextCoord() {
         return textCoord;
+    }
+
+    //detects if given vector is inside radius of beacon's detection circle
+    //if inside return true, else return false
+    public boolean hasArrived(Vector eye_vector){
+        if( Math.pow((eye_vector.x() - this.x), 2.0) + Math.pow((eye_vector.z() - this.z), 2.0) < Math.pow(detect_radius, 2.0)){
+            return true;
+        }
+        return false;
     }
 
 }
