@@ -85,4 +85,21 @@ public class Coordinate {
         return false;
     }
 
+    // get a coordinate by specifying xz values
+    private Coordinate() {}
+    public static Coordinate fromXZ(double x, double z) {
+        Coordinate c = new Coordinate();
+        c.x = x;
+        c.z = z;
+
+        // my belief is that latitude and longitude aren't used when the Coordinate is being
+        // processed within the GL rendering pipeline. Only x and z are used.
+        // If this is incorrect then it is relatively simple to get the true lat and long, given
+        // x, z, and the lat/long of (0,0) [the compass at 37th and Locust].
+        c.latitude = Double.NaN;
+        c.longitude = Double.NaN;
+
+        return c;
+    }
+
 }

@@ -22,6 +22,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -130,7 +131,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
         setContentView(mGLView);
 
         // set off fusion sensor calculations at fixed intervals
-        fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 2000, TIME_CONSTANT);
+        fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 2500, TIME_CONSTANT);
 
 
         // -----LOCATION DATA-----
@@ -161,8 +162,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
 //            e.printStackTrace();
 //        }
 
-        // run the bluetooth listener
-        if (!DataDebug.HARDCODE_LOCATION) {
+        // run the bluetooth listener, only for real location
+        if (DataDebug.LOCATION_MODE == LocationMode.REAL) {
             (new AcceptThread()).start();
         }
 

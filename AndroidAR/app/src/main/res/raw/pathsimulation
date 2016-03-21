@@ -1,0 +1,35 @@
+// INSTRUCTIONS
+// Define the path you want the eye to take.
+// Each line will have 3 values, separated by commas.
+// [x-coordinate], [z-coordinate], [time (seconds)]
+//
+// x and z coordinates are in METERS, and (0,0) is the compass.
+// Do NOT use latitude or longitude for these numbers.
+// Times must be monotonically increasing.
+//
+// The simulated location will be linearly interpolated between the points of the nearest two times.
+// If the time exactly matches an entry, then the location will be that point.
+// Any time before the first time gives the first coordinate.
+// Any time after the last time gives the last coordinate.
+//
+// EXAMPLE
+//
+//     0 ,    0 ,    0
+//    10 ,   10 ,   60
+//    30 ,  -50 ,  360
+//
+// At time 30s, position is (5,5)
+// At time 60s, position is (10,10)
+// At time 210s, position is (20,-20)
+// At all times at and after 360s, position is (30,-50)
+//
+// All lines in this file will be read. Any line that is empty or begins with a double-slash will be ignored.
+// Remember:
+// "east" is +X         "south" is +Z
+// "west" is -X         "north" is -Z
+
+        5 ,        5 ,   0
+       10 ,       10 ,   2
+       20 ,       20 ,   15
+      100 ,      100 ,   22
+      100 ,     -100 ,   38

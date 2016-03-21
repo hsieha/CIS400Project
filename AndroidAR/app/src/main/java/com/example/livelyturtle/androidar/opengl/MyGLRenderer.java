@@ -43,6 +43,7 @@ import com.example.livelyturtle.androidar.Chevron;
 import org.w3c.dom.Text;
 
 import static com.example.livelyturtle.androidar.opengl.DefaultEffect.*;
+import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
 
 /*
  * MyGLRenderer mostly handles drawing implementation.
@@ -231,6 +232,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         ///////////////////////////////////////////////////////////////
         // -----END DEMO DATA-----
+
+
+        // start the path simulation timer, if necessary
+        if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
+            System.out.println("STARTING PATH TIMER: " + DataDebug.startPathTimer(ctxt));
+        }
+
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -279,9 +287,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float P = -1*currentAPR[1];
         float R = -1*currentAPR[2];
 
-        if (DataDebug.HARDCODE_LOCATION) {
+        // for debug, insert eye location here (it's handled by a bluetooth thread for LocationMode.REAL)
+        if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            locationStatus = "LOC HRDCD";
+            locationStatus = "HRDCD";
+        }
+        else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
+            Coordinate c = DataDebug.getPathSimulationCoordinate();
+            eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+            locationStatus = "PATHSIM";
         }
 
         upV = Vector.of(
@@ -714,6 +728,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         locationStatusDisplayString += "|E:" + eye;
         locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
 
+        // TODO: if you want to start drawing text to the left of the screen center, use a cross product
         glText.draw(locationStatusDisplayString,
                 eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
                 0,
