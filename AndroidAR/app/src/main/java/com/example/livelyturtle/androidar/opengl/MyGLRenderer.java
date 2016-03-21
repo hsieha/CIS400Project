@@ -38,6 +38,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.Beacon;
+import com.example.livelyturtle.androidar.ThreeChevron;
 import com.example.livelyturtle.androidar.Chevron;
 
 import org.w3c.dom.Text;
@@ -489,20 +490,51 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
         //end of beacon test draw code
-        
+
         //chevron test draw
         System.out.println("Drawing dah chevron");
 
         Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
-        ArrayList<Coordinate> chevron_list = new ArrayList<Coordinate>();
-        chevron_list.add(chevron_coordinate);
-        Chevron test_chevron = new Chevron("Test Chevron", chevron_list, 0.0f); //facing north
+        Coordinate three_coordinate = new Coordinate(DataDebug.HARDCODE_LAT - 0.0004, DataDebug.HARDCODE_LONG);
+        ArrayList<Coordinate> chevron_coor_list = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
+        chevron_coor_list.add(chevron_coordinate);
+        three_coor_list.add(three_coordinate);
+        ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 180.0f);
+        Chevron test_chev1 = new Chevron("Test Chevron", chevron_coor_list, 0.0f);  //facing north at 0.0f
 
-        System.out.println(test_chevron.getName() + ": ");
-        System.out.println("vectors: " + test_chevron.vectors());
+        Coordinate one = new Coordinate(39.952699, -75.200927);
+        Coordinate two = new Coordinate(39.952702, -75.200938);
+        Coordinate three = new Coordinate(39.952704, -75.200951);
+
+        System.out.println("ONE: " + one.x + ", " + one.z);
+        System.out.println("TWO: " + two.x + ", " + two.z);
+        System.out.println("THREE: " + three.x + ", " + three.z);
+
+        System.out.println(test_chev1.getName() + ": ");
+        System.out.println("vectors: " + test_chev1.vectors());
+        System.out.println("vector_order:" + test_chev1.vector_order());
+
+        Chevron[] chev_list = test_chevron.chevron_list();
+
+        addDrawing(test_chev1.getName(), test_chev1.vectors(), test_chev1.vector_order(), PURE_GREEN, 1);
+
+        System.out.println(chev_list[0].getName() + ": ");
+        System.out.println("vectors: " + test_chevron.vectors().get(0));
         System.out.println("vector_order:" + test_chevron.vector_order());
 
-        addDrawing(test_chevron.getName(), test_chevron.vectors(), test_chevron.vector_order(), PURE_GREEN, 1);
+        System.out.println(chev_list[1].getName() + ": ");
+        System.out.println("vectors: " + test_chevron.vectors().get(1));
+        System.out.println("vector_order:" + test_chevron.vector_order());
+
+        System.out.println(chev_list[2].getName() + ": ");
+        System.out.println("vectors: " + test_chevron.vectors().get(2));
+        System.out.println("vector_order:" + test_chevron.vector_order());
+
+        addDrawing(chev_list[0].getName(), test_chevron.vectors().get(0), test_chevron.vector_order(), PURE_GREEN, 1);
+        addDrawing(chev_list[1].getName(), test_chevron.vectors().get(1), test_chevron.vector_order(), PURE_GREEN, 1);
+        addDrawing(chev_list[2].getName(), test_chevron.vectors().get(2), test_chevron.vector_order(), PURE_GREEN, 1);
+
         //end of chevron test draw
 
         // MICHAEL: testing effects on beacons

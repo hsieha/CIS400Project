@@ -18,22 +18,28 @@ public class Chevron extends WorldObject {
     static final int VERTEX_COUNT = 6;
 
     Coordinate textCoord;
+    float angle;
+    double x;
+    double z;
 
     //NOTE: Arraylist coordinates only holds 1 coordinate
-    //this coordinate is the top center vertx of the chevron
-    //must also enter a direction to point the chveron
+    //this coordinate is the top center vertex of the chevron
+    //must also enter a direction to point the chevron
     //direction given in degrees from north clockwise
     public Chevron(String name, ArrayList<Coordinate> coordinates, float dir){
-        super(name, coordinates, 0.2f);
+        super(name, coordinates, -5.0f);
 
-        double lat = 0;
-        double lon = 0;
-        for (Coordinate coord : this.coordinates) {
-            lat += coord.latitude;
-            lon += coord.longitude;
-        }
-        lat -= this.coordinates.get(0).latitude;
-        lon -= this.coordinates.get(0).longitude;
+        angle = dir;
+
+        x = this.coordinates.get(0).x;
+        z = this.coordinates.get(0).z;
+    }
+
+    public void set_x(double new_x){
+        x = new_x;
+    }
+    public void set_z(double new_z){
+        z = new_z;
     }
 
     //location of each vertex
@@ -41,42 +47,53 @@ public class Chevron extends WorldObject {
 
         ArrayList<Moverio3D.Vector> vectors = new ArrayList<Moverio3D.Vector>();
 
-        double x = this.coordinates.get(0).x;
-        double z = this.coordinates.get(0).z;
-
         //given point for top of the chevron
-        vectors.add(Vector.of((float)x, (float) height, (float)z));
+        vectors.add(Vector.of((float) x, (float) height, (float) z));
 
         //all other points are rotated based on specified direction given for where chevron is point at
         //chevron is being built counterclockwise
-        vectors.add(Vector.of((float) (x - 2.0), (float) height, (float) (z + 1)));
-        vectors.add(Vector.of((float) (x - 2.0), (float) height, (float) (z + 2)));
-        vectors.add(Vector.of((float) x, (float) height, (float) (z + 1)));
-        vectors.add(Vector.of((float) (x + 2.0), (float) height, (float) (z + 2)));
-        vectors.add(Vector.of((float) (x + 2.0), (float) height, (float) (z + 1)));
+
+        //NOTE: need to test directions more heavily
+        Vector v1 = Moverio3D.rotateYAxis(Vector.of(-2.0f, (float) height, 1.0f), angle);
+        vectors.add(Vector.sum(v1, Vector.of((float) x, 0, (float) z)));
+
+        //vectors.add(Vector.sum((float) (x - 2.0), (float) height, (float) (z + 2)));
+        Vector v2 = Moverio3D.rotateYAxis(Vector.of(-2.0f, (float) height, 2.0f), angle);
+        vectors.add(Vector.sum(v2, Vector.of((float) x, 0, (float) z)));
+
+        //vectors.add(Vector.sum((float) x, (float) height, (float) (z + 1)));
+        Vector v3 = Moverio3D.rotateYAxis(Vector.of(0.0f, (float) height, 1.0f), angle);
+        vectors.add(Vector.sum(v3, Vector.of((float) x, 0, (float) z)));
+
+        //vectors.add(Vector.sum((float) (x + 2.0), (float) height, (float) (z + 2)));
+        Vector v4 = Moverio3D.rotateYAxis(Vector.of(2.0f, (float) height, 2.0f), angle);
+        vectors.add(Vector.sum(v4, Vector.of((float) x, 0, (float) z)));
+
+        //vectors.add(Vector.sum((float) (x + 2.0), (float) height, (float) (z + 1)));
+        Vector v5 = Moverio3D.rotateYAxis(Vector.of(2.0f, (float) height, 1.0f), angle);
+        vectors.add(Vector.sum(v5, Vector.of((float) x, 0, (float) z)));
 
         return vectors;
     }
 
     //order of vertices
-    public ArrayList<Short> vector_order(){
+    public ArrayList<Short> vector_order() {
 
         //DARREN: couldn't figure out a smart way to iterate through this
         ArrayList<Short> order = new ArrayList<Short>() {{
-            add((short)0);
-            add((short)1);
-            add((short)3);
-            add((short)1);
-            add((short)2);
-            add((short)3);
-            add((short)3);
-            add((short)4);
-            add((short)5);
-            add((short)5);
-            add((short)0);
-            add((short)3);
+            add((short) 0);
+            add((short) 1);
+            add((short) 3);
+            add((short) 1);
+            add((short) 2);
+            add((short) 3);
+            add((short) 3);
+            add((short) 4);
+            add((short) 5);
+            add((short) 5);
+            add((short) 0);
+            add((short) 3);
         }};
-
 
         return order;
     }
