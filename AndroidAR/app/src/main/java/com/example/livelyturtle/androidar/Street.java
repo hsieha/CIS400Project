@@ -148,6 +148,11 @@ public class Street extends WorldObject {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     ////////////////////////
     //NOT USING BELOW CODE//
     ////////////////////////

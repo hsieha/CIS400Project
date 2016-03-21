@@ -96,8 +96,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
+    Coordinate eyeCoord = hardCoord;
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
+
+    public Coordinate getEyeCoord() {
+        return eyeCoord;
+    }
 
     /**
      * updateEye is only called when location updates are available - NOT for manual setting
@@ -106,6 +111,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void updateEye(double la, double lo) {
         Coordinate c = new Coordinate(la, lo);
+        eyeCoord = c;
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
         noLocationDataAvailable = false;
 
@@ -128,6 +134,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int mProgram;
     public MyGLRenderer(Context c, MapData mapData) {
         ctxt = c; this.mapData = mapData;
+        if (DataDebug.HARDCODE_LOCATION) {
+            eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
+            locationStatus = "LOC HRDCD";
+        }
     }
 
 
@@ -219,6 +229,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         addDrawing("Square", vs, ss,BLUE, 1);*/
 
         addMapData(mapData);
+
         //drawDirectory.put("Square", new DrawExecutor(vs, ss, WHITE, 1));
 
 
@@ -547,8 +558,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 new Blink(0,400,0,200));
         // END EFFECTS TESTING
     }
-
-
 
     // -----CALCULATION IMPLEMENTATION-----
 
