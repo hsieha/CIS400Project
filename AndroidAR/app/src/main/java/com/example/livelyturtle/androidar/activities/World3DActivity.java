@@ -661,8 +661,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
         }
     }
 
-    public HashSet<Street> renderPath(Coordinate end) {
-        return mapData.getStreetsPath(mGLView.mRenderer.getEyeCoord(), end);
+    public void renderPath(Coordinate end) {
+        mGLView.mRenderer.renderPath(end);
     }
 
 //    private class UIVariableChangeRunnable implements Runnable {

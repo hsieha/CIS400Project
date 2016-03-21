@@ -545,6 +545,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // END EFFECTS TESTING
     }
 
+    public void renderPath(Coordinate end) {
+        HashSet<Street> path = mapData.getStreetsPath(eyeCoord, end);
+        for (Street street : path) {
+            addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
+        }
+    }
+
     // -----CALCULATION IMPLEMENTATION-----
 
     // holds all openGL non-text things to draw
