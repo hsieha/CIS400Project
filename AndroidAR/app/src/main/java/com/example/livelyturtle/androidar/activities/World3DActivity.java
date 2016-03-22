@@ -72,6 +72,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
     private MapData mapData;
 
+    private Tour tour;
+
     private void updateAPR(float a, float p, float r) {
         APR[0] = a;
         APR[1] = p;
@@ -130,6 +132,9 @@ public class World3DActivity extends Activity implements SensorEventListener {
         // as the ContentView for this Activity.
         mapData = new MapData("UPennCampus.kml", this);
         mGLView = new MyGLSurfaceView(this, mapData);
+
+        //initialize the Tour
+        tour = new Tour();
 
         //mGLView.mRenderer.addMapData(mapData);
         setContentView(mGLView);
@@ -676,8 +681,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
     public void renderPath(Coordinate end) {
         mGLView.mRenderer.renderPath(end);
     }
-
-    
 
 //    private class UIVariableChangeRunnable implements Runnable {
 //        private final double D1;

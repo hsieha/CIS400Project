@@ -9,7 +9,7 @@ import java.util.ListIterator;
  */
 public class Tour {
 
-    LinkedList<Coordinate> tour_queue;
+    LinkedList<Coordinate> tour_queue = new LinkedList<Coordinate>();
     ListIterator<Coordinate> iterator;
 
     //Assume you start at 33rd and Walnut
