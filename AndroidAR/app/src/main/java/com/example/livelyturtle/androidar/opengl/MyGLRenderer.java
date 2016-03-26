@@ -271,6 +271,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 NEAR_CLIP_DISTANCE, FAR_CLIP_DISTANCE);
     }
 
+    // pathsim vars
+    private long ps_lastTimeMultiple;
+    private Vector ps_lastEye = Vector.zero();
     public void onDrawFrame(GL10 unused) {
 
         // Set the background frame color
@@ -309,9 +312,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
         else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
             Coordinate c = DataDebug.getPathSimulationCoordinate();
-            eye = Vector.of((float)c.x, eye.y(), (float)c.z);
-            eyeCoord = Coordinate.fromXZ(c.x, c.z);
             locationStatus = "PATHSIM";
+
+            long now = System.currentTimeMillis();
+            if (ps_lastTimeMultiple != now/DataDebug.PATH_SIM_UPDATE_PERIOD) {
+                ps_lastTimeMultiple = now/DataDebug.PATH_SIM_UPDATE_PERIOD;
+                ps_lastEye = Vector.of((float)c.x, eye.y(), (float)c.z);
+            }
+            eye = ps_lastEye;
+            eyeCoord = Coordinate.fromXZ(ps_lastEye.x(), ps_lastEye.z());
         }
 
         upV = Vector.of(
