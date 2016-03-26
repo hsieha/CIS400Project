@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.ArrayList;
 
@@ -93,7 +94,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // user eye height assumed to be 1.75m
     Vector eye = Vector.of(0,1.75f,0); // default to 0 if no info available
-    Coordinate eyeCoord = Coordinate.COMPASS; // used for path rendering. Default to 0 (COMPASS) if no info available
     Vector upV;
     Vector toCoV;
 
@@ -106,7 +106,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
     public Coordinate getEyeCoord() {
-        return eyeCoord;
+        return Coordinate.fromXZ(eye.x(), eye.z());
     }
 
     /**
@@ -118,7 +118,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Coordinate c = new Coordinate(la, lo);
 
         eye = Vector.of((float)c.x, eye.y(), (float)c.z);
-        eyeCoord = c;
 
         noLocationDataAvailable = false;
 
@@ -126,6 +125,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         locationStatus = "lst upd:[" + df.format(cal.getTime()) + "]";
+
+        stlock_eyePosUpdated = true;
     }
 
     // other variables
@@ -273,7 +274,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // pathsim vars
     private long ps_lastTimeMultiple;
-    private Vector ps_lastEye = Vector.zero();
     public void onDrawFrame(GL10 unused) {
 
         // Set the background frame color
@@ -304,24 +304,28 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float P = -1*currentAPR[1];
         float R = -1*currentAPR[2];
 
-        // for debug, insert eye location here (it's handled by a bluetooth thread for LocationMode.REAL)
+        // *** Eye, Up, and View vectors *** //
+        // for debug, insert eye location here (it's handled by receiveGPSDataTask for LocationMode.REAL)
+        long now = System.currentTimeMillis();
         if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            eyeCoord = Coordinate.COMPASS;
             locationStatus = "HRDCD";
         }
         else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
             Coordinate c = DataDebug.getPathSimulationCoordinate();
             locationStatus = "PATHSIM";
 
-            long now = System.currentTimeMillis();
             if (ps_lastTimeMultiple != now/DataDebug.PATH_SIM_UPDATE_PERIOD) {
                 ps_lastTimeMultiple = now/DataDebug.PATH_SIM_UPDATE_PERIOD;
-                ps_lastEye = Vector.of((float)c.x, eye.y(), (float)c.z);
+                eye = Vector.of((float)c.x, eye.y(), (float)c.z);
+                stlock_eyePosUpdated = true;
             }
-            eye = ps_lastEye;
-            eyeCoord = Coordinate.fromXZ(ps_lastEye.x(), ps_lastEye.z());
         }
+
+
+        // correct eye value by locking it to nearest street
+        streetLock();
+
 
         upV = Vector.of(
                 (float) (-1. * Math.cos(A) * Math.sin(R) * Math.cos(P) + Math.sin(A) * Math.sin(P)),
@@ -519,6 +523,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
         }
 
+        // necessary for streetLock algorithm
+        allSegments = new HashSet<>();
+        for (Street str : streets) {
+            List<Coordinate> coords = str.getCoordinates();
+            allSegments.add(new Segment(
+                    new Point((float)coords.get(0).x, (float)coords.get(0).z),
+                    new Point((float)coords.get(1).x, (float)coords.get(1).z)));
+        }
+
         //Beacon test draw
         System.out.println("Drawing dah beacon");
 
@@ -615,7 +628,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void renderPath(Coordinate end) {
-        HashSet<Street> path = mapData.getStreetsPath(eyeCoord, end);
+        HashSet<Street> path = mapData.getStreetsPath(getEyeCoord(), end);
         for (Street street : path) {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
         }
@@ -798,16 +811,285 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         String locationStatusDisplayString = locationStatus;
         locationStatusDisplayString += "|E:" + eye;
         locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
+        if (streetSwitch) locationStatusDisplayString += " ( ! STREETLOCK SWITCH ! ) ";
+
+        // use cross to move the displayed string left on the screen
+        Vector cross = Vector.cross(upV, toCoV).scalarMultiply(.15f);
 
         // TODO: if you want to start drawing text to the left of the screen center, use a cross product
         glText.draw(locationStatusDisplayString,
-                eye.x() + toCoV.x(), eye.y() + toCoV.y(), eye.z() + toCoV.z(), // location
+
+                eye.x() + toCoV.x() + cross.x(),
+                eye.y() + toCoV.y() + cross.y(),
+                eye.z() + toCoV.z() + cross.z(), // location
+
                 0,
                 (float)(currentAPR[0] * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
-                0);
+                0
+        );
 
         glText.end();
     }
+
+
+
+
+
+
+    /**
+     * Modify the current eye value so that it is directly over a street. Picks a point on a street
+     * such that no other point on any street is closer.
+     * The private classes assume "rise" is z and "run" is x.
+     */
+    static float eps = .00001f;
+    static class Point {
+        float x;
+        float z;
+        Point(float x, float z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        float distanceFrom(Point other) {
+            return (float) Math.sqrt(Math.pow(other.x - x,2) + Math.pow(other.z - z,2));
+        }
+
+        /**
+         * Suppose a line is drawn through this, with slope perpendicular to sg.
+         * This method returns the intersection of that line with sg.
+         * Null is returned if there is no intersection.
+         * @param sg the segment to test with
+         */
+        Point perpendicularIntersectWithSegment(Segment sg) {
+            float perpSlope = (sg.slope() == Float.POSITIVE_INFINITY) ? 0 :
+                              (Math.abs(sg.slope()) < .00001) ? Float.POSITIVE_INFINITY :
+                              -1 / sg.slope();
+            // taken from wikipedia
+            float x1 = sg.endpt1.x;
+            float y1 = sg.endpt1.z;
+            float x2 = sg.endpt2.x;
+            float y2 = sg.endpt2.z;
+            float x3 = x;
+            float y3 = z;
+            float x4 = perpSlope == Float.POSITIVE_INFINITY ? x : x + 1;
+            float y4 = perpSlope == Float.POSITIVE_INFINITY ? z + 1 : z + perpSlope;
+            // candidate point for isect
+            Point cnd = new Point(
+
+                    ((x1*y2 - y1*x2)*(x3-x4) - (x1-x2)*(x3*y4 - y3*x4)) /
+                            ((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+
+                    ,
+
+                    ((x1*y2 - y1*x2)*(y3-y4) - (y1-y2)*(x3*y4 - y3*x4)) /
+                            ((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+
+            );
+            // ensure possibleIsect is between sg's 2 endpts, with epsilon allowed
+            // horizontal
+            if (Math.abs(sg.endpt1.z - sg.endpt2.z) < eps) {
+                if (cnd.x >= Math.min(sg.endpt1.x,sg.endpt2.x) - eps &&
+                    cnd.x <= Math.max(sg.endpt1.x,sg.endpt2.x) + eps) {
+                    return cnd;
+                }
+            }
+            // vertical
+            if (sg.slope() == Float.POSITIVE_INFINITY) {
+                if (cnd.z >= Math.min(sg.endpt1.z,sg.endpt2.z) - eps &&
+                    cnd.z <= Math.max(sg.endpt1.z,sg.endpt2.z) + eps) {
+                    return cnd;
+                }
+            }
+            // positive slope
+            if (sg.slope() > 0) {
+                Point r = (sg.endpt1.x > sg.endpt2.x) ? sg.endpt1 : sg.endpt2;
+                Point l = (r == sg.endpt1) ? sg.endpt2 : sg.endpt1;
+                if (cnd.x >= l.x - eps &&
+                    cnd.x <= r.x + eps &&
+                    cnd.z >= l.z - eps &&
+                    cnd.z <= r.z + eps) {
+                    return cnd;
+                }
+            }
+            // negative slope
+            if (sg.slope() < 0) {
+                Point r = (sg.endpt1.x > sg.endpt2.x) ? sg.endpt1 : sg.endpt2;
+                Point l = (r == sg.endpt1) ? sg.endpt2 : sg.endpt1;
+                if (cnd.x >= l.x - eps &&
+                    cnd.x <= r.x + eps &&
+                    cnd.z <= l.z + eps &&
+                    cnd.z >= r.z - eps) {
+                    return cnd;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "(" + x + "," + z + ")";
+        }
+    }
+    /**
+     * each Segment represents a street. After initial Segment generation from MapData, DO NOT
+     * generate new segments; reuse old ones. Segments will be tested for pointer equality (==) to
+     * determine if they represent particular streets
+     */
+    static class Segment {
+        Point endpt1;
+        Point endpt2;
+
+        Segment(Point a, Point b) {
+            endpt1 = a;
+            endpt2 = b;
+        }
+
+        float slope() {
+            if (Math.abs(endpt1.x - endpt2.x) < eps) return Float.POSITIVE_INFINITY;
+            return (endpt1.z - endpt2.z)/(endpt1.x - endpt2.x);
+        }
+
+        @Override
+        public String toString() {
+            return "[(" + endpt1.x + "," + endpt1.z + ")(" +
+                    endpt2.x + "," + endpt2.z + ")]";
+        }
+    }
+    static class PtSegTuple {
+        Point pt;
+        Segment sg;
+        PtSegTuple(Point p, Segment s) {
+            pt = p;
+            sg = s;
+        }
+
+        @Override
+        public String toString() {
+            return pt.toString() + "|" + sg.toString();
+        }
+    }
+    private Segment currStreet;
+    private Segment candidateStreet;
+    private float lastDistanceFromCurrStreet;
+    private int numberOfFixesOffCurrStreet; // increments as long as new fixes are farther away from the old street
+    private boolean streetSwitch = false;
+    private boolean stlock_eyePosUpdated = false;
+    private Set<Segment> allSegments = null; // this is set in addMapData
+    private void streetLock() {
+        /*
+        Algorithm:
+         - represent each street as a line (endpt1, slope, endpt2)
+         - for each street-line:
+           - get perpendicular slope
+           - run line with such a slope through eye
+           - if this line intersects the street SEGMENT (calculcate intersection, check either
+             endpt1<=isect<=endpt2 || endpt2<=isect<=endpt1, with epsilon) AND isect is closer than
+             all previously discovered isects, update candidate
+           - if it doesn't intersect the segment, calculate whichever endpt is closer. If the closest
+             endpt is closer than all previously discovered candidates, update candidate. (easy to
+             prove that a point that doesn't perpendicularly intersect a segment has one of the endpts
+             as a closest point)
+           - ! in either case above, save the segment (pointer) as well This is necessary to properly
+             test the edge case (below)
+         - after all street-lines have been analyzed, set eye to candidate if edge case passed (below)
+
+         NOTES:
+         There's an edge case involving coming up to an intersection, if GPS accuracy is low. To fix,
+         do not switch to a new street unless 3 consecutive points are (A) on a new street AND (B) monotonically
+         increasing farther away from old street. (Need a variable to hold recentClosestStreet as well)
+         If edge case does not pass filter, just calculate closest pt on current street, given eye.
+
+         Expose a static method that takes in a set of segments and a point, and returns the closest
+         point that is on a segment and also returns the segment.
+         */
+
+        Point eyePt = new Point(eye.x(), eye.z());
+
+        PtSegTuple ptseg = getClosestPointOnSomeSegment(allSegments, eyePt);
+
+        // do not bother with any below logic if the eye hasn't moved (e.g. no GPS update has arrived yet)
+        if (!stlock_eyePosUpdated) {
+            eye = Vector.of(ptseg.pt.x, eye.y(), ptseg.pt.z);
+            return;
+        }
+        stlock_eyePosUpdated = false;
+//        System.out.println(" !!!!! STLOCK ALGORITHM BEING PERFORMED NOW...");
+
+        if (currStreet == null || currStreet == ptseg.sg) {
+            currStreet = ptseg.sg;
+            candidateStreet = null;
+            lastDistanceFromCurrStreet = 0;
+            numberOfFixesOffCurrStreet = 0;
+            eye = Vector.of(ptseg.pt.x, eye.y(), ptseg.pt.z);
+            streetSwitch = false;
+        }
+        else {
+//            System.out.println(" !!!!! NOT ON CURRENT STREET...");
+//            System.out.println(" curr: " + currStreet);
+//            System.out.println(" cand: " + candidateStreet);
+//            System.out.println(" new: " + ptseg);
+            Point currFix = getClosestPointOnSpecificSegment(currStreet, eyePt);
+            if (ptseg.sg == candidateStreet) {
+//                System.out.println(" !!! numberFixes: " + numberOfFixesOffCurrStreet);
+                if (++numberOfFixesOffCurrStreet >= 4) { ///////// MAGIC NUMBER. This number is 1 GREATER than
+                                                                // the number of monotonically increasing distance fixes needed
+                    currStreet = candidateStreet;
+                    candidateStreet = null;
+                    lastDistanceFromCurrStreet = 0;
+                    numberOfFixesOffCurrStreet = 0;
+                    eye = Vector.of(ptseg.pt.x, eye.y(), ptseg.pt.z);
+                    streetSwitch = true;
+                }
+                else {
+                    float newDist = eyePt.distanceFrom(currFix);
+                    if (newDist < lastDistanceFromCurrStreet) {
+                        numberOfFixesOffCurrStreet = 1;
+                    }
+                    lastDistanceFromCurrStreet = newDist;
+                    eye = Vector.of(currFix.x, eye.y(), currFix.z);
+                    streetSwitch = false;
+                }
+            }
+            else {
+//                System.out.println(" !!! setting new candidateStreet");
+                candidateStreet = ptseg.sg;
+                lastDistanceFromCurrStreet = eyePt.distanceFrom(currFix);
+                numberOfFixesOffCurrStreet = 1;
+                eye = Vector.of(currFix.x, eye.y(), currFix.z);
+                streetSwitch = false;
+            }
+        }
+
+    }
+    static PtSegTuple getClosestPointOnSomeSegment(Set<Segment> segments, Point inputPt) {
+        Segment closestSegSoFar = null;
+        Point closestPtSoFar = null;
+
+        for (Segment sg : segments) {
+            Point ptOnSg = getClosestPointOnSpecificSegment(sg, inputPt);
+            if (closestSegSoFar == null ||
+                inputPt.distanceFrom(ptOnSg) < inputPt.distanceFrom(closestPtSoFar)) {
+                closestSegSoFar = sg;
+                closestPtSoFar = ptOnSg;
+            }
+        }
+
+        return new PtSegTuple(closestPtSoFar, closestSegSoFar);
+    }
+    // if perpendicular point is null, return the closer endpoint
+    static Point getClosestPointOnSpecificSegment(Segment segment, Point inputPt) {
+        Point perpIsect = inputPt.perpendicularIntersectWithSegment(segment);
+        if (perpIsect != null) {
+            return perpIsect;
+        }
+        else {
+            float d1 = inputPt.distanceFrom(segment.endpt1);
+            float d2 = inputPt.distanceFrom(segment.endpt2);
+            if (d1 < d2) return segment.endpt1;
+            else return segment.endpt2;
+        }
+    }
+
 
 
 

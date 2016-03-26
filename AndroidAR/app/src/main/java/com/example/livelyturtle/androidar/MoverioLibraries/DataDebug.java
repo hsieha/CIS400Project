@@ -28,8 +28,7 @@ public final class DataDebug {
     public static final float NOISE_RADIUS          = 0f; // meters. noise if positive, else no noise
     public static final long NOISE_PERIOD           = 2500; // ms. invalid unless positive
 
-    public static final long PATH_SIM_UPDATE_PERIOD = 250; // ms. set to 1 for complete smoothness.
-
+    public static final long PATH_SIM_UPDATE_PERIOD = 1000; // ms. set to 1 for complete smoothness.
 
 
     /*
