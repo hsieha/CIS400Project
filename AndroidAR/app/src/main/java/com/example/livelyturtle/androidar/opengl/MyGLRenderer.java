@@ -2,6 +2,7 @@ package com.example.livelyturtle.androidar.opengl;
 
 import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -41,12 +42,15 @@ import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.Beacon;
 import com.example.livelyturtle.androidar.ThreeChevron;
 import com.example.livelyturtle.androidar.Chevron;
+import com.example.livelyturtle.androidar.Tour;
+import android.media.MediaPlayer;
 import com.example.livelyturtle.androidar.Path;
 
 import org.w3c.dom.Text;
 
 import static com.example.livelyturtle.androidar.opengl.DefaultEffect.*;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
+import com.example.livelyturtle.androidar.activities.World3DActivity;
 
 /*
  * MyGLRenderer mostly handles drawing implementation.
@@ -104,8 +108,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private String locationStatus = "NO LOC DATA";
 
 
-
-
+    MediaPlayer mp;
+    Tour tour = new Tour();
+    public boolean arrived = true;  //if user has arrived to the next location or not
+    Beacon dest_beacon = null;
 
     public Coordinate getEyeCoord() {
         return Coordinate.fromXZ(eye.x(), eye.z());
@@ -283,7 +289,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(BLACK.x(), BLACK.y(), BLACK.z(), 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-
         // -----3D VIEWING CALCULATIONS-----
 
         // default upV is straight up (0,1,0)
@@ -385,6 +390,39 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // -----DRAWING THE SCENE-----
         //mTriangle.draw(mMVPMatrix);
         //mSquare.draw(mMVPMatrix);
+
+        // -- TOUR LOGIC -- //
+
+        //check to see if you've arrived at a beacon
+        if (dest_beacon != null){
+            arrived = dest_beacon.hasArrived(eye);
+        }
+
+        //when user has arrived at a destination
+        if(arrived) {
+
+            //when you have arrived, remove the beacon
+            if (dest_beacon != null){
+                removeDrawing(dest_beacon.getName());
+            }
+
+            //obtain the next point on the tour
+            Coordinate next_point = tour.next();
+
+            //check if next point exists
+            if(next_point != null) {
+
+                //render the path to that point
+                renderPath(next_point);
+
+                //create a beacon at the destination
+                ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
+                beacon_list.add(next_point);
+                dest_beacon = new Beacon("Destination Beacon", beacon_list);
+                addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
+            }
+        }
+        // -- TOUR END -- //
 
         drawAll();
 
@@ -538,7 +576,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Beacon test draw
         System.out.println("Drawing dah beacon");
 
-        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
+        Coordinate beacon_coordinate = new Coordinate(39.9524462, -75.190585);
         ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
         beacon_list.add(beacon_coordinate);
         Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
@@ -555,12 +593,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
         Coordinate three_coordinate = new Coordinate(DataDebug.HARDCODE_LAT - 0.0004, DataDebug.HARDCODE_LONG);
+        Coordinate chev_coor = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
+        chev_coor.x -= 20;
+        chev_coor.z += 50;
         ArrayList<Coordinate> chevron_coor_list = new ArrayList<Coordinate>();
         ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
+        ArrayList<Coordinate> chev_coor_list = new ArrayList<Coordinate>();
         chevron_coor_list.add(chevron_coordinate);
         three_coor_list.add(three_coordinate);
+        chev_coor_list.add(chev_coor);
         ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 180.0f);
-        Chevron test_chev1 = new Chevron("Test Chevron", chevron_coor_list, 0.0f);  //facing north at 0.0f
+        Chevron chev = new Chevron("Chev", chev_coor_list, 0.0f);
+        Chevron test_chev1 = new Chevron("Test Chevron1", chevron_coor_list, 180.0f);  //facing south at 0.0f
 
         Coordinate one = new Coordinate(39.952699, -75.200927);
         Coordinate two = new Coordinate(39.952702, -75.200938);
@@ -577,6 +621,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Chevron[] chev_list = test_chevron.chevron_list();
 
         addDrawing(test_chev1.getName(), test_chev1.vectors(), test_chev1.vector_order(), PURE_GREEN, 1);
+
+        System.out.println(chev.getName() + ": ");
+        System.out.println("vectors: " + chev.vectors());
+        System.out.println("vector_order:" + chev.vector_order());
+
+        addDrawing(chev.getName(), chev.vectors(), chev.vector_order(), PURE_GREEN, 1);
 
         System.out.println(chev_list[0].getName() + ": ");
         System.out.println("vectors: " + test_chevron.vectors().get(0));
@@ -1154,6 +1204,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         currentAPR[0] = APRvalues[0];
         currentAPR[1] = APRvalues[1];
         currentAPR[2] = APRvalues[2];
+    }
+
+    // ==== Media Player Functions ==== //
+
+    //play the clip given a context and Uri file
+    public void playClip(Context context, Uri file){
+        mp = MediaPlayer.create(context, file);
+        mp.setLooping(false);
+        mp.start();
+    }
+
+    //end the clip, release the resources for the media player
+    public void endClip(MediaPlayer m){
+        m.release();
     }
 
 }

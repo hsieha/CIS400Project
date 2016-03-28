@@ -22,10 +22,10 @@ import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
-import com.example.livelyturtle.androidar.Tour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,8 +71,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
     private MyGLSurfaceView mGLView;
 
     private MapData mapData;
-
-    private Tour tour;
 
     private void updateAPR(float a, float p, float r) {
         APR[0] = a;
@@ -132,9 +130,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
         // as the ContentView for this Activity.
         mapData = new MapData("UPennCampus.kml", this);
         mGLView = new MyGLSurfaceView(this, mapData);
-
-        //initialize the Tour
-        tour = new Tour();
 
         //mGLView.mRenderer.addMapData(mapData);
         setContentView(mGLView);
