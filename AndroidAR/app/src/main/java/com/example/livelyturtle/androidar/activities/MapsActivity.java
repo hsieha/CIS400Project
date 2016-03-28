@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+import android.content.Context;
 
 import com.example.livelyturtle.androidar.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -21,6 +22,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.media.MediaPlayer;
 
 import java.util.Date;
 
@@ -58,6 +61,14 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
         createLocationRequest();
+
+        playSong(this);
+
+    }
+
+    public void playSong(Context context){
+        MediaPlayer mp = MediaPlayer.create(context, R.raw.jess_theme);
+        mp.start();
     }
 
     @Override

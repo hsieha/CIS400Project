@@ -25,6 +25,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
+import com.example.livelyturtle.androidar.Tour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +71,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
     private MyGLSurfaceView mGLView;
 
     private MapData mapData;
+
+    private Tour tour;
 
     private void updateAPR(float a, float p, float r) {
         APR[0] = a;
@@ -129,6 +132,9 @@ public class World3DActivity extends Activity implements SensorEventListener {
         // as the ContentView for this Activity.
         mapData = new MapData("UPennCampus.kml", this);
         mGLView = new MyGLSurfaceView(this, mapData);
+
+        //initialize the Tour
+        tour = new Tour();
 
         //mGLView.mRenderer.addMapData(mapData);
         setContentView(mGLView);
@@ -391,7 +397,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
      */
     static final int FRAME_RATE = 50; /*CHANGE THIS AS NEEDED*/
     static final int TIME_CONSTANT = (int) (1000./FRAME_RATE); /*DO NOT MODIFY*/
-    static final float FILTER_COEFFICIENT_AZIMUTH = 0.999f; /*CHANGE THIS AS NEEDED*/
+    static final float FILTER_COEFFICIENT_AZIMUTH = 1;//0.999f; /*CHANGE THIS AS NEEDED*/
     static final float FILTER_COEFFICIENT = 0.996f; /*CHANGE THIS AS NEEDED*/
     private Timer fuseTimer = new Timer();
     class calculateFusedOrientationTask extends TimerTask {
@@ -660,9 +666,9 @@ public class World3DActivity extends Activity implements SensorEventListener {
                     double d1 = Home.toDouble(d1Bytes);
                     double d2 = Home.toDouble(d2Bytes);
 
-                    // allow a UI change while in this thread
                     //System.out.println("*** UPDATING EYE WITH DATA RIGHT NOW");
                     mGLView.mRenderer.updateEye(d1, d2);
+                    // allow a UI change while in this thread
                     //runOnUiThread(new UIVariableChangeRunnable(d1, d2));
 
                 } catch (IOException e) {

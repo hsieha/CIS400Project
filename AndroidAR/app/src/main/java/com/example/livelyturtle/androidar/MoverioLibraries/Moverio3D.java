@@ -101,6 +101,9 @@ public final class Moverio3D {
         public static Vector difference(Vector end, Vector start) {
             return of(end.x - start.x, end.y - start.y, end.z - start.z);
         }
+        public static Vector cross(Vector u, Vector v) {
+            return of(u.y*v.z - u.z*v.y, u.z*v.x - u.x*v.z, u.x*v.y - u.y*v.x);
+        }
 
         // getting float arrays
         // TODO: a candidate for parallelization with Java 8?
