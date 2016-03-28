@@ -25,9 +25,9 @@ public class Chevron extends WorldObject {
     //NOTE: Arraylist coordinates only holds 1 coordinate
     //this coordinate is the top center vertex of the chevron
     //must also enter a direction to point the chevron
-    //direction given in degrees from north clockwise
+    //direction given in degrees from south clockwise
     public Chevron(String name, ArrayList<Coordinate> coordinates, float dir){
-        super(name, coordinates, -5.0f);
+        super(name, coordinates, -10.0f);
 
         angle = dir;
 
@@ -54,23 +54,24 @@ public class Chevron extends WorldObject {
         //chevron is being built counterclockwise
 
         //NOTE: need to test directions more heavily
-        Vector v1 = Moverio3D.rotateYAxis(Vector.of(-2.0f, (float) height, 1.0f), angle);
+
+        //vectors.add(Vector.sum((float) (x + 2.0), (float) height, (float) (z + 1)));
+        Vector v1 = Moverio3D.rotateYAxis(Vector.of(-1.0f, (float) height, -1.0f), (float) Math.toRadians(angle));
         vectors.add(Vector.sum(v1, Vector.of((float) x, 0, (float) z)));
 
-        //vectors.add(Vector.sum((float) (x - 2.0), (float) height, (float) (z + 2)));
-        Vector v2 = Moverio3D.rotateYAxis(Vector.of(-2.0f, (float) height, 2.0f), angle);
+        //vectors.add(Vector.sum((float) (x + 2.0), (float) height, (float) (z + 2)));
+        Vector v2 = Moverio3D.rotateYAxis(Vector.of(-1.0f, (float) height, 0.0f), (float) Math.toRadians(angle));
         vectors.add(Vector.sum(v2, Vector.of((float) x, 0, (float) z)));
 
         //vectors.add(Vector.sum((float) x, (float) height, (float) (z + 1)));
-        Vector v3 = Moverio3D.rotateYAxis(Vector.of(0.0f, (float) height, 1.0f), angle);
+        Vector v3 = Moverio3D.rotateYAxis(Vector.of(0.0f, (float) height, 1.0f), (float) Math.toRadians(angle));
         vectors.add(Vector.sum(v3, Vector.of((float) x, 0, (float) z)));
 
-        //vectors.add(Vector.sum((float) (x + 2.0), (float) height, (float) (z + 2)));
-        Vector v4 = Moverio3D.rotateYAxis(Vector.of(2.0f, (float) height, 2.0f), angle);
+        //vectors.add(Vector.sum((float) (x - 2.0), (float) height, (float) (z + 2)));
+        Vector v4 = Moverio3D.rotateYAxis(Vector.of(1.0f, (float) height, 0.0f), (float) Math.toRadians(angle));
         vectors.add(Vector.sum(v4, Vector.of((float) x, 0, (float) z)));
 
-        //vectors.add(Vector.sum((float) (x + 2.0), (float) height, (float) (z + 1)));
-        Vector v5 = Moverio3D.rotateYAxis(Vector.of(2.0f, (float) height, 1.0f), angle);
+        Vector v5 = Moverio3D.rotateYAxis(Vector.of(1.0f, (float) height, -1.0f), (float) Math.toRadians(angle));
         vectors.add(Vector.sum(v5, Vector.of((float) x, 0, (float) z)));
 
         return vectors;
@@ -83,16 +84,16 @@ public class Chevron extends WorldObject {
         ArrayList<Short> order = new ArrayList<Short>() {{
             add((short) 0);
             add((short) 1);
-            add((short) 3);
-            add((short) 1);
+            add((short) 2);
             add((short) 2);
             add((short) 3);
-            add((short) 3);
-            add((short) 4);
-            add((short) 5);
-            add((short) 5);
+            add((short) 0);
             add((short) 0);
             add((short) 3);
+            add((short) 4);
+            add((short) 4);
+            add((short) 5);
+            add((short) 0);
         }};
 
         return order;

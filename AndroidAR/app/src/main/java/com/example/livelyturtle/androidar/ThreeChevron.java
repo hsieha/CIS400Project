@@ -41,31 +41,28 @@ public class ThreeChevron extends WorldObject{
         System.out.println(lat);
         System.out.println(lon);
 
+        if (Math.abs(angle) > 360){
+            angle = angle % 360;
+        }
+
         //first chevron
         ArrayList<Coordinate> coor1 = new ArrayList<Coordinate>();
         coor1.add(new Coordinate(lat, lon));
         chev_one = new Chevron("one", coor1, angle);
 
-        double cos_var = 0.0;
-        double sin_var = 0.0;
-
-        if (angle > 360){
-            angle = angle % 360;
-        }
-
         //second chevron
         ArrayList<Coordinate> coor2 = new ArrayList<Coordinate>();
         coor2.add(new Coordinate(lat, lon));
         chev_two = new Chevron("two", coor2, angle);
-        chev_two.set_x(chev_two.x + dist*Math.cos(Math.toRadians(angle)));
-        chev_two.set_z(chev_two.z + dist*Math.sin(Math.toRadians(angle)));
+        chev_two.set_x(chev_two.x + dist*Math.cos(-Math.toRadians(angle+90)));
+        chev_two.set_z(chev_two.z + dist*Math.sin(-Math.toRadians(angle+90)));
 
         //third chevron
         ArrayList<Coordinate> coor3 = new ArrayList<Coordinate>();
         coor3.add(new Coordinate(lat, lon));
         chev_three = new Chevron("three", coor3, angle);
-        chev_three.set_x(chev_three.x + 2*dist*Math.cos(Math.toRadians(angle)));
-        chev_three.set_z(chev_three.z + 2*dist*Math.sin(Math.toRadians(angle)));
+        chev_three.set_x(chev_three.x + 2*dist*Math.cos(-Math.toRadians(angle+90)));
+        chev_three.set_z(chev_three.z + 2*dist*Math.sin(-Math.toRadians(angle+90)));
 
     }
 
@@ -92,16 +89,16 @@ public class ThreeChevron extends WorldObject{
         ArrayList<Short> order = new ArrayList<Short>() {{
             add((short) 0);
             add((short) 1);
-            add((short) 3);
-            add((short) 1);
+            add((short) 2);
             add((short) 2);
             add((short) 3);
-            add((short) 3);
-            add((short) 4);
-            add((short) 5);
-            add((short) 5);
+            add((short) 0);
             add((short) 0);
             add((short) 3);
+            add((short) 4);
+            add((short) 4);
+            add((short) 5);
+            add((short) 0);
         }};
 
         return order;

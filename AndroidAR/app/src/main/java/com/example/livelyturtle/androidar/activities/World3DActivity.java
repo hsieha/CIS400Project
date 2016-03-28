@@ -11,6 +11,8 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.app.Activity;
@@ -22,6 +24,7 @@ import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
+import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
@@ -73,6 +76,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
     private MapData mapData;
 
     private Tour tour;
+    private MediaPlayer mp;
 
     private void updateAPR(float a, float p, float r) {
         APR[0] = a;
@@ -680,6 +684,16 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
     public void renderPath(Coordinate end) {
         mGLView.mRenderer.renderPath(end);
+    }
+
+    public void playClip(Context context, Uri file){
+        mp = MediaPlayer.create(context, file);
+        mp.setLooping(false);
+        mp.start();
+    }
+
+    public void endClip(MediaPlayer m){
+        m.release();
     }
 
 //    private class UIVariableChangeRunnable implements Runnable {
