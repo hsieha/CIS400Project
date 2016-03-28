@@ -631,15 +631,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void renderPath(Coordinate end) {
+        removePath();
+        HashSet<Path> path = mapData.getStreetsPath(eyeCoord, end);
+        for (Path street : path) {
+            addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
+        }
+    }
+
+    public void removePath() {
         for(String key : drawDirectory.keySet()) {
             if (key.length() > 4 && key.substring(0, 5).equals("PATH_")) {
                 System.out.println("removing " + key);
                 removeDrawing(key);
             }
-        }
-        HashSet<Path> path = mapData.getStreetsPath(eyeCoord, end);
-        for (Path street : path) {
-            addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
         }
     }
 
