@@ -63,6 +63,10 @@ public class MapData {
                         buildings.add(new Building(name,coordinates));
                     }
                     else if(type == DataType.STREET) {
+                        /*for(int i = 0; i < coordinates.size()-1; i++) {
+                            ArrayList<Coordinate> partialCoord = new ArrayList<Coordinate>(coordinates.subList(i,i+1));
+                            streets.add(new Street(name+"_"+i, partialCoord));
+                        }*/
                         streets.add(new Street(name, coordinates));
                     }
                     else {
@@ -163,7 +167,7 @@ public class MapData {
     }
 
     // returns a hashset of streets to be drawn
-    public HashSet<Street> getStreetsPath(Coordinate start, Coordinate end) {
+    public HashSet<Path> getStreetsPath(Coordinate start, Coordinate end) {
         Node startStreetNode = coordToNode(start);
         Node endStreetNode = coordToNode(end);
         startStreetNode.end = endStreetNode;
@@ -178,24 +182,25 @@ public class MapData {
             System.out.println("MapData: getStreetPath - path are null");
             return null;
         }
-        HashSet<Street> streetPath = new HashSet<>();
+        System.out.println("MapData: path - " + path);
+        HashSet<Path> streetPath = new HashSet<>();
         for(int i = 0; i < path.size()-1; i++) {
             ArrayList<Coordinate> coord = new ArrayList<>();
             Node n0 = path.get(i);
             Node n1 = path.get(i+1);
             coord.add(n0.c);
             coord.add(n1.c);
-            Street s = new Street(n0.s0.name+n0.s1.name+"_"+n1.s0.name+n1.s1.name,coord);
+            Path s = new Path(n0.s0.name+n0.s1.name+"_"+n1.s0.name+n1.s1.name,coord);
             streetPath.add(s);
         }
         ArrayList<Coordinate> coordStart = new ArrayList<>();
         coordStart.add(start);
         coordStart.add(startStreetNode.c);
-        Street first = new Street("start_"+startStreetNode.s0.name,coordStart);
+        Path first = new Path("start_"+startStreetNode.s0.name,coordStart);
         ArrayList<Coordinate> coordEnd = new ArrayList<>();
         coordEnd.add(endStreetNode.c);
         coordEnd.add(end);
-        Street last = new Street("end_"+endStreetNode.s0.name,coordEnd);
+        Path last = new Path("end_"+endStreetNode.s0.name,coordEnd);
         streetPath.add(first);
         streetPath.add(last);
         return streetPath;
@@ -234,16 +239,17 @@ public class MapData {
         nodes.add(startNode);
         nodes.add(endNode);
         for(Street street : streets) {
-            for(Street other : streets) {
-                if(street.equals(other)) {
+            for (Street other : streets) {
+                if (street.equals(other)) {
                     continue;
                 }
                 Coordinate c = street.findIntersection(other);
-                if(c != null && !cIntersection.contains(c)) {
+                if (c != null && !cIntersection.contains(c)) {
                     cIntersection.add(c);
                     nodes.add(new Node(c, street, other, endNode));
                 }
             }
+
         }
         for(Node node : nodes) {
             for(Node other : nodes) {
