@@ -190,17 +190,17 @@ public class MapData {
             Node n1 = path.get(i+1);
             coord.add(n0.c);
             coord.add(n1.c);
-            Path s = new Path(n0.s0.name+n0.s1.name+"_"+n1.s0.name+n1.s1.name,coord);
+            Path s = new Path("PATH_"+n0.s0.name+n0.s1.name+"_"+n1.s0.name+n1.s1.name,coord);
             streetPath.add(s);
         }
         ArrayList<Coordinate> coordStart = new ArrayList<>();
         coordStart.add(start);
         coordStart.add(startStreetNode.c);
-        Path first = new Path("start_"+startStreetNode.s0.name,coordStart);
+        Path first = new Path("PATH_start_"+startStreetNode.s0.name,coordStart);
         ArrayList<Coordinate> coordEnd = new ArrayList<>();
         coordEnd.add(endStreetNode.c);
         coordEnd.add(end);
-        Path last = new Path("end_"+endStreetNode.s0.name,coordEnd);
+        Path last = new Path("PATH_end_"+endStreetNode.s0.name,coordEnd);
         streetPath.add(first);
         streetPath.add(last);
         return streetPath;
