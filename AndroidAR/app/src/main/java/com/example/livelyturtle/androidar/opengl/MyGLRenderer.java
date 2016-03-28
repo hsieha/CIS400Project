@@ -2,6 +2,7 @@ package com.example.livelyturtle.androidar.opengl;
 
 import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -41,12 +42,14 @@ import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.Beacon;
 import com.example.livelyturtle.androidar.ThreeChevron;
 import com.example.livelyturtle.androidar.Chevron;
+import com.example.livelyturtle.androidar.Tour;
 import android.media.MediaPlayer;
 
 import org.w3c.dom.Text;
 
 import static com.example.livelyturtle.androidar.opengl.DefaultEffect.*;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug.*;
+import com.example.livelyturtle.androidar.activities.World3DActivity;
 
 /*
  * MyGLRenderer mostly handles drawing implementation.
@@ -103,8 +106,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private String locationStatus = "NO LOC DATA";
 
 
-
-
+    MediaPlayer mp;
+    Tour tour = new Tour();
+    public boolean arrived = true;  //if user has arrived to the next location or not
+    Beacon dest_beacon = null;
 
     public Coordinate getEyeCoord() {
         return Coordinate.fromXZ(eye.x(), eye.z());
@@ -385,8 +390,35 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // -- TOUR LOGIC -- //
 
+        //check to see if you've arrived at a beacon
+        if (dest_beacon != null){
+            arrived = dest_beacon.hasArrived(eye);
+        }
 
+        //when user has arrived at a destination
+        if(arrived) {
 
+            //when you have arrived, remove the beacon
+            if (dest_beacon != null){
+                removeDrawing(dest_beacon.getName());
+            }
+
+            //obtain the next point on the tour
+            Coordinate next_point = tour.next();
+
+            //check if next point exists
+            if(next_point != null) {
+
+                //render the path to that point
+                renderPath(next_point);
+
+                //create a beacon at the destination
+                ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
+                beacon_list.add(next_point);
+                dest_beacon = new Beacon("Destination Beacon", beacon_list);
+                addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
+            }
+        }
         // -- TOUR END -- //
 
         drawAll();
@@ -541,7 +573,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Beacon test draw
         System.out.println("Drawing dah beacon");
 
-        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
+        Coordinate beacon_coordinate = new Coordinate(39.9524462, -75.190585);
         ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
         beacon_list.add(beacon_coordinate);
         Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
@@ -1159,6 +1191,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         currentAPR[0] = APRvalues[0];
         currentAPR[1] = APRvalues[1];
         currentAPR[2] = APRvalues[2];
+    }
+
+    // ==== Media Player Functions ==== //
+
+    //play the clip given a context and Uri file
+    public void playClip(Context context, Uri file){
+        mp = MediaPlayer.create(context, file);
+        mp.setLooping(false);
+        mp.start();
+    }
+
+    //end the clip, release the resources for the media player
+    public void endClip(MediaPlayer m){
+        m.release();
     }
 
 }
