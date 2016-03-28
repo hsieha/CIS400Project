@@ -405,6 +405,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             if (dest_beacon != null){
                 removeDrawing(dest_beacon.getName());
             }
+            removePath();
 
             //obtain the next point on the tour
             Coordinate next_point = tour.next();
@@ -681,7 +682,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void renderPath(Coordinate end) {
-        removePath();
         HashSet<Path> path = mapData.getStreetsPath(eyeCoord, end);
         for (Path street : path) {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
