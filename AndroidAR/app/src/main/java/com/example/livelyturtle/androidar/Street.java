@@ -12,8 +12,16 @@ public class Street extends WorldObject {
 
     private double width = 5;        //width of each street is 5 meters
 
+    public Street() {
+        super("", new ArrayList<Coordinate>(), 0.0f);
+    }
+
     public Street(String name, ArrayList<Coordinate> coordinates) {
         super(name, coordinates, 0.0f);
+    }
+
+    public Street(String name, ArrayList<Coordinate> coordinates, float h) {
+        super(name, coordinates, h);
     }
 
     //returns array_list of the vectors
@@ -129,6 +137,12 @@ public class Street extends WorldObject {
 
     // assumes never colinear and only intersect at one point
     public Coordinate findIntersection(Street other) {
+        if(this.getCoordinates().get(0).equals(other.getCoordinates().get(other.getCoordinates().size()-1))) {
+            return this.getCoordinates().get(0);
+        }
+        else if(this.getCoordinates().get(this.getCoordinates().size()-1).equals(other.getCoordinates().get(0))) {
+            return other.getCoordinates().get(0);
+        }
         for(int i = 0; i < this.getCoordinates().size()-1; i++) {
             for(int j = 0; j < other.getCoordinates().size()-1; j++) {
                 Coordinate q = other.getCoordinates().get(j);

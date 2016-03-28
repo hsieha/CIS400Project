@@ -39,6 +39,7 @@ import com.example.livelyturtle.androidar.R;
 import com.example.livelyturtle.androidar.Street;
 import com.example.livelyturtle.androidar.Beacon;
 import com.example.livelyturtle.androidar.Chevron;
+import com.example.livelyturtle.androidar.Path;
 
 import org.w3c.dom.Text;
 
@@ -92,11 +93,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // user eye height assumed to be 1.75m
     Vector eye = Vector.of(0,1.75f,0); // default to 0 if no info available
-    Coordinate eyeCoord = Coordinate.COMPASS; // used for path rendering. Default to 0 (COMPASS) if no info available
+
     Vector upV;
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
+    Coordinate eyeCoord = hardCoord; // used for path rendering. Default to hardcoded coord if no info available
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
 
@@ -303,7 +305,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // for debug, insert eye location here (it's handled by a bluetooth thread for LocationMode.REAL)
         if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            eyeCoord = Coordinate.COMPASS;
+            eyeCoord = hardCoord;
             locationStatus = "HRDCD";
         }
         else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
@@ -564,8 +566,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void renderPath(Coordinate end) {
-        HashSet<Street> path = mapData.getStreetsPath(eyeCoord, end);
-        for (Street street : path) {
+        HashSet<Path> path = mapData.getStreetsPath(eyeCoord, end);
+        for (Path street : path) {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
         }
     }
