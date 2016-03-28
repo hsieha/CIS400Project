@@ -23,10 +23,13 @@ public final class DataDebug {
     private DataDebug() {}
 
     // change these as needed
-    public static final LocationMode LOCATION_MODE  = LocationMode.HARDCODE;
+    public static final LocationMode LOCATION_MODE  = LocationMode.PATH_SIMULATION;
     // noise parameters are for the PATH_SIMULATION mode only
     public static final float NOISE_RADIUS          = 0f; // meters. noise if positive, else no noise
     public static final long NOISE_PERIOD           = 2500; // ms. invalid unless positive
+
+    public static final long PATH_SIM_UPDATE_PERIOD = 1000; // ms. set to 1 for complete smoothness.
+
 
     /*
      * compass coordinates (0,0):           39.952258   ,   -75.197008

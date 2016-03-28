@@ -401,7 +401,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
      */
     static final int FRAME_RATE = 50; /*CHANGE THIS AS NEEDED*/
     static final int TIME_CONSTANT = (int) (1000./FRAME_RATE); /*DO NOT MODIFY*/
-    static final float FILTER_COEFFICIENT_AZIMUTH = 0.999f; /*CHANGE THIS AS NEEDED*/
+    static final float FILTER_COEFFICIENT_AZIMUTH = 1;//0.999f; /*CHANGE THIS AS NEEDED*/
     static final float FILTER_COEFFICIENT = 0.996f; /*CHANGE THIS AS NEEDED*/
     private Timer fuseTimer = new Timer();
     class calculateFusedOrientationTask extends TimerTask {
@@ -670,9 +670,9 @@ public class World3DActivity extends Activity implements SensorEventListener {
                     double d1 = Home.toDouble(d1Bytes);
                     double d2 = Home.toDouble(d2Bytes);
 
-                    // allow a UI change while in this thread
                     //System.out.println("*** UPDATING EYE WITH DATA RIGHT NOW");
                     mGLView.mRenderer.updateEye(d1, d2);
+                    // allow a UI change while in this thread
                     //runOnUiThread(new UIVariableChangeRunnable(d1, d2));
 
                 } catch (IOException e) {

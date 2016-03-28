@@ -29,7 +29,13 @@ public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
     // period in ms of attempted updates to the other device (Moverio)
-    private final long UPDATE_PERIOD = 500L;
+    final long UPDATE_PERIOD = 250L;
+
+
+
+
+
+
 
     //private LocationManager locationManager;
     private GoogleApiClient mGoogleApiClient;
@@ -84,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void startLocationUpdates() {
         LocationRequest r = LocationRequest.create();
         r.setInterval(UPDATE_PERIOD);
-        r.setFastestInterval(UPDATE_PERIOD);
         r.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         try {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, r, this);
