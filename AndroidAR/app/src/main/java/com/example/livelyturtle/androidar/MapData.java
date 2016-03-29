@@ -63,11 +63,11 @@ public class MapData {
                         buildings.add(new Building(name,coordinates));
                     }
                     else if(type == DataType.STREET) {
-                        /*for(int i = 0; i < coordinates.size()-1; i++) {
-                            ArrayList<Coordinate> partialCoord = new ArrayList<Coordinate>(coordinates.subList(i,i+1));
+                        for(int i = 0; i < coordinates.size()-1; i++) {
+                            ArrayList<Coordinate> partialCoord = new ArrayList<Coordinate>(coordinates.subList(i,i+2));
                             streets.add(new Street(name+"_"+i, partialCoord));
-                        }*/
-                        streets.add(new Street(name, coordinates));
+                        }
+                        //streets.add(new Street(name, coordinates));
                     }
                     else {
                         pois.add(new POI(name, coordinates));
