@@ -173,7 +173,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
         // FOR DEBUG ONLY...
         // wait 5s, then call renderPathTask
-        (new Timer()).schedule(new RenderPathTask(), 5000);
+        renderPath(new Coordinate(39.95524,-75.2022));
+        (new Timer()).schedule(new RenderPathTask(), 10000);
     }
     class RenderPathTask extends TimerTask {
         @Override
