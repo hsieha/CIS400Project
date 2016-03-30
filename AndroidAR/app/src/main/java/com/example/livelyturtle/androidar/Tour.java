@@ -23,9 +23,9 @@ public class Tour {
     public Tour(){
 
         //Assume you start at 33rd and Walnut
-        //39.95249, -75.19019
+        //39.952500, -75.190194
         if(TOUR_MODE == TourMode.CAMPUS) {
-            tour_queue.add(new Coordinate(39.952499, -75.190156));    //ENIAC in Moore
+            tour_queue.add(new Coordinate(39.952480, -75.190554));    //ENIAC in Moore
             tour_queue.add(new Coordinate(39.952159, -75.193682));    //College Green
             tour_queue.add(new Coordinate(39.952135, -75.195205));    //Arch Building
             tour_queue.add(new Coordinate(39.952258, -75.197017));    //Compass + Ben Statue
@@ -33,10 +33,14 @@ public class Tour {
             tour_queue.add(new Coordinate(39.952717, -75.200666));    //Covenant (Dueling Tampons)
         }
         //Assume you start at 33rd and Walnut
-        //39.95249, -75.19019
+        //39.952500, -75.190194
         else if (TOUR_MODE == TourMode.DEMO){
-            tour_queue.add(new Coordinate(39.952499, -75.190156));  //ENIAC in Moore
-            tour_queue.add(new Coordinate(39.952735, -75.192033));  //End of street, 34th/Walnut
+
+            //tour_queue.add(new Coordinate(39.952556, -75.190040));
+            tour_queue.add(new Coordinate(39.952812, -75.192101));
+
+            //tour_queue.add(new Coordinate(39.952480, -75.190554));  //ENIAC in Moore
+            //tour_queue.add(new Coordinate(39.952735, -75.192033));  //End of street, 34th/Walnut
         }
 
         iterator = tour_queue.listIterator(0);

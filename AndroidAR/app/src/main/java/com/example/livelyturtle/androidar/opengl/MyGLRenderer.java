@@ -401,6 +401,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //when user has arrived at a destination
         if(arrived) {
 
+            System.out.println("we've arrived");
+
             //when you have arrived, remove the beacon
             if (dest_beacon != null){
                 removeDrawing(dest_beacon.getName());
@@ -419,6 +421,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
                 beacon_list.add(next_point);
                 dest_beacon = new Beacon("Destination Beacon", beacon_list);
+                System.out.println("draw new beacon for tour");
+
                 addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
             }
         }
@@ -574,71 +578,55 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
 
         //Beacon test draw
-        System.out.println("Drawing dah beacon");
-
-        Coordinate beacon_coordinate = new Coordinate(39.9524462, -75.190585);
+        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
         ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
         beacon_list.add(beacon_coordinate);
         Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
 
-        System.out.println(test_beacon.getName() + ": ");
-        System.out.println("vectors: " + test_beacon.vectors());
-        System.out.println("vector_order:" + test_beacon.vector_order());
+//        System.out.println(test_beacon.getName() + ": ");
+//        System.out.println("vectors: " + test_beacon.vectors());
+//        System.out.println("vector_order:" + test_beacon.vector_order());
 
         addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
         //end of beacon test draw code
 
         //chevron test draw
-        System.out.println("Drawing dah chevron");
-
         Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
         Coordinate three_coordinate = new Coordinate(DataDebug.HARDCODE_LAT - 0.0004, DataDebug.HARDCODE_LONG);
-        Coordinate chev_coor = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
-        chev_coor.x -= 20;
-        chev_coor.z += 50;
         ArrayList<Coordinate> chevron_coor_list = new ArrayList<Coordinate>();
         ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
-        ArrayList<Coordinate> chev_coor_list = new ArrayList<Coordinate>();
         chevron_coor_list.add(chevron_coordinate);
         three_coor_list.add(three_coordinate);
-        chev_coor_list.add(chev_coor);
         ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 180.0f);
-        Chevron chev = new Chevron("Chev", chev_coor_list, 0.0f);
         Chevron test_chev1 = new Chevron("Test Chevron1", chevron_coor_list, 180.0f);  //facing south at 0.0f
 
         Coordinate one = new Coordinate(39.952699, -75.200927);
         Coordinate two = new Coordinate(39.952702, -75.200938);
         Coordinate three = new Coordinate(39.952704, -75.200951);
 
-        System.out.println("ONE: " + one.x + ", " + one.z);
-        System.out.println("TWO: " + two.x + ", " + two.z);
-        System.out.println("THREE: " + three.x + ", " + three.z);
-
-        System.out.println(test_chev1.getName() + ": ");
-        System.out.println("vectors: " + test_chev1.vectors());
-        System.out.println("vector_order:" + test_chev1.vector_order());
+//        System.out.println("ONE: " + one.x + ", " + one.z);
+//        System.out.println("TWO: " + two.x + ", " + two.z);
+//        System.out.println("THREE: " + three.x + ", " + three.z);
+//
+//        System.out.println(test_chev1.getName() + ": ");
+//        System.out.println("vectors: " + test_chev1.vectors());
+//        System.out.println("vector_order:" + test_chev1.vector_order());
 
         Chevron[] chev_list = test_chevron.chevron_list();
 
         addDrawing(test_chev1.getName(), test_chev1.vectors(), test_chev1.vector_order(), PURE_GREEN, 1);
 
-        System.out.println(chev.getName() + ": ");
-        System.out.println("vectors: " + chev.vectors());
-        System.out.println("vector_order:" + chev.vector_order());
-
-        addDrawing(chev.getName(), chev.vectors(), chev.vector_order(), PURE_GREEN, 1);
-
-        System.out.println(chev_list[0].getName() + ": ");
-        System.out.println("vectors: " + test_chevron.vectors().get(0));
-        System.out.println("vector_order:" + test_chevron.vector_order());
-
-        System.out.println(chev_list[1].getName() + ": ");
-        System.out.println("vectors: " + test_chevron.vectors().get(1));
-        System.out.println("vector_order:" + test_chevron.vector_order());
-
-        System.out.println(chev_list[2].getName() + ": ");
-        System.out.println("vectors: " + test_chevron.vectors().get(2));
-        System.out.println("vector_order:" + test_chevron.vector_order());
+//        System.out.println(chev_list[0].getName() + ": ");
+//        System.out.println("vectors: " + test_chevron.vectors().get(0));
+//        System.out.println("vector_order:" + test_chevron.vector_order());
+//
+//        System.out.println(chev_list[1].getName() + ": ");
+//        System.out.println("vectors: " + test_chevron.vectors().get(1));
+//        System.out.println("vector_order:" + test_chevron.vector_order());
+//
+//        System.out.println(chev_list[2].getName() + ": ");
+//        System.out.println("vectors: " + test_chevron.vectors().get(2));
+//        System.out.println("vector_order:" + test_chevron.vector_order());
 
         addDrawing(chev_list[0].getName(), test_chevron.vectors().get(0), test_chevron.vector_order(), PURE_GREEN, 1);
         addDrawing(chev_list[1].getName(), test_chevron.vectors().get(1), test_chevron.vector_order(), PURE_GREEN, 1);

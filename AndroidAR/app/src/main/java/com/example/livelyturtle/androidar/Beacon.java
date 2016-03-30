@@ -15,7 +15,7 @@ public class Beacon extends WorldObject{
     //detection radius around the beacon
     //triggers next event if within the detect radius
     //radius of the beacon itself is 1 meter
-    double detect_radius = 5 + 1;
+    double detect_radius = 5.0f + 1.0f;
 
     Coordinate textCoord;
 
@@ -117,6 +117,9 @@ public class Beacon extends WorldObject{
     //detects if given vector is inside radius of beacon's detection circle
     //if inside return true, else return false
     public boolean hasArrived(Vector eye_vector){
+        System.out.println("EYE STUFF:");
+        System.out.println("x: " + eye_vector.x());
+        System.out.println("z: " + eye_vector.z());
         if( Math.pow((eye_vector.x() - this.x), 2.0) + Math.pow((eye_vector.z() - this.z), 2.0) < Math.pow(detect_radius, 2.0)){
             return true;
         }
