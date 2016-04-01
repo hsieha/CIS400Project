@@ -117,9 +117,6 @@ public class Beacon extends WorldObject{
     //detects if given vector is inside radius of beacon's detection circle
     //if inside return true, else return false
     public boolean hasArrived(Vector eye_vector){
-        System.out.println("EYE STUFF:");
-        System.out.println("x: " + eye_vector.x());
-        System.out.println("z: " + eye_vector.z());
         if( Math.pow((eye_vector.x() - this.x), 2.0) + Math.pow((eye_vector.z() - this.z), 2.0) < Math.pow(detect_radius, 2.0)){
             return true;
         }

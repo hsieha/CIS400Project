@@ -36,7 +36,8 @@ public class Tour {
         //39.952500, -75.190194
         else if (TOUR_MODE == TourMode.DEMO){
 
-            //tour_queue.add(new Coordinate(39.952556, -75.190040));
+            tour_queue.add(new Coordinate(39.952556, -75.190040));
+            tour_queue.add(new Coordinate(39.952673, -75.190997));
             tour_queue.add(new Coordinate(39.952812, -75.192101));
 
             //tour_queue.add(new Coordinate(39.952480, -75.190554));  //ENIAC in Moore

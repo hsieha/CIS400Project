@@ -45,6 +45,7 @@ import com.example.livelyturtle.androidar.Chevron;
 import com.example.livelyturtle.androidar.Tour;
 import android.media.MediaPlayer;
 import com.example.livelyturtle.androidar.Path;
+import java.util.ListIterator;
 
 import org.w3c.dom.Text;
 
@@ -108,10 +109,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private String locationStatus = "NO LOC DATA";
 
 
-    MediaPlayer mp;
+    MediaPlayer mp = null;
     Tour tour = new Tour();
     public boolean arrived = true;  //if user has arrived to the next location or not
     Beacon dest_beacon = null;
+    LinkedList<Uri> tour_media = initMedia(tour.TOUR_MODE);
+    ListIterator<Uri> tour_media_iterator = tour_media.listIterator(0);
 
     public Coordinate getEyeCoord() {
         return Coordinate.fromXZ(eye.x(), eye.z());
@@ -401,11 +404,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //when user has arrived at a destination
         if(arrived) {
 
-            System.out.println("we've arrived");
+
+            if(mp != null){
+                endClip(mp);
+            }
+
+            //not all beacons play media
+            if(tour_media_iterator.hasNext()) {
+                Uri next = tour_media_iterator.next();
+                if (next != null){
+                    playClip(ctxt, next);
+                }
+            }
 
             //when you have arrived, remove the beacon
             if (dest_beacon != null){
                 removeDrawing(dest_beacon.getName());
+                dest_beacon = null;
             }
             removePath();
 
@@ -1195,6 +1210,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     // ==== Media Player Functions ==== //
+
+    public LinkedList<Uri> initMedia(Tour.TourMode mode){
+        LinkedList<Uri> ret = new LinkedList<Uri>();
+        if(mode == Tour.TourMode.CAMPUS) {
+
+        } else if (mode == Tour.TourMode.DEMO) {
+            //ret.add(R.raw.eniac);
+            //ret.add(R.raw.engineering);
+        }
+        return ret;
+    }
 
     //play the clip given a context and Uri file
     public void playClip(Context context, Uri file){
