@@ -44,6 +44,8 @@ import com.example.livelyturtle.androidar.ThreeChevron;
 import com.example.livelyturtle.androidar.Chevron;
 import com.example.livelyturtle.androidar.Tour;
 import android.media.MediaPlayer;
+import android.view.MotionEvent;
+
 import com.example.livelyturtle.androidar.Path;
 
 import org.w3c.dom.Text;
@@ -103,7 +105,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
-    Coordinate eyeCoord = hardCoord; // used for path rendering. Default to hardcoded coord if no info available
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
 
@@ -151,7 +152,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public MyGLRenderer(Context c, MapData mapData) {
         ctxt = c; this.mapData = mapData;
     }
-
 
 
 
@@ -316,7 +316,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         long now = System.currentTimeMillis();
         if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            eyeCoord = hardCoord;
             locationStatus = "HRDCD";
         }
         else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
@@ -670,7 +669,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void renderPath(Coordinate end) {
-        HashSet<Path> path = mapData.getStreetsPath(eyeCoord, end);
+        HashSet<Path> path = mapData.getStreetsPath(getEyeCoord(), end);
         for (Path street : path) {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
         }
@@ -861,7 +860,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // that is very bad for text-drawing performance
         String locationStatusDisplayString = locationStatus;
         locationStatusDisplayString += "|E:" + eye;
-        locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
+        locationStatusDisplayString += "|DIR:" + (((int) (currentAPR[0] * 180 / (float) Math.PI)) + 360) % 360;
+        locationStatusDisplayString += " - " + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
         if (streetSwitch) locationStatusDisplayString += " ( ! STREETLOCK SWITCH ! ) ";
 
         // use cross to move the displayed string left on the screen
