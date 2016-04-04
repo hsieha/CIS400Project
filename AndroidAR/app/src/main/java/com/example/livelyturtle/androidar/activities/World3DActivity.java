@@ -107,9 +107,9 @@ public class World3DActivity extends Activity implements SensorEventListener {
         @Override
         public boolean onTouchEvent(MotionEvent e) {
             switch (e.getAction()) {
-                // Moverio may require button-primary
                 case MotionEvent.ACTION_DOWN:
                     System.out.println("TOUCH!!");
+                    mRenderer.recenterCompass();
                     break;
             }
             return true;
@@ -410,7 +410,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
      */
     static final int FRAME_RATE = 30; /*CHANGE THIS AS NEEDED*/
     static final int TIME_CONSTANT = (int) (1000./FRAME_RATE); /*DO NOT MODIFY*/
-    static final float FILTER_COEFFICIENT_AZIMUTH = 0.9925f; /*CHANGE THIS AS NEEDED*/
+    static final float FILTER_COEFFICIENT_AZIMUTH = 0.9985f; /*CHANGE THIS AS NEEDED*/
     static final float FILTER_COEFFICIENT = 0.985f; /*CHANGE THIS AS NEEDED*/
     private Timer fuseTimer = new Timer();
     boolean fusedIsRunning = false;
