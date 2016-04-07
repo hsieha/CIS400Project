@@ -44,6 +44,8 @@ import com.example.livelyturtle.androidar.ThreeChevron;
 import com.example.livelyturtle.androidar.Chevron;
 import com.example.livelyturtle.androidar.Tour;
 import android.media.MediaPlayer;
+import android.view.MotionEvent;
+
 import com.example.livelyturtle.androidar.Path;
 import java.util.ListIterator;
 
@@ -104,7 +106,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     Vector toCoV;
 
     Coordinate hardCoord = new Coordinate(DataDebug.HARDCODE_LAT, DataDebug.HARDCODE_LONG);
-    Coordinate eyeCoord = hardCoord; // used for path rendering. Default to hardcoded coord if no info available
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
 
@@ -138,6 +139,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         locationStatus = "lst upd:[" + df.format(cal.getTime()) + "]";
 
         stlock_eyePosUpdated = true;
+        compassRecenter_eyePosUpdated = true;
     }
 
     // other variables
@@ -154,7 +156,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public MyGLRenderer(Context c, MapData mapData) {
         ctxt = c; this.mapData = mapData;
     }
-
 
 
 
@@ -310,7 +311,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // Android APR values are reversed. (It's a left-hand system where clockwise goes up.)
         // OpenGL uses a right-hand system! So, all values must be negated. (Counter-clockwise goes up.)
-        float A = -1*currentAPR[0];
+        float A = -1*(currentAPR[0] + azimuthCorrection);
         float P = -1*currentAPR[1];
         float R = -1*currentAPR[2];
 
@@ -319,7 +320,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         long now = System.currentTimeMillis();
         if (DataDebug.LOCATION_MODE == LocationMode.HARDCODE) {
             eye = Vector.of((float)hardCoord.x, eye.y(), (float)hardCoord.z);
-            eyeCoord = hardCoord;
             locationStatus = "HRDCD";
         }
         else if (DataDebug.LOCATION_MODE == LocationMode.PATH_SIMULATION) {
@@ -330,12 +330,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 ps_lastTimeMultiple = now/DataDebug.PATH_SIM_UPDATE_PERIOD;
                 eye = Vector.of((float)c.x, eye.y(), (float)c.z);
                 stlock_eyePosUpdated = true;
+                compassRecenter_eyePosUpdated = true;
             }
         }
 
 
         // correct eye value by locking it to nearest street
         streetLock();
+
+        // detect which endpoint we're heading towards (used for compass adjustment)
+        headingDetectionService();
 
 
         upV = Vector.of(
@@ -685,7 +689,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void renderPath(Coordinate end) {
-        HashSet<Path> path = mapData.getStreetsPath(eyeCoord, end);
+        HashSet<Path> path = mapData.getStreetsPath(getEyeCoord(), end);
         for (Path street : path) {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
         }
@@ -815,7 +819,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             glText.drawC(text,
                     adjustedLocation.x(), adjustedLocation.y(), adjustedLocation.z(), // location
                     0,
-                    (float)(currentAPR[0] * -180./Math.PI),
+                    (float)((currentAPR[0]+azimuthCorrection) * -180./Math.PI),
                     0); // rotation - text always directly faces user (azimuth only)
 
             // TODO: more functionality: if text would be occluded by a building, still draw it but make it gray
@@ -876,8 +880,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // that is very bad for text-drawing performance
         String locationStatusDisplayString = locationStatus;
         locationStatusDisplayString += "|E:" + eye;
-        locationStatusDisplayString += "|DIR:" + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
+        locationStatusDisplayString += "|DIR:" + ((int) (currentAPR[0] * 180 / (float) Math.PI));
+        locationStatusDisplayString += " - " + Moverio3D.getDirectionFromAzimuth(currentAPR[0]).name();
+        locationStatusDisplayString += "|CORR:" + ((int) (azimuthCorrection * 180 / (float) Math.PI));
         if (streetSwitch) locationStatusDisplayString += " ( ! STREETLOCK SWITCH ! ) ";
+        if (compassRecenterNoEffect) locationStatusDisplayString += " ( ! CANNOT RECENTER ! ) ";
 
         // use cross to move the displayed string left on the screen
         Vector cross = Vector.cross(upV, toCoV).scalarMultiply(.15f);
@@ -890,7 +897,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 eye.z() + toCoV.z() + cross.z(), // location
 
                 0,
-                (float)(currentAPR[0] * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
+                (float)((currentAPR[0]+azimuthCorrection) * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
                 0
         );
 
@@ -1156,7 +1163,82 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
+    float azimuthCorrection = 0;
+    int headingFixes = 0;
+    final int REQUIRED_NUMBER_OF_HEADING_FIXES = 3;
+    boolean towardsEndpt1 = false;
+    boolean towardsEndpt2 = false;
+    float lastEndpt1Dist = -1;
+    boolean compassRecenter_eyePosUpdated = false;
+    boolean compassRecenterNoEffect = false;
+    private void headingDetectionService() {
 
+        if (!compassRecenter_eyePosUpdated) return; // skip if no location update
+        compassRecenter_eyePosUpdated = false;
+        if (streetSwitch) { // reset when streetlock, which was called right before this, indiates switch
+            headingFixes = 0;
+            towardsEndpt1 = false;
+            towardsEndpt2 = false;
+            lastEndpt1Dist = -1;
+        }
+
+
+        if (candidateStreet == null && currStreet != null) {
+            Point eyePt = new Point(eye.x(), eye.z());
+            float newDist = currStreet.endpt1.distanceFrom(eyePt);
+            if (lastEndpt1Dist == -1) {
+                lastEndpt1Dist = newDist;
+            }
+            else if (newDist <= lastEndpt1Dist) {
+                lastEndpt1Dist = newDist;
+                if (!towardsEndpt1) {
+                    headingFixes = 0;
+                    towardsEndpt1 = true;
+                    towardsEndpt2 = false;
+                }
+                else {
+                    headingFixes = Math.min(REQUIRED_NUMBER_OF_HEADING_FIXES,headingFixes+1);
+                }
+            }
+            else { // getting farther away from endpt1
+                lastEndpt1Dist = newDist;
+                if (!towardsEndpt2) {
+                    headingFixes = 0;
+                    towardsEndpt1 = false;
+                    towardsEndpt2 = true;
+                }
+                else {
+                    headingFixes = Math.min(REQUIRED_NUMBER_OF_HEADING_FIXES,headingFixes+1);
+                }
+            }
+        }
+
+    }
+    public void recenterCompass() {
+        if (headingFixes < REQUIRED_NUMBER_OF_HEADING_FIXES) {
+            compassRecenterNoEffect = true;
+            return;
+        }
+        compassRecenterNoEffect = false;
+
+        Point currentHeadingEndpt;
+        if (towardsEndpt1) {
+            currentHeadingEndpt = currStreet.endpt1;
+        }
+        else if (towardsEndpt2) {
+            currentHeadingEndpt = currStreet.endpt2;
+        }
+        else {
+            System.out.println(" (!) STATE ERROR IN recenterCompass");
+            return;
+        }
+
+        float xDiff = currentHeadingEndpt.x - eye.x();
+        float zDiff = currentHeadingEndpt.z - eye.z();
+        float correctHeading = (float)Math.atan2(xDiff,-zDiff);
+        azimuthCorrection = correctHeading - currentAPR[0];
+
+    }
 
 
 

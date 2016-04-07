@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -99,6 +100,19 @@ public class World3DActivity extends Activity implements SensorEventListener {
             mRenderer = new MyGLRenderer(context, mapData);
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(mRenderer);
+
+
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent e) {
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    System.out.println("TOUCH!!");
+                    mRenderer.recenterCompass();
+                    break;
+            }
+            return true;
         }
     }
 
@@ -172,7 +186,7 @@ public class World3DActivity extends Activity implements SensorEventListener {
         }
 
         // FOR DEBUG ONLY...
-        // wait 5s, then call renderPathTask
+        // wait some time, then call renderPathTask
         renderPath(new Coordinate(39.95524,-75.2022));
         (new Timer()).schedule(new RenderPathTask(), 10000);
     }
@@ -372,7 +386,10 @@ public class World3DActivity extends Activity implements SensorEventListener {
         // update storage for gyro orientation values
         SensorManager.getOrientation(gyroMatrix, gyroOrientation);
 
-        //System.out.println("gyroAPR[A]: " + gyroOrientation[0]);
+//        System.out.println("gyroAPR[A]: " + gyroOrientation[0]);
+//        System.out.println("gyroAPR[P]: " + gyroOrientation[1]);
+//        System.out.println("gyroAPR[R]: " + gyroOrientation[2]);
+//        System.out.println("==========");
     }
 
 
@@ -391,11 +408,12 @@ public class World3DActivity extends Activity implements SensorEventListener {
      *
      * It is recommended to set a higher constant for the AZIMUTH reading due to higher noise from the compass.
      */
-    static final int FRAME_RATE = 50; /*CHANGE THIS AS NEEDED*/
+    static final int FRAME_RATE = 30; /*CHANGE THIS AS NEEDED*/
     static final int TIME_CONSTANT = (int) (1000./FRAME_RATE); /*DO NOT MODIFY*/
-    static final float FILTER_COEFFICIENT_AZIMUTH = 1;//0.999f; /*CHANGE THIS AS NEEDED*/
-    static final float FILTER_COEFFICIENT = 0.996f; /*CHANGE THIS AS NEEDED*/
+    static final float FILTER_COEFFICIENT_AZIMUTH = 0.9985f; /*CHANGE THIS AS NEEDED*/
+    static final float FILTER_COEFFICIENT = 0.985f; /*CHANGE THIS AS NEEDED*/
     private Timer fuseTimer = new Timer();
+    boolean fusedIsRunning = false;
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {
             // TWOPI and the ?'s are used to fix a "sharp jerk" bug that occurs at the -pi/pi border.
