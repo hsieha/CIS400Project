@@ -663,10 +663,10 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
             while (true) {
                 try {
-                    System.out.println("*** Attempting to read from InputStream...");
+                    //System.out.println("*** Attempting to read from InputStream...");
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-                    System.out.println("*** InputStream read has occurred!");
+                    //System.out.println("*** InputStream read has occurred!");
 
                     // obtain the last 16 bytes from buffer
                     if (buffer.length < 16) {
@@ -676,9 +676,12 @@ public class World3DActivity extends Activity implements SensorEventListener {
                     byte[] d2Bytes = Arrays.copyOfRange(buffer, bytes - 8, bytes);
                     byte[] d1Bytes = Arrays.copyOfRange(buffer, bytes - 16, bytes - 8);
                     // convert into two doubles
-                    System.out.println("***");
+                    //System.out.println("***");
                     double d1 = Home.toDouble(d1Bytes);
                     double d2 = Home.toDouble(d2Bytes);
+
+                    //d1 is lat, d2 is long,
+                    System.out.println(d1 + ", " + d2);
 
                     //System.out.println("*** UPDATING EYE WITH DATA RIGHT NOW");
                     mGLView.mRenderer.updateEye(d1, d2);

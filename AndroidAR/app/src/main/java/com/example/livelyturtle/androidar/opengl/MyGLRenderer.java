@@ -1298,8 +1298,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if(mode == Tour.TourMode.CAMPUS) {
 
         } else if (mode == Tour.TourMode.DEMO) {
-            Uri url = Uri.parse("android.resource://" + ctxt.getPackageName() + "/" + R.raw.jess_theme);
-            ret.add(url);
+            //Uri url = Uri.parse("android.resource://" + ctxt.getPackageName() + "/" + R.raw.jess_theme);
+            //ret.add(url);
             //ret.add(R.raw.engineering);
         }
         return ret;

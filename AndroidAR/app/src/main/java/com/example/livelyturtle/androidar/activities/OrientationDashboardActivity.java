@@ -6,15 +6,19 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Environment;
 import android.widget.TextView;
 
 //for testing
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
 import java.util.Calendar;
+import android.content.Context;
+import java.io.OutputStream;
 
 import com.example.livelyturtle.androidar.MoverioLibraries.PhoneDebug;
 import com.example.livelyturtle.androidar.R;
@@ -147,35 +151,7 @@ public class OrientationDashboardActivity extends Activity implements
         ((TextView) findViewById(R.id.PitchStatus)).setText(pitchStatus);
         ((TextView) findViewById(R.id.RollStatus)).setText(rollStatus);
 
-        //for outputting data
-        File logs = new File("R.raw.test_log.txt");
-        BufferedWriter a_out, p_out, r_out;
-        a_out = p_out = r_out = null;
-        Calendar c = Calendar.getInstance();
-        int ms = c.get(Calendar.MILLISECOND);
-
-        try {
-            a_out = new BufferedWriter(new FileWriter(logs));
-            p_out = new BufferedWriter(new FileWriter(logs));
-            r_out = new BufferedWriter(new FileWriter(logs));
-
-            a_out.write(ms + " - " + a_out);
-            p_out.write(ms + " - " + p_out);
-            r_out.write(ms + " - " + r_out);
-
-            if (a_out != null){
-                a_out.close();
-            }
-            if (p_out != null){
-                p_out.close();
-            }
-            if (r_out != null){
-                r_out.close();
-            }
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
+        System.out.println(a + ", " + p + ", " + r);
 
     }
 }
