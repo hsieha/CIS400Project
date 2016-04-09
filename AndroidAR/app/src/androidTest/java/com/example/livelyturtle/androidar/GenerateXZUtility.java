@@ -21,8 +21,10 @@ public class GenerateXZUtility {
 
     List<LL> list = new LinkedList<LL>(){{
         add(new LL(Coordinate.COMPASS_LAT, Coordinate.COMPASS_LONG));
-        add(new LL(39.952958, -75.202835));
-        add(new LL(39.954119, -75.202596));
+        add(new LL(39.952958, -75.202835)); // 40/L
+        add(new LL(39.951892, -75.194403)); // L/Wood
+        add(new LL(39.952788, -75.192113)); // 34/W
+        add(new LL(39.952323, -75.192182)); // 34/Chancellor
         // etc...
 
     }};

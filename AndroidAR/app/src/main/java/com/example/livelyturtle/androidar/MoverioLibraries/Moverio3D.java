@@ -70,6 +70,9 @@ public final class Moverio3D {
         public static Vector of(float x, float y, float z) {
             return new Vector(x,y,z);
         }
+        public static Vector of(double x, double y, double z) {
+            return of((float)x,(float)y,(float)z);
+        }
 
         // accessors
         public float x() {

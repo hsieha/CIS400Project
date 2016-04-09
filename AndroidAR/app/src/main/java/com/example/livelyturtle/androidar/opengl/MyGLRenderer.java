@@ -68,7 +68,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public static final Vector WHITE = Vector.of(1,1,1);
     public static final Vector DARK_GRAY = Vector.of(.3f,.3f,.3f);
     public static final Vector GRAY = Vector.of(.55f,.55f,.55f);
-    public static final Vector LIGHT_GRAY = Vector.of(.8f,.8f,.8f);
+    public static final Vector LIGHT_GRAY = Vector.of(.7f,.7f,.7f);
     public static final Vector LIGHT_BLUE = Vector.of(.7f,.7f,.9f);
     public static final Vector PURE_BLUE = Vector.of(0,0,1f);
     public static final Vector BLUE = Vector.of(.45f,.45f,.8f);
@@ -86,7 +86,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // gl viewport
     private final float NEAR_CLIP_DISTANCE = .5f; // 50cm
-    private final float FAR_CLIP_DISTANCE = 2000f; // 2km
+    private final float FAR_CLIP_DISTANCE = 2500f; // 2.5km
 
 
     // essential member variables
@@ -460,6 +460,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // -----EXPOSED METHODS-----
     // changing drawings or text is expensive - don't do it often!
 
+    // IMPORTANT: for text associated with the same building, USE THE SAME NAME!!
+
     public boolean addDrawing(String id, List<Vector> vertices, List<Short> order, Vector color, float opacity) {
         return addDrawing(id, vertices, order, color, opacity, DEFAULT_EFFECT);
     }
@@ -474,7 +476,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             return true;
         }
         else {
-            System.out.println("addDrawing WARNING: id already exists. Call ignored.");
+            System.out.println("addDrawing WARNING: id \"" + id + "\" already exists. Call ignored.");
             return false;
         }
     }
@@ -514,7 +516,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             return true;
         }
         else {
-            System.out.println("addText WARNING: id already exists. Call ignored.");
+            System.out.println("addText WARNING: id \"" + id + "\" already exists. Call ignored.");
             return false;
         }
     }
@@ -558,7 +560,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //            System.out.println("vectors: " + building.vectors());
 //            System.out.println("vector_order:" + building.vector_order());
 
-            addDrawing(building.getName(), building.vectors(), building.vector_order(), BLUE, 1);
+            addDrawing(building.getName(), building.vectors(), building.vector_order(), building.getColor(), 1);
             Coordinate tcoord = building.getTextCoord();
             addText(building.getName(), building.getName(), Vector.of((float)tcoord.x,1.5f,(float)tcoord.z), WHITE, 1);
         }
@@ -568,7 +570,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //            System.out.println("vectors: " + street.vectors());
 //            System.out.println("vector_order:" + street.vector_order());
 
-            addDrawing(street.getName(), street.vectors(), street.vector_order(), RED, 1);
+            addDrawing(street.getName(), street.vectors(), street.vector_order(), GRAY, 1);
         }
 
         // necessary for streetLock algorithm
@@ -782,30 +784,36 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             opacity = op;
         }
 
-        private void draw() {
-            glText.begin(color.x(), color.y(), color.z(), opacity, mMVPMatrix);
-
+        private void draw(float whiteCutoff, float grayCutoff) {
             Vector textToAdjustedLocation = Vector.difference(eye, location);
             Vector shortened = textToAdjustedLocation.scalarMultiply(
                     textToAdjustedLocation.magnitude() <= 1f ? 0f :
-                    (textToAdjustedLocation.magnitude()-1f) / textToAdjustedLocation.magnitude());
+                            (textToAdjustedLocation.magnitude() - 1f) / textToAdjustedLocation.magnitude());
             Vector adjustedLocation = Vector.sum(location, shortened);
 
             // for some reason, the default size is absolutely ENORMOUS. Thankfully scaling seems
             // to work at any small order of magnitude
-            glText.setScale(calculateAdjustedTextSize(textToAdjustedLocation.magnitude()));
+            float scale = calculateAdjustedTextSize(textToAdjustedLocation.magnitude());
+            float textDist = textToAdjustedLocation.magnitude();
+            float colorMult;
 
-            // NOTE: for some reason, it seems text is drawn without regard to other gl objects's z-values
-            // if glText.draw() is called before an overlapping triangle, it is blocked; if called after, it shows.
-            // this is a good thing for our purposes; we will only draw text when we want it to be seen.
-            // so, text calls come after everything else.
+            if (textDist <= whiteCutoff) {
+                colorMult = 1;
+            }
+            else if (textDist <= grayCutoff) {
+                // at the graycutoff, colorMult is .5. Linear decrease from whiteCutoff until then.
+                colorMult = 1 - (.5f * (textDist - whiteCutoff) / (grayCutoff - whiteCutoff));
+            }
+            else {
+                return;
+            }
+            glText.begin(WHITE.x() * colorMult, WHITE.y() * colorMult, WHITE.z() * colorMult, opacity, mMVPMatrix);
+            glText.setScale(scale);
             glText.drawC(text,
                     adjustedLocation.x(), adjustedLocation.y(), adjustedLocation.z(), // location
                     0,
                     (float)((currentAPR[0]+azimuthCorrection) * -180./Math.PI),
                     0); // rotation - text always directly faces user (azimuth only)
-
-            // TODO: more functionality: if text would be occluded by a building, still draw it but make it gray
 
             glText.end();
         }
@@ -815,18 +823,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // methods
     private void drawAll() {
         drawAllShapes();
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST); // text always on top
-        drawAllText();
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        drawAllTextAtDistance();
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
     private void drawAllShapes() {
         for (DrawExecutor dx : drawDirectory.values()) {
-           dx.draw();
+            dx.draw();
         }
     }
-    private void drawAllText() {
+    private void drawAllTextAtDistance() {
         for (TextExecutor tx : textDirectory.values()) {
-            tx.draw();
+            tx.draw(50,325);
         }
     }
     private float calculateAdjustedTextSize(float distance) {
@@ -834,8 +842,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // ***if you need to change stuff, ONLY CHANGE d AND p, and the # of else-if calls***
         // this represents a linear-piecewise function
-        int[] d = new int[] {5,20,50,100,500}; // distance anchors
-        float[] p = new float[] {1.f,.9f,.75f,.15f,.03f}; // corresponding percent anchors (size)
+        int[] d = new int[] {5,20,50,100,400}; // distance anchors
+        float[] p = new float[] {.5f,.42f,.3f,.09f,.015f}; // corresponding percent anchors (size)
 
         // DO NOT TOUCH - not that you want to, probably
         int ptr = 0;
@@ -872,7 +880,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // use cross to move the displayed string left on the screen
         Vector cross = Vector.cross(upV, toCoV).scalarMultiply(.15f);
 
-        // TODO: if you want to start drawing text to the left of the screen center, use a cross product
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         glText.draw(locationStatusDisplayString,
 
                 eye.x() + toCoV.x() + cross.x(),
@@ -880,9 +888,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 eye.z() + toCoV.z() + cross.z(), // location
 
                 0,
-                (float)((currentAPR[0]+azimuthCorrection) * -180./Math.PI), // rotation - text always directly faces user (azimuth only)
+                (float) ((currentAPR[0] + azimuthCorrection) * -180. / Math.PI), // rotation - text always directly faces user (azimuth only)
                 0
         );
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         glText.end();
     }
