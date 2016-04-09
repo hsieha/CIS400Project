@@ -503,8 +503,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return false;
     }
     public boolean removeDrawing(String id) {
-        if (drawDirectory.remove(id) == null) return false;
-        return true;
+        return drawDirectory.remove(id) != null;
     }
 
 
@@ -544,8 +543,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return false;
     }
     public boolean removeText(String id) {
-        if (textDirectory.remove(id) == null) return false;
-        return true;
+        return textDirectory.remove(id) != null;
     }
 
 

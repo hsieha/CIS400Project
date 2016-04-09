@@ -208,11 +208,7 @@ public class Street extends WorldObject {
             //are their x value the same?
             if(my_p1[0] == street_p1[0]) {
                 //if so check if they overlap at some point
-                if(street_p1[1] < my_p2[1] || street_p2[1] < my_p2[1]){
-                    return true;
-                } else {
-                    return false;
-                }
+                return street_p1[1] < my_p2[1] || street_p2[1] < my_p2[1];
             } else {
                 return false;
             }
@@ -225,12 +221,8 @@ public class Street extends WorldObject {
 
             double y = street_slope*my_p1[0] + street_b;
 
-            if(Double.compare(y, Math.min(my_p1[1], my_p2[1])) >= 0 && Double.compare(y, Math.max(my_p1[1], my_p2[1])) <= 0 &&
-                    Double.compare(y, Math.min(street_p1[1], street_p2[1])) >= 0 && Double.compare(y, Math.max(street_p1[1], street_p2[1])) <= 0){
-                return true;
-            } else {
-                return false;
-            }
+            return Double.compare(y, Math.min(my_p1[1], my_p2[1])) >= 0 && Double.compare(y, Math.max(my_p1[1], my_p2[1])) <= 0 &&
+                    Double.compare(y, Math.min(street_p1[1], street_p2[1])) >= 0 && Double.compare(y, Math.max(street_p1[1], street_p2[1])) <= 0;
         }
         //if street is vertical
         else if (street_p1[0] == street_p2[0]){
@@ -240,12 +232,8 @@ public class Street extends WorldObject {
 
             double y = my_slope*street_p1[0] + my_b;
 
-            if(Double.compare(y, Math.min(my_p1[1], my_p2[1])) >= 0 && Double.compare(y, Math.max(my_p1[1], my_p2[1])) <= 0 &&
-                    Double.compare(y, Math.min(street_p1[1], street_p2[1])) >= 0 && Double.compare(y, Math.max(street_p1[1], street_p2[1])) <= 0){
-                return true;
-            } else {
-                return false;
-            }
+            return Double.compare(y, Math.min(my_p1[1], my_p2[1])) >= 0 && Double.compare(y, Math.max(my_p1[1], my_p2[1])) <= 0 &&
+                    Double.compare(y, Math.min(street_p1[1], street_p2[1])) >= 0 && Double.compare(y, Math.max(street_p1[1], street_p2[1])) <= 0;
 
         }
         //if neither of them are vertical
@@ -261,12 +249,8 @@ public class Street extends WorldObject {
                 //check if have same intercept b
                 if(street_b == my_b){
                     //if so, check if there is overlap
-                    if(street_p1[0] < my_p2[0] || street_p2[0] < my_p2[0]){
-                        //if overlap, return true, otherwise return false
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    //if overlap, return true, otherwise return false
+                    return street_p1[0] < my_p2[0] || street_p2[0] < my_p2[0];
                 }
                 //else parallel lines that never touch
                 return false;
@@ -275,12 +259,8 @@ public class Street extends WorldObject {
             //otherwise not parallel
             double x = -(my_b - street_b) / (my_slope - street_slope);
 
-            if(Double.compare(x, Math.min(my_p1[0], my_p2[0])) >= 0 && Double.compare(x, Math.max(my_p1[0], my_p2[0])) <= 0 &&
-                    Double.compare(x, Math.min(street_p1[0], street_p2[0])) >= 0 && Double.compare(x, Math.max(street_p1[0], street_p2[0])) <= 0){
-                return true;
-            } else {
-                return false;
-            }
+            return Double.compare(x, Math.min(my_p1[0], my_p2[0])) >= 0 && Double.compare(x, Math.max(my_p1[0], my_p2[0])) <= 0 &&
+                    Double.compare(x, Math.min(street_p1[0], street_p2[0])) >= 0 && Double.compare(x, Math.max(street_p1[0], street_p2[0])) <= 0;
 
         }
 

@@ -413,7 +413,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
     static final float FILTER_COEFFICIENT_AZIMUTH = 0.9985f; /*CHANGE THIS AS NEEDED*/
     static final float FILTER_COEFFICIENT = 0.985f; /*CHANGE THIS AS NEEDED*/
     private Timer fuseTimer = new Timer();
-    boolean fusedIsRunning = false;
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {
             // TWOPI and the ?'s are used to fix a "sharp jerk" bug that occurs at the -pi/pi border.

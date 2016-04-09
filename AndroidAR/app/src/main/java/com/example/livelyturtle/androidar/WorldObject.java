@@ -42,5 +42,5 @@ public class WorldObject {
         return coordinates;
     }
 
-    public double getHeight() { return height; };
+    public double getHeight() { return height; }
 }
