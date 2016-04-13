@@ -110,7 +110,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
     MediaPlayer mp;
-    Tour tour = new Tour();
+    Tour tour = null;
     public boolean arrived = true;  //if user has arrived to the next location or not
     Beacon dest_beacon = null;
 
@@ -396,39 +396,40 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //mSquare.draw(mMVPMatrix);
 
         // -- TOUR LOGIC -- //
-
-        //check to see if you've arrived at a beacon
-        if (dest_beacon != null){
-            arrived = dest_beacon.hasArrived(eye);
-        }
-
-        //when user has arrived at a destination
-        if(arrived) {
-
-            System.out.println("we've arrived");
-
-            //when you have arrived, remove the beacon
-            if (dest_beacon != null){
-                removeDrawing(dest_beacon.getName());
+        if(tour != null) {
+            //check to see if you've arrived at a beacon
+            if (dest_beacon != null) {
+                arrived = dest_beacon.hasArrived(eye);
             }
-            removePath();
 
-            //obtain the next point on the tour
-            Coordinate next_point = tour.next();
+            //when user has arrived at a destination
+            if (arrived) {
 
-            //check if next point exists
-            if(next_point != null) {
+                System.out.println("we've arrived");
 
-                //render the path to that point
-                renderPath(next_point);
+                //when you have arrived, remove the beacon
+                if (dest_beacon != null) {
+                    removeDrawing(dest_beacon.getName());
+                }
+                removePath();
 
-                //create a beacon at the destination
-                ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
-                beacon_list.add(next_point);
-                dest_beacon = new Beacon("Destination Beacon", beacon_list);
-                System.out.println("draw new beacon for tour");
+                //obtain the next point on the tour
+                Coordinate next_point = tour.next();
 
-                addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
+                //check if next point exists
+                if (next_point != null) {
+
+                    //render the path to that point
+                    renderPath(next_point);
+
+                    //create a beacon at the destination
+                    ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
+                    beacon_list.add(next_point);
+                    dest_beacon = new Beacon("Destination Beacon", beacon_list);
+                    System.out.println("draw new beacon for tour");
+
+                    addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
+                }
             }
         }
         // -- TOUR END -- //
@@ -549,6 +550,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
 
+    public void initializeTour() {
+        tour = new Tour();
+    }
 
     public void addMapData(MapData mapData) {
         HashSet<Building> buildings = mapData.getBuildings();
