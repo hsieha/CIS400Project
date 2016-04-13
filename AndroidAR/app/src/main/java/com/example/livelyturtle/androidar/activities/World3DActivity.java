@@ -14,9 +14,14 @@ import android.location.LocationManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.livelyturtle.androidar.Coordinate;
 import com.example.livelyturtle.androidar.MapData;
@@ -143,10 +148,27 @@ public class World3DActivity extends Activity implements SensorEventListener {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         mapData = new MapData("UPennCampus.kml", this);
+
+
         mGLView = new MyGLSurfaceView(this, mapData);
 
         //mGLView.mRenderer.addMapData(mapData);
         setContentView(mGLView);
+
+        LinearLayout ll = new LinearLayout(this);
+        Button b = new Button(this);
+        b.setText("Start Tour!");
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGLView.mRenderer.initializeTour();
+                v.setVisibility(View.GONE);
+            }
+        });
+        ll.addView(b);
+        ll.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        this.addContentView(ll,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         // set off fusion sensor calculations at fixed intervals
         fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(), 2500, TIME_CONSTANT);
@@ -187,8 +209,8 @@ public class World3DActivity extends Activity implements SensorEventListener {
 
         // FOR DEBUG ONLY...
         // wait some time, then call renderPathTask
-        renderPath(new Coordinate(39.95524,-75.2022));
-        (new Timer()).schedule(new RenderPathTask(), 10000);
+        //renderPath(new Coordinate(39.95524,-75.2022));
+        //(new Timer()).schedule(new RenderPathTask(), 10000);
     }
     class RenderPathTask extends TimerTask {
         @Override
@@ -413,7 +435,6 @@ public class World3DActivity extends Activity implements SensorEventListener {
     static final float FILTER_COEFFICIENT_AZIMUTH = 0.9985f; /*CHANGE THIS AS NEEDED*/
     static final float FILTER_COEFFICIENT = 0.985f; /*CHANGE THIS AS NEEDED*/
     private Timer fuseTimer = new Timer();
-    boolean fusedIsRunning = false;
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {
             // TWOPI and the ?'s are used to fix a "sharp jerk" bug that occurs at the -pi/pi border.

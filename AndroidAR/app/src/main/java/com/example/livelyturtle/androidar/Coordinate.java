@@ -81,10 +81,7 @@ public class Coordinate {
     }
 
     public static boolean closeTo(double x, double y) {
-        if (Math.abs(x - y) < 0.00001) {
-            return true;
-        }
-        return false;
+        return Math.abs(x - y) < 0.00001;
     }
 
     // get a coordinate by specifying xz values

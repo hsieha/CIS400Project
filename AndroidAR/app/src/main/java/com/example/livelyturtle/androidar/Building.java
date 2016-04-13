@@ -2,6 +2,7 @@ package com.example.livelyturtle.androidar;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 
@@ -11,6 +12,8 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 public class Building extends WorldObject {
 
     Coordinate textCoord;
+    Vector color;
+    private Random myR = new Random();
 
     public Building(String name, ArrayList<Coordinate> coordinates) {
         super(name, coordinates, 6f);
@@ -20,10 +23,14 @@ public class Building extends WorldObject {
             lat += coord.latitude;
             lon += coord.longitude;
         }
+        // Michael: I think we remove the first coord from this calculation because in the kml file,
+        // the first and last coordinates are repeats (to properly store a closed curve).
         lat -= this.coordinates.get(0).latitude;
         lon -= this.coordinates.get(0).longitude;
         // average of summation of all lat/long vals
         textCoord = new Coordinate(lat/(this.coordinates.size()-1),lon/(this.coordinates.size()-1));
+
+        color = getColorAlgorithm();
     }
 
     //coordinates are held in counterclockwise order
@@ -57,6 +64,35 @@ public class Building extends WorldObject {
 
     public Coordinate getTextCoord() {
         return textCoord;
+    }
+    public Vector getColor() { return color; }
+
+    /*
+    The idea behind this complication is to avoid having randomly generated colors tend toward gray
+    (or black/white). We want colorful buildings that stand out from their surroundings.
+     */
+    private Vector getColorAlgorithm() {
+        double base = .20 + .20 * Math.random();
+        double adj1 = .40 + .20 * Math.random();
+        double adj2 = .15 + .15 * Math.random();
+        double adj3 = .05 + .10 * Math.random();
+
+        switch (myR.nextInt(6)) {
+            case 0:
+                return Vector.of(base+adj1, base+adj2, base+adj3);
+            case 1:
+                return Vector.of(base+adj1, base+adj3, base+adj2);
+            case 2:
+                return Vector.of(base+adj2, base+adj1, base+adj3);
+            case 3:
+                return Vector.of(base+adj2, base+adj3, base+adj1);
+            case 4:
+                return Vector.of(base+adj3, base+adj1, base+adj2);
+            case 5:
+                return Vector.of(base+adj3, base+adj2, base+adj1);
+            default: // pretty obvious this shouldn't happen
+                return Vector.of(1,1,1);
+        }
     }
 
 }
