@@ -108,6 +108,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
 
+    // give user the option to correct APR angles in case of sensor fusion inaccuracies
+    float azimuthCorrection = 0;
+    float pitchCorrection = 0;
+    float rollCorrection = 0;
 
     MediaPlayer mp;
     Tour tour = null;
@@ -309,8 +313,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Android APR values are reversed. (It's a left-hand system where clockwise goes up.)
         // OpenGL uses a right-hand system! So, all values must be negated. (Counter-clockwise goes up.)
         float A = -1*(currentAPR[0] + azimuthCorrection);
-        float P = -1*currentAPR[1];
-        float R = -1*currentAPR[2];
+        float P = -1*(currentAPR[1] + pitchCorrection);
+        float R = -1*(currentAPR[2] + rollCorrection);
 
         // *** Eye, Up, and View vectors *** //
         // for debug, insert eye location here (it's handled by receiveGPSDataTask for LocationMode.REAL)
@@ -1159,7 +1163,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    float azimuthCorrection = 0;
+
     int headingFixes = 0;
     final int REQUIRED_NUMBER_OF_HEADING_FIXES = 2;
     boolean towardsEndpt1 = false;
@@ -1234,6 +1238,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float zDiff = currentHeadingEndpt.z - eye.z();
         float correctHeading = (float)Math.atan2(xDiff,-zDiff);
         azimuthCorrection = correctHeading - currentAPR[0];
+        pitchCorrection = -currentAPR[1];
+        rollCorrection = -currentAPR[2];
 
     }
 
