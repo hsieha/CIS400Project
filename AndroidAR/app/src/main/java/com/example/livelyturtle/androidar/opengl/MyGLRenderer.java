@@ -1189,7 +1189,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             if (lastEndpt1Dist == -1) {
                 lastEndpt1Dist = newDist;
             }
-            else if (newDist < lastEndpt1Dist - 1) { // getting closer to endpt1 (1m between fix)
+            else if (newDist < lastEndpt1Dist - .4) { // getting closer to endpt1 (40cm between fix)
                 lastEndpt1Dist = newDist;
                 if (!towardsEndpt1) {
                     headingFixes = 0;
@@ -1200,7 +1200,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     headingFixes = Math.min(REQUIRED_NUMBER_OF_HEADING_FIXES,headingFixes+1);
                 }
             }
-            else if (newDist > lastEndpt1Dist + 1) { // getting farther away from endpt1
+            else if (newDist > lastEndpt1Dist + .4) { // getting farther away from endpt1
                 lastEndpt1Dist = newDist;
                 if (!towardsEndpt2) {
                     headingFixes = 0;

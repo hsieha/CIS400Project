@@ -6,6 +6,18 @@
 		<Folder>
 			<name>Buildings</name>
 			<Placemark>
+				<name>LRSM</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1898235,39.9531666,0.0 -75.1899147,39.95270190000001,0.0 -75.1894748,39.9526464,0.0 -75.1893756,39.9531111,0.0 -75.1898235,39.9531666,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
+			<Placemark>
 				<name>Sansom West</name>
 				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
 				<Polygon>
@@ -36,7 +48,7 @@
 					<outerBoundaryIs>
 						<LinearRing>
 							<tessellate>1</tessellate>
-							<coordinates>-75.2002666,39.95241409999999,0.0 -75.2004189,39.9524326,0.0 -75.2004397,39.9522517,0.0 -75.1998751,39.9521818,0.0 -75.1998845,39.9523879,0.0 -75.2000769,39.95239790000001,0.0 -75.2000373,39.9525637,0.0 -75.2002284,39.9525873,0.0 -75.2002666,39.95241409999999,0.0</coordinates>
+							<coordinates>-75.2002666,39.95241409999999,0.0 -75.2004256,39.9524398,0.0 -75.2004397,39.9522517,0.0 -75.1998751,39.9521818,0.0 -75.1998845,39.9523879,0.0 -75.20007290000001,39.95241020000001,0.0 -75.2000319,39.9525987,0.0 -75.2002163,39.9526202,0.0 -75.2002666,39.95241409999999,0.0</coordinates>
 						</LinearRing>
 					</outerBoundaryIs>
 				</Polygon>
@@ -233,6 +245,18 @@
 					</outerBoundaryIs>
 				</Polygon>
 			</Placemark>
+			<Placemark>
+				<name>Hill</name>
+				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<Polygon>
+					<outerBoundaryIs>
+						<LinearRing>
+							<tessellate>1</tessellate>
+							<coordinates>-75.1910412,39.9532612,0.0 -75.1911271,39.9528623,0.0 -75.190199,39.9527472,0.0 -75.1901239,39.9531461,0.0 -75.1910412,39.9532612,0.0</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+				</Polygon>
+			</Placemark>
 		</Folder>
 		<Folder>
 			<name>Streets</name>
@@ -337,7 +361,7 @@
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
 				<LineString>
 					<tessellate>1</tessellate>
-					<coordinates>-75.1972438,39.9510838,0.0 -75.1971016,39.9510858,0.0 -75.1970494,39.9511393,0.0 -75.1963574,39.9513675,0.0 -75.1960838,39.9515217,0.0 -75.1957244,39.951567,0.0 -75.1956171,39.9515587,0.0 -75.1953328,39.9516698,0.0 -75.1947936,39.951789,0.0 -75.1938656,39.9520851,0.0 -75.1929791,39.9524182,0.0 -75.1921114,39.9528068,0.0</coordinates>
+					<coordinates>-75.1972411,39.9510478,0.0 -75.1970494,39.9511393,0.0 -75.1963923,39.9513449,0.0 -75.1960838,39.9515217,0.0 -75.1957754,39.951567,0.0 -75.1956104,39.9515484,0.0 -75.1953328,39.9516698,0.0 -75.1947936,39.951789,0.0 -75.1938656,39.9520851,0.0 -75.1929791,39.9524182,0.0 -75.1921114,39.9528068,0.0</coordinates>
 				</LineString>
 			</Placemark>
 			<Placemark>
@@ -354,6 +378,38 @@
 				<LineString>
 					<tessellate>1</tessellate>
 					<coordinates>-75.1875088,39.9538246,0.0 -75.187946,39.9517356,0.0 -75.1880962,39.951567,0.0 -75.1882786,39.9507157,0.0 -75.1885575,39.950288,0.0 -75.1891208,39.9503703,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>EQUAD - chancellor</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.192208,39.9523236,0.0 -75.1912263,39.9522085,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>EQUAD - smith</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1923421,39.9516985,0.0 -75.1907569,39.9514909,0.0 -75.1904646,39.9513881,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>EQUAD - vertical1</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1915602,39.9522486,0.0 -75.1916943,39.9516122,0.0</coordinates>
+				</LineString>
+			</Placemark>
+			<Placemark>
+				<name>EQUAD - vertical2</name>
+				<styleUrl>#line-000000-1-nodesc</styleUrl>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>-75.1911673,39.9526978,0.0 -75.1912679,39.9522136,0.0</coordinates>
 				</LineString>
 			</Placemark>
 		</Folder>
