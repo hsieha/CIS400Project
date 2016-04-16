@@ -109,6 +109,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private boolean noLocationDataAvailable = true;
     private String locationStatus = "NO LOC DATA";
 
+    // give user the option to correct APR angles in case of sensor fusion inaccuracies
+    float azimuthCorrection = 0;
+    float pitchCorrection = 0;
+    float rollCorrection = 0;
 
     MediaPlayer mp = null;
     Tour tour = new Tour();
@@ -312,8 +316,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Android APR values are reversed. (It's a left-hand system where clockwise goes up.)
         // OpenGL uses a right-hand system! So, all values must be negated. (Counter-clockwise goes up.)
         float A = -1*(currentAPR[0] + azimuthCorrection);
-        float P = -1*currentAPR[1];
-        float R = -1*currentAPR[2];
+        float P = -1*(currentAPR[1] + pitchCorrection);
+        float R = -1*(currentAPR[2] + rollCorrection);
 
         // *** Eye, Up, and View vectors *** //
         // for debug, insert eye location here (it's handled by receiveGPSDataTask for LocationMode.REAL)
@@ -1173,9 +1177,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    float azimuthCorrection = 0;
+
     int headingFixes = 0;
-    final int REQUIRED_NUMBER_OF_HEADING_FIXES = 3;
+    final int REQUIRED_NUMBER_OF_HEADING_FIXES = 2;
     boolean towardsEndpt1 = false;
     boolean towardsEndpt2 = false;
     float lastEndpt1Dist = -1;
@@ -1199,7 +1203,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             if (lastEndpt1Dist == -1) {
                 lastEndpt1Dist = newDist;
             }
-            else if (newDist <= lastEndpt1Dist) {
+            else if (newDist < lastEndpt1Dist - .4) { // getting closer to endpt1 (40cm between fix)
                 lastEndpt1Dist = newDist;
                 if (!towardsEndpt1) {
                     headingFixes = 0;
@@ -1210,7 +1214,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     headingFixes = Math.min(REQUIRED_NUMBER_OF_HEADING_FIXES,headingFixes+1);
                 }
             }
-            else { // getting farther away from endpt1
+            else if (newDist > lastEndpt1Dist + .4) { // getting farther away from endpt1
                 lastEndpt1Dist = newDist;
                 if (!towardsEndpt2) {
                     headingFixes = 0;
@@ -1221,6 +1225,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     headingFixes = Math.min(REQUIRED_NUMBER_OF_HEADING_FIXES,headingFixes+1);
                 }
             }
+            // don't do anything for tiny movements
         }
 
     }
@@ -1247,6 +1252,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float zDiff = currentHeadingEndpt.z - eye.z();
         float correctHeading = (float)Math.atan2(xDiff,-zDiff);
         azimuthCorrection = correctHeading - currentAPR[0];
+        pitchCorrection = -currentAPR[1];
+        rollCorrection = -currentAPR[2];
 
     }
 
