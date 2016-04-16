@@ -150,8 +150,5 @@ public class OrientationDashboardActivity extends Activity implements
         ((TextView) findViewById(R.id.AzimuthStatus)).setText(azimuthStatus);
         ((TextView) findViewById(R.id.PitchStatus)).setText(pitchStatus);
         ((TextView) findViewById(R.id.RollStatus)).setText(rollStatus);
-
-        System.out.println(a + ", " + p + ", " + r);
-
     }
 }

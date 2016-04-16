@@ -21,13 +21,28 @@ public class GenerateXZUtility {
 
     List<LL> list = new LinkedList<LL>(){{
         add(new LL(Coordinate.COMPASS_LAT, Coordinate.COMPASS_LONG));
-        add(new LL(39.952556, -75.190040)); //595.436	   -33.111
-        add(new LL(39.952673, -75.190997)); //513.657	   -46.096
-        add(new LL(39.952812, -75.192101)); //419.316 ,     -61.524
-        add(new LL(39.952958, -75.202835)); // 40/L
-        add(new LL(39.951892, -75.194403)); // L/Wood
-        add(new LL(39.952788, -75.192113)); // 34/W
-        add(new LL(39.952323, -75.192182)); // 34/Chancellor
+//        add(new LL(39.952556, -75.190040)); //595.436	   -33.111
+//        add(new LL(39.952673, -75.190997)); //513.657	   -46.096
+//        add(new LL(39.952812, -75.192101)); //419.316 ,     -61.524
+//        add(new LL(39.952958, -75.202835)); // 40/L
+//        add(new LL(39.951892, -75.194403)); // L/Wood
+//        add(new LL(39.952788, -75.192113)); // 34/W
+//        add(new LL(39.952323, -75.192182)); // 34/Chancellor
+
+        //for tour
+        add(new LL(39.952749, -75.192248)); // 34th/Walnut
+        add(new LL(39.952155, -75.193684)); // Button
+        add(new LL(39.952749, -75.192248)); // The Arch
+        add(new LL(39.952148, -75.196047)); // Steiny D.
+        add(new LL(39.952259, -75.197009)); // Compass + Ben on Bench
+        add(new LL(39.952415, -75.198175)); // Huntsman
+        add(new LL(39.952550, -75.199369)); // 1920 Commons
+        add(new LL(39.952724, -75.200779)); // The Convenant (Dueling Tampons)
+
+        //for demo
+        add(new LL(39.951485, -75.190791));  // Smith Walk top of Stairs
+        add(new LL(39.951609, -75.191695));  // Smith / Front of Town
+        add(new LL(39.952249, -75.191561));  // Chancellor st / front of levine
     }};
 
 

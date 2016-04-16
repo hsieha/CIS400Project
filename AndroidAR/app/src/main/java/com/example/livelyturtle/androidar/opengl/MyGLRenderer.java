@@ -1307,6 +1307,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         LinkedList<Uri> ret = new LinkedList<Uri>();
         if(mode == Tour.TourMode.CAMPUS) {
 
+
         } else if (mode == Tour.TourMode.DEMO) {
             //Uri url = Uri.parse("android.resource://" + ctxt.getPackageName() + "/" + R.raw.jess_theme);
             //ret.add(url);

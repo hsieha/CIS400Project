@@ -25,23 +25,24 @@ public class Tour {
         //Assume you start at 33rd and Walnut
         //39.952500, -75.190194
         if(TOUR_MODE == TourMode.CAMPUS) {
-            tour_queue.add(new Coordinate(39.952480, -75.190554));    //ENIAC in Moore
-            tour_queue.add(new Coordinate(39.952159, -75.193682));    //College Green
-            tour_queue.add(new Coordinate(39.952135, -75.195205));    //Arch Building
-            tour_queue.add(new Coordinate(39.952258, -75.197017));    //Compass + Ben Statue
-            tour_queue.add(new Coordinate(39.952557, -75.198213));    //Huntsman
-            tour_queue.add(new Coordinate(39.952717, -75.200666));    //Covenant (Dueling Tampons)
+            tour_queue.add(new Coordinate(39.952749, -75.192248));  // 34th/Walnut
+            tour_queue.add(new Coordinate(39.952155, -75.193684));  // Button
+            tour_queue.add(new Coordinate(39.952749, -75.192248));  // Arch
+            tour_queue.add(new Coordinate(39.952148, -75.196047));  // Steiny D.
+            tour_queue.add(new Coordinate(39.952259, -75.197009));  // Compass + Ben on Bench
+            tour_queue.add(new Coordinate(39.952415, -75.198175));  // Huntsman
+            tour_queue.add(new Coordinate(39.952550, -75.199369));  // 1920 Commons
+            tour_queue.add(new Coordinate(39.952724, -75.200779));  //The Convenant (Dueling Tampons)
+
         }
         //Assume you start at 33rd and Walnut
         //39.952500, -75.190194
         else if (TOUR_MODE == TourMode.DEMO){
 
-            tour_queue.add(new Coordinate(39.952556, -75.190040));
-            tour_queue.add(new Coordinate(39.952673, -75.190997));
-            tour_queue.add(new Coordinate(39.952812, -75.192101));
+            tour_queue.add(new Coordinate(39.951485, -75.190791));  // Smith Walk top of Stairs
+            tour_queue.add(new Coordinate(39.951609, -75.191695));  // Smith / Front of Town
+            tour_queue.add(new Coordinate(39.952249, -75.191561));  // Chancellor st / front of levine
 
-            //tour_queue.add(new Coordinate(39.952480, -75.190554));  //ENIAC in Moore
-            //tour_queue.add(new Coordinate(39.952735, -75.192033));  //End of street, 34th/Walnut
         }
 
         iterator = tour_queue.listIterator(0);
