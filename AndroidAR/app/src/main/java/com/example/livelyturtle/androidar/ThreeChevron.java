@@ -4,7 +4,8 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D;
 import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.*;
 import java.util.ArrayList;
 
-import com.example.livelyturtle.androidar.Chevron;
+import com.example.livelyturtle.androidar.opengl.DrawEffect;
+import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
 
 /**
  * Created by somesingman on 3/20/16.
@@ -17,18 +18,18 @@ public class ThreeChevron extends WorldObject{
     double lon;
 
     //distance from each chevron in meters
-    double dist = 4;
+    double dist = 3;
 
-    Chevron chev_one;
-    Chevron chev_two;
-    Chevron chev_three;
+    public Chevron chev_one;
+    public Chevron chev_two;
+    public Chevron chev_three;
 
     //NOTE: Arraylist coordinates only holds 1 coordinate
     //this coordinate is the top center vertex of the first(closest) chevron
     //must also enter a direction to point the chevron
     //direction given in degrees from north clockwise
     public ThreeChevron(String name, ArrayList<Coordinate> coordinates, float dir){
-        super(name, coordinates, 0.2f);
+        super(name, coordinates, 0.3f);
 
         for (Coordinate coord : this.coordinates) {
             this.lat += coord.latitude;
@@ -36,10 +37,6 @@ public class ThreeChevron extends WorldObject{
         }
 
         angle = dir;
-
-        System.out.println("Coordinates for first Chevron");
-        System.out.println(lat);
-        System.out.println(lon);
 
         if (Math.abs(angle) > 360){
             angle = angle % 360;
@@ -62,7 +59,7 @@ public class ThreeChevron extends WorldObject{
         coor3.add(new Coordinate(lat, lon));
         chev_three = new Chevron("three", coor3, angle);
         chev_three.set_x(chev_three.x + 2*dist*Math.cos(-Math.toRadians(angle+90)));
-        chev_three.set_z(chev_three.z + 2*dist*Math.sin(-Math.toRadians(angle+90)));
+        chev_three.set_z(chev_three.z + 2 * dist * Math.sin(-Math.toRadians(angle + 90)));
 
     }
 

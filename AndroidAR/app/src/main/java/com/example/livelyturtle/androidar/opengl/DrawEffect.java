@@ -8,7 +8,7 @@ import com.example.livelyturtle.androidar.MoverioLibraries.Moverio3D.Vector;
  * Visual effects.
  * Currently there is no support for combining effects.
  */
-interface DrawEffect {
+public interface DrawEffect {
 
     boolean isVisible();
     Vector getModifiedColor(Vector original);

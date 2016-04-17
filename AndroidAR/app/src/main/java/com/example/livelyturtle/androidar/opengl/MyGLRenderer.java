@@ -416,7 +416,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     endClip(mp);
                 }
 
-                //not all beacons play media
+                //all beacons play media
                 if(tour_media_iterator.hasNext()) {
                     Uri next = tour_media_iterator.next();
                     if (next != null){
@@ -438,7 +438,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 if (next_point != null) {
 
                     //render the path to that point
-                    renderPath(next_point);
+                    //renderPath(next_point);
 
                     //create a beacon at the destination
                     ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
@@ -604,32 +604,34 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     new Point((float)coords.get(1).x, (float)coords.get(1).z)));
         }
 
+        //====== ALL THIS BELOW IS FOR TESTING ======//
+
         //Beacon test draw
-        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
-        ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
-        beacon_list.add(beacon_coordinate);
-        Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
+//        Coordinate beacon_coordinate = Coordinate.fromXZ(5,5);
+//        ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();
+//        beacon_list.add(beacon_coordinate);
+//        Beacon test_beacon = new Beacon("Test Beacon", beacon_list);
 
 //        System.out.println(test_beacon.getName() + ": ");
 //        System.out.println("vectors: " + test_beacon.vectors());
 //        System.out.println("vector_order:" + test_beacon.vector_order());
 
-        addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
+//        addDrawing(test_beacon.getName(), test_beacon.vectors(), test_beacon.vector_order(), WHITE, 1);
         //end of beacon test draw code
 
         //chevron test draw
-        Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
-        Coordinate three_coordinate = new Coordinate(DataDebug.HARDCODE_LAT - 0.0004, DataDebug.HARDCODE_LONG);
-        ArrayList<Coordinate> chevron_coor_list = new ArrayList<Coordinate>();
-        ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
-        chevron_coor_list.add(chevron_coordinate);
-        three_coor_list.add(three_coordinate);
-        ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 180.0f);
-        Chevron test_chev1 = new Chevron("Test Chevron1", chevron_coor_list, 180.0f);  //facing south at 0.0f
-
-        Coordinate one = new Coordinate(39.952699, -75.200927);
-        Coordinate two = new Coordinate(39.952702, -75.200938);
-        Coordinate three = new Coordinate(39.952704, -75.200951);
+//        Coordinate chevron_coordinate = new Coordinate(DataDebug.HARDCODE_LAT + 0.0001, DataDebug.HARDCODE_LONG - 0.0005);
+//          Coordinate three_coordinate = new Coordinate(39.951609, -75.191695);
+////        ArrayList<Coordinate> chevron_coor_list = new ArrayList<Coordinate>();
+//          ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
+////        chevron_coor_list.add(chevron_coordinate);
+////        three_coor_list.add(three_coordinate);
+//          ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 0f);
+//        Chevron test_chev1 = new Chevron("Test Chevron1", chevron_coor_list, 180.0f);  //facing south at 0.0f
+//
+//        Coordinate one = new Coordinate(39.952699, -75.200927);
+//        Coordinate two = new Coordinate(39.952702, -75.200938);
+//        Coordinate three = new Coordinate(39.952704, -75.200951);
 
 //        System.out.println("ONE: " + one.x + ", " + one.z);
 //        System.out.println("TWO: " + two.x + ", " + two.z);
@@ -639,9 +641,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //        System.out.println("vectors: " + test_chev1.vectors());
 //        System.out.println("vector_order:" + test_chev1.vector_order());
 
-        Chevron[] chev_list = test_chevron.chevron_list();
-
-        addDrawing(test_chev1.getName(), test_chev1.vectors(), test_chev1.vector_order(), PURE_GREEN, 1);
+//        Chevron[] chev_list = test_chevron.chevron_list();
+//
+//        addDrawing(test_chev1.getName(), test_chev1.vectors(), test_chev1.vector_order(), PURE_GREEN, 1);
 
 //        System.out.println(chev_list[0].getName() + ": ");
 //        System.out.println("vectors: " + test_chevron.vectors().get(0));
@@ -655,44 +657,57 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //        System.out.println("vectors: " + test_chevron.vectors().get(2));
 //        System.out.println("vector_order:" + test_chevron.vector_order());
 
-        addDrawing(chev_list[0].getName(), test_chevron.vectors().get(0), test_chevron.vector_order(), PURE_GREEN, 1);
-        addDrawing(chev_list[1].getName(), test_chevron.vectors().get(1), test_chevron.vector_order(), PURE_GREEN, 1);
-        addDrawing(chev_list[2].getName(), test_chevron.vectors().get(2), test_chevron.vector_order(), PURE_GREEN, 1);
 
-        Coordinate chevron_coordinate_1 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00006, DataDebug.HARDCODE_LONG - 0.0003);
-        Coordinate chevron_coordinate_2 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00008, DataDebug.HARDCODE_LONG - 0.00033);
-        Coordinate chevron_coordinate_3 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00010, DataDebug.HARDCODE_LONG - 0.00036);
-        ArrayList<Coordinate> chevron_list_1 = new ArrayList<Coordinate>();
-        ArrayList<Coordinate> chevron_list_2 = new ArrayList<Coordinate>();
-        ArrayList<Coordinate> chevron_list_3 = new ArrayList<Coordinate>();
-        chevron_list_1.add(chevron_coordinate_1);
-        chevron_list_2.add(chevron_coordinate_2);
-        chevron_list_3.add(chevron_coordinate_3);
-        Chevron test_chevron_1 = new Chevron("Test Chevron 1", chevron_list_1, 0.0f); //facing north
-        Chevron test_chevron_2 = new Chevron("Test Chevron 2", chevron_list_2, 0.0f); //facing north
-        Chevron test_chevron_3 = new Chevron("Test Chevron 3", chevron_list_3, 0.0f); //facing north
+//
+//        Coordinate chevron_coordinate_1 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00006, DataDebug.HARDCODE_LONG - 0.0003);
+//        Coordinate chevron_coordinate_2 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00008, DataDebug.HARDCODE_LONG - 0.00033);
+//        Coordinate chevron_coordinate_3 = new Coordinate(DataDebug.HARDCODE_LAT + 0.00010, DataDebug.HARDCODE_LONG - 0.00036);
+//        ArrayList<Coordinate> chevron_list_1 = new ArrayList<Coordinate>();
+//        ArrayList<Coordinate> chevron_list_2 = new ArrayList<Coordinate>();
+//        ArrayList<Coordinate> chevron_list_3 = new ArrayList<Coordinate>();
+//        chevron_list_1.add(chevron_coordinate_1);
+//        chevron_list_2.add(chevron_coordinate_2);
+//        chevron_list_3.add(chevron_coordinate_3);
+//        Chevron test_chevron_1 = new Chevron("Test Chevron 1", chevron_list_1, 0.0f); //facing north
+//        Chevron test_chevron_2 = new Chevron("Test Chevron 2", chevron_list_2, 0.0f); //facing north
+//        Chevron test_chevron_3 = new Chevron("Test Chevron 3", chevron_list_3, 0.0f); //facing north
 
 //        System.out.println(test_chevron.getName() + ": ");
 //        System.out.println("vectors: " + test_chevron.vectors());
 //        System.out.println("vector_order:" + test_chevron.vector_order());
 
-        addDrawing(test_chevron_1.getName(), test_chevron_1.vectors(), test_chevron_1.vector_order(), PURE_BLUE, 1,
-                new DrawEffect.Blink(0,2000,0,500));
-        addDrawing(test_chevron_2.getName(), test_chevron_2.vectors(), test_chevron_2.vector_order(), PURE_BLUE, 1,
-                new DrawEffect.Blink(0,2000,500,1000));
-        addDrawing(test_chevron_3.getName(), test_chevron_3.vectors(), test_chevron_3.vector_order(), PURE_BLUE, 1,
-                new DrawEffect.Blink(0,2000,1000,1500));
+//        addDrawing(test_chevron_1.getName(), test_chevron_1.vectors(), test_chevron_1.vector_order(), PURE_BLUE, 1,
+//                new DrawEffect.Blink(0,2000,0,500));
+//        addDrawing(test_chevron_2.getName(), test_chevron_2.vectors(), test_chevron_2.vector_order(), PURE_BLUE, 1,
+//                new DrawEffect.Blink(0,2000,500,1000));
+//        addDrawing(test_chevron_3.getName(), test_chevron_3.vectors(), test_chevron_3.vector_order(), PURE_BLUE, 1,
+//                new DrawEffect.Blink(0,2000,1000,1500));
+
+
+
 
         //end of chevron test draw
 
         // MICHAEL: testing effects on beacons
-        Beacon effect1 = new Beacon("b1", new ArrayList<Coordinate>(){{add(new Coordinate(39.953, -75.203));}});
-        Beacon effect2 = new Beacon("b2", new ArrayList<Coordinate>(){{add(new Coordinate(39.9545, -75.2025));}});
-        addDrawing(effect1.getName(), effect1.vectors(), effect1.vector_order(), PURE_GREEN, 1,
-                new Throb(WHITE,3667));
-        addDrawing(effect2.getName(), effect2.vectors(), effect2.vector_order(), DARK_GRAY, 1,
-                new Blink(0,400,0,200));
-        // END EFFECTS TESTING
+//        Beacon effect1 = new Beacon("b1", new ArrayList<Coordinate>(){{add(new Coordinate(39.953, -75.203));}});
+//        Beacon effect2 = new Beacon("b2", new ArrayList<Coordinate>(){{add(new Coordinate(39.9545, -75.2025));}});
+//        addDrawing(effect1.getName(), effect1.vectors(), effect1.vector_order(), PURE_GREEN, 1,
+//                new Throb(WHITE,3667));
+//        addDrawing(effect2.getName(), effect2.vectors(), effect2.vector_order(), DARK_GRAY, 1,
+//                new Blink(0,400,0,200));
+
+        // == FOR ANTHONY AS EXAMPLE OF THREE BEACON USAGE == //
+
+        System.out.println("draw the three chevrons");
+        Coordinate three_coordinate = new Coordinate(39.951609, -75.191695);
+        ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
+        three_coor_list.add(three_coordinate);
+        ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 0f); // 0.of is south and goes counter clockwise
+
+        drawThreeChevron(test_chevron, PURE_GREEN);
+
+//        // END EFFECTS TESTING
+        // ======= EVERYTING ABOVE IS FOR TESTING ======//
     }
 
     public void renderPath(Coordinate end) {
@@ -1333,6 +1348,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     //end the clip, release the resources for the media player
     public void endClip(MediaPlayer m){
         m.release();
+    }
+
+    public void drawThreeChevron(ThreeChevron t, Vector color ) {
+
+        addDrawing(t.chev_one.getName(), t.chev_one.vectors(), t.chev_one.vector_order(), color, 1,
+                new DrawEffect.Blink(0, 2000, 1000, 1500));
+        addDrawing(t.chev_two.getName(), t.chev_two.vectors(), t.chev_two.vector_order(), color, 1,
+                new DrawEffect.Blink(0, 2000, 500, 1000));
+        addDrawing(t.chev_three.getName(), t.chev_three.vectors(), t.chev_three.vector_order(), color, 1,
+                new DrawEffect.Blink(0, 2000, 0, 500));
     }
 
 }
