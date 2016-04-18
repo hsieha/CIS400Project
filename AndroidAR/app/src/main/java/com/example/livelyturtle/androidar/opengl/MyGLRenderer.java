@@ -115,7 +115,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     float rollCorrection = 0;
 
     MediaPlayer mp = null;
-    Tour tour = new Tour();
+    Tour tour;
     public boolean arrived = true;  //if user has arrived to the next location or not
     Beacon dest_beacon = null;
     LinkedList<Uri> tour_media = initMedia(tour.TOUR_MODE);
@@ -438,7 +438,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 if (next_point != null) {
 
                     //render the path to that point
-                    //renderPath(next_point);
+                    renderPath(next_point);
 
                     //create a beacon at the destination
                     ArrayList<Coordinate> beacon_list = new ArrayList<Coordinate>();

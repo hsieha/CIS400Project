@@ -177,6 +177,8 @@ public class MapData {
             System.out.println("MapData: getStreetPath - nodes are null");
             return null;
         }
+        System.out.println("startStreetNode: " + startStreetNode);
+        System.out.println("endStreetNode: " + endStreetNode);
         ArrayList<Node> path = getPath(startStreetNode, endStreetNode);
         if(path == null) {
             System.out.println("MapData: getStreetPath - path are null");
@@ -220,6 +222,7 @@ public class MapData {
                 return elem.path;
             }
             HashSet<Node> neighbors = elem.cur.neighbors;
+            System.out.println("neighbors for " + elem.cur + ": " + neighbors);
             for(Node neighbor : neighbors) {
                 if(seen.contains(neighbor)) {
                     continue;
@@ -230,6 +233,7 @@ public class MapData {
                 pq.add(new PQElem(newPath, neighbor, elem.pathDist+elem.cur.c.dist(neighbor.c)));
             }
         }
+        System.out.println("Did not find path");
         return null;
     }
 
@@ -243,10 +247,22 @@ public class MapData {
                 if (street.equals(other)) {
                     continue;
                 }
+                if(street.name.contains("Woodland Walk")) {
+                    System.out.println("initNodes found street: " + street.name + "and " + other.name);
+                }
                 Coordinate c = street.findIntersection(other);
                 if (c != null && !cIntersection.contains(c)) {
                     cIntersection.add(c);
                     nodes.add(new Node(c, street, other, endNode));
+                    if(street.name.contains("Woodland Walk")) {
+                        System.out.println("intersection at " + c);
+                    }
+
+                }
+                else {
+                    if(c == null && street.name.contains("Woodland Walk")) {
+                        System.out.println("no intersection");
+                    }
                 }
             }
 
@@ -263,6 +279,7 @@ public class MapData {
                 }
             }
         }
+        System.out.println("endNode neighbors: " + endNode.neighbors);
         return nodes;
     }
 
