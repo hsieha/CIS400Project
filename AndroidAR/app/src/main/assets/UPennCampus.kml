@@ -43,7 +43,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Harnwell</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:20]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -55,7 +56,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Harrison</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:20]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -67,7 +69,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Rodin</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:20]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -567,6 +570,38 @@
 			<Pair>
 				<key>highlight</key>
 				<styleUrl>#line-000000-1-nodesc-highlight</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='poly-DB4436-1-76-normal'>
+			<LineStyle>
+				<color>ff3644DB</color>
+				<width>1</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>4C3644DB</color>
+				<fill>1</fill>
+				<outline>1</outline>
+			</PolyStyle>
+		</Style>
+		<Style id='poly-DB4436-1-76-highlight'>
+			<LineStyle>
+				<color>ff3644DB</color>
+				<width>2.0</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>4C3644DB</color>
+				<fill>1</fill>
+				<outline>1</outline>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='poly-DB4436-1-76'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#poly-DB4436-1-76-normal</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#poly-DB4436-1-76-highlight</styleUrl>
 			</Pair>
 		</StyleMap>
 		<Style id='poly-DB4436-1-76-nodesc-normal'>

@@ -15,8 +15,8 @@ public class Building extends WorldObject {
     Vector color;
     private Random myR = new Random();
 
-    public Building(String name, ArrayList<Coordinate> coordinates) {
-        super(name, coordinates, 6f);
+    public Building(String name, ArrayList<Coordinate> coordinates, float height) {
+        super(name, coordinates, height);
         double lat = 0;
         double lon = 0;
         for (Coordinate coord : this.coordinates) {
