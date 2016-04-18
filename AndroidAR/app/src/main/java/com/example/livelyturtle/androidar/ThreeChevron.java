@@ -19,9 +19,9 @@ public class ThreeChevron extends WorldObject{
     //distance from each chevron in meters
     double dist = 4;
 
-    Chevron chev_one;
-    Chevron chev_two;
-    Chevron chev_three;
+    public Chevron chev_one;
+    public Chevron chev_two;
+    public Chevron chev_three;
 
     //NOTE: Arraylist coordinates only holds 1 coordinate
     //this coordinate is the top center vertex of the first(closest) chevron
