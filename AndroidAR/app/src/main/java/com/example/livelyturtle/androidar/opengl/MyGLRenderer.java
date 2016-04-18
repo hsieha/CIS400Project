@@ -442,7 +442,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     dest_beacon = new Beacon("Destination Beacon", beacon_list);
                     System.out.println("draw new beacon for tour");
 
-                    addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
+                    addDrawing(dest_beacon.getName(), dest_beacon.vectors(),
+                            dest_beacon.vector_order(), PURE_GREEN, 1, new Throb(WHITE, 3667));
                 }
             }
         }

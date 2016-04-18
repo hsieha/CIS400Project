@@ -17,13 +17,11 @@ public class Tour {
         CAMPUS
     }
 
-    public static final TourMode TOUR_MODE = TourMode.CAMPUS;
+    public static final TourMode TOUR_MODE = TourMode.DEMO;
 
 
     public Tour(){
 
-        //Assume you start at 33rd and Walnut
-        //39.952500, -75.190194
         if(TOUR_MODE == TourMode.CAMPUS) {
             tour_queue.add(new Coordinate(39.952749, -75.192248));  // 34th/Walnut
             tour_queue.add(new Coordinate(39.952155, -75.193684));  // Button
@@ -35,8 +33,6 @@ public class Tour {
             tour_queue.add(new Coordinate(39.952724, -75.200779));  //The Convenant (Dueling Tampons)
 
         }
-        //Assume you start at 33rd and Walnut
-        //39.952500, -75.190194
         else if (TOUR_MODE == TourMode.DEMO){
 
             tour_queue.add(new Coordinate(39.951485, -75.190791));  // Smith Walk top of Stairs
