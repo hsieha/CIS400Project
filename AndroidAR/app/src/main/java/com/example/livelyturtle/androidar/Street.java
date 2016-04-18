@@ -150,9 +150,6 @@ public class Street extends WorldObject {
                 Coordinate r = Coordinate.subtract(this.getCoordinates().get(i + 1), p);
                 Coordinate s = Coordinate.subtract(other.getCoordinates().get(j + 1), q);
                 double rxs = Coordinate.cross(r, s);
-                if(this.name.contains("Woodland Walk_9") && other.name.contains("34th Street")) {
-                    System.out.println("woodland and 34th findIntersection: " + rxs);
-                }
                 if (!Coordinate.closeTo(rxs, 0.0)) {
                     double t = Coordinate.cross(Coordinate.subtract(q, p), s) / rxs;
                     double u = Coordinate.cross(Coordinate.subtract(q, p), r) / rxs;

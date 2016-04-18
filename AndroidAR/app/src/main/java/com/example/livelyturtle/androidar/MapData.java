@@ -247,22 +247,10 @@ public class MapData {
                 if (street.equals(other)) {
                     continue;
                 }
-                if(street.name.contains("Woodland Walk")) {
-                    System.out.println("initNodes found street: " + street.name + "and " + other.name);
-                }
                 Coordinate c = street.findIntersection(other);
                 if (c != null && !cIntersection.contains(c)) {
                     cIntersection.add(c);
                     nodes.add(new Node(c, street, other, endNode));
-                    if(street.name.contains("Woodland Walk")) {
-                        System.out.println("intersection at " + c);
-                    }
-
-                }
-                else {
-                    if(c == null && street.name.contains("Woodland Walk")) {
-                        System.out.println("no intersection");
-                    }
                 }
             }
 

@@ -412,20 +412,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             //when user has arrived at a destination
             if (arrived) {
 
-                if(mp != null){
+                if (mp != null) {
                     endClip(mp);
                 }
 
                 //all beacons play media
-                if(tour_media_iterator.hasNext()) {
+                if (tour_media_iterator.hasNext()) {
                     Uri next = tour_media_iterator.next();
-                    if (next != null){
+                    if (next != null) {
                         playClip(ctxt, next);
                     }
                 }
 
                 //when you have arrived, remove the beacon
-                if (dest_beacon != null){
+                if (dest_beacon != null) {
                     removeDrawing(dest_beacon.getName());
                     dest_beacon = null;
                 }
@@ -446,7 +446,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     dest_beacon = new Beacon("Destination Beacon", beacon_list);
                     System.out.println("draw new beacon for tour");
 
-                    addDrawing(dest_beacon.getName(), dest_beacon.vectors(), dest_beacon.vector_order(), WHITE, 1);
+                    addDrawing(dest_beacon.getName(), dest_beacon.vectors(),
+                            dest_beacon.vector_order(), PURE_GREEN, 1, new Throb(WHITE, 3667));
                 }
             }
         }
