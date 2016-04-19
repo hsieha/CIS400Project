@@ -76,6 +76,10 @@ public class Coordinate {
         return new Coordinate(p.latitude*s, p.longitude*s);
     }
 
+    public static Coordinate divide(Coordinate p, double s) {
+        return new Coordinate(p.latitude/s, p.longitude/s);
+    }
+
     public static double dot(Coordinate p1, Coordinate p2) {
         return p1.latitude * p2.latitude + p1.longitude * p2.longitude;
     }

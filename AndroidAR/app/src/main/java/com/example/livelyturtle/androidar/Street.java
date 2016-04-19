@@ -162,6 +162,14 @@ public class Street extends WorldObject {
         return null;
     }
 
+    public float length() {
+        float length = 0;
+        for(int i = 0; i < this.coordinates.size()-1; i++) {
+            length += this.coordinates.get(i).dist(this.coordinates.get(i+1));
+        }
+        return length;
+    }
+
     @Override
     public String toString() {
         return name;

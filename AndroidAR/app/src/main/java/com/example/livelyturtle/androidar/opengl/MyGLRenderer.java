@@ -709,6 +709,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         HashSet<Path> path = mapData.getStreetsPath(getEyeCoord(), end);
         for (Path street : path) {
             addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
+
+            int max_count = (int) (street.length() / 0.0001);
+            System.out.println("renderpath " + street + " max_count " + max_count);
+            int count = 0;
+            Coordinate start = street.getCoordinates().get(0);
+            Coordinate slope = Coordinate.subtract(street.getCoordinates().get(street.getCoordinates().size() - 1), start);
+            float angle = (float) -Math.toDegrees(Math.atan(slope.longitude / slope.latitude));
+            slope = Coordinate.divide(slope, slope.dist(new Coordinate(0,0)));
+            while(count < max_count) {
+                Coordinate three_coordinate = Coordinate.add(start,Coordinate.mult(slope,0.0001*count));
+                System.out.println("render chevron " + three_coordinate + " at angle " + angle);
+                ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
+                three_coor_list.add(three_coordinate);
+                ThreeChevron test_chevron = new ThreeChevron(street.getName()+"_"+count, three_coor_list, angle); // 0.of is south and goes counter clockwise
+                drawThreeChevron(test_chevron, PURE_GREEN);
+                count++;
+            }
         }
     }
 
