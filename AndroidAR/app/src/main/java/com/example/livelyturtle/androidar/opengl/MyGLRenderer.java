@@ -695,35 +695,52 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
         //===== FOR ANTHONY =====//
-        Coordinate three_coordinate = new Coordinate(39.951609, -75.191695);
+/*        Coordinate three_coordinate = new Coordinate(39.951609, -75.191695);
         ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
         three_coor_list.add(three_coordinate);
         ThreeChevron test_chevron = new ThreeChevron("Test ThreeChevron", three_coor_list, 0f); // 0.of is south and goes counter clockwise
 
         drawThreeChevron(test_chevron, PURE_GREEN);
-
+*/
         // ===== ALL THE CODE ABOVE IS FOR TESTING ======//
     }
 
     public void renderPath(Coordinate end) {
         HashSet<Path> path = mapData.getStreetsPath(getEyeCoord(), end);
         for (Path street : path) {
-            addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
+            //addDrawing(street.getName(), street.vectors(), street.vector_order(), WHITE, 1);
 
             int max_count = (int) (street.length() / 0.0001);
             System.out.println("renderpath " + street + " max_count " + max_count);
             int count = 0;
             Coordinate start = street.getCoordinates().get(0);
             Coordinate slope = Coordinate.subtract(street.getCoordinates().get(street.getCoordinates().size() - 1), start);
-            float angle = (float) -Math.toDegrees(Math.atan(slope.longitude / slope.latitude));
+            float chevron_angle = 0f;
+            if(Math.abs(slope.longitude) < 1e-8) {
+                if(slope.latitude > 0) {
+                    chevron_angle = 0f;
+                }
+                else {
+                    chevron_angle = 180f;
+                }
+            }
+            else {
+                float angle = (float) Math.toDegrees(Math.atan(-slope.latitude / slope.longitude));
+                if(slope.longitude > 0) {
+                    chevron_angle = 90 - angle;
+                }
+                else {
+                    chevron_angle = 270 - angle;
+                }
+            }
             slope = Coordinate.divide(slope, slope.dist(new Coordinate(0,0)));
             while(count < max_count) {
                 Coordinate three_coordinate = Coordinate.add(start,Coordinate.mult(slope,0.0001*count));
-                System.out.println("render chevron " + three_coordinate + " at angle " + angle);
+                System.out.println("render chevron " + three_coordinate + " at angle " + chevron_angle);
                 ArrayList<Coordinate> three_coor_list = new ArrayList<Coordinate>();
                 three_coor_list.add(three_coordinate);
-                ThreeChevron test_chevron = new ThreeChevron(street.getName()+"_"+count, three_coor_list, angle); // 0.of is south and goes counter clockwise
-                drawThreeChevron(test_chevron, PURE_GREEN);
+                ThreeChevron test_chevron = new ThreeChevron(street.getName()+"_"+count, three_coor_list, chevron_angle); // 0.of is south and goes counter clockwise
+                drawThreeChevron(test_chevron, WHITE);
                 count++;
             }
         }

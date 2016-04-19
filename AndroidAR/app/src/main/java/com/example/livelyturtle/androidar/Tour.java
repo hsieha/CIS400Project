@@ -17,7 +17,7 @@ public class Tour {
         CAMPUS
     }
 
-    public static final TourMode TOUR_MODE = TourMode.DEMO;
+    public static final TourMode TOUR_MODE = TourMode.CAMPUS;
 
 
     public Tour(){
