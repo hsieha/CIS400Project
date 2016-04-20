@@ -36,6 +36,7 @@ public class MapData {
             DataType type = DataType.BUILDING;
             String name = "";
             ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
+            float height = 10f;
             while((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
                 if(line.equals("<name>Buildings</name>")) {
@@ -50,6 +51,11 @@ public class MapData {
                 else if(line.startsWith("<name>")) {
                     name = line.substring(6, line.length() - 7);
                 }
+                else if(line.startsWith("<description>")) {
+                    if(line.indexOf("h:") >= 0) {
+                        height = Float.parseFloat(line.substring(line.indexOf("h:") + 2, line.indexOf(']')));
+                    }
+                }
                 else if(line.startsWith("<coordinates>")) {
                     coordinates = new ArrayList<Coordinate>();
                     String coordString = line.substring(13, line.length() - 14);
@@ -60,7 +66,9 @@ public class MapData {
                         coordinates.add(coord);
                     }
                     if(type == DataType.BUILDING) {
-                        buildings.add(new Building(name,coordinates));
+                        buildings.add(new Building(name,coordinates, height));
+                        //System.out.println("building " + name + " has height " + height);
+                        height = 10f;
                     }
                     else if(type == DataType.STREET) {
                         for(int i = 0; i < coordinates.size()-1; i++) {
