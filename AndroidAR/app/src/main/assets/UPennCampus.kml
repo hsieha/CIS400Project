@@ -19,7 +19,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Sansom West</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:50]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -31,7 +32,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Sansom East</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:60]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -43,7 +45,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Harnwell</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:75]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -55,7 +58,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Harrison</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:75]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -67,7 +71,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Rodin</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:75]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -79,7 +84,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Houston Hall</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:20]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -103,7 +109,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Admissions College Hall</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:20]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -115,7 +122,8 @@
 			</Placemark>
 			<Placemark>
 				<name>Huntsman</name>
-				<styleUrl>#poly-DB4436-1-76-nodesc</styleUrl>
+				<description><![CDATA[h:15]]></description>
+				<styleUrl>#poly-DB4436-1-76</styleUrl>
 				<Polygon>
 					<outerBoundaryIs>
 						<LinearRing>
@@ -361,7 +369,7 @@
 				<styleUrl>#line-000000-1-nodesc</styleUrl>
 				<LineString>
 					<tessellate>1</tessellate>
-					<coordinates>-75.1972411,39.9510478,0.0 -75.1970494,39.9511393,0.0 -75.1963923,39.9513449,0.0 -75.1960838,39.9515217,0.0 -75.1957754,39.951567,0.0 -75.1956104,39.9515484,0.0 -75.1953328,39.9516698,0.0 -75.1947936,39.951789,0.0 -75.1938656,39.9520851,0.0 -75.1929791,39.9524182,0.0 -75.1921114,39.9528068,0.0</coordinates>
+					<coordinates>-75.1972411,39.9510478,0.0 -75.1970494,39.9511393,0.0 -75.1963923,39.9513449,0.0 -75.1960838,39.9515217,0.0 -75.1957754,39.951567,0.0 -75.1956104,39.9515484,0.0 -75.1953328,39.9516698,0.0 -75.1947936,39.951789,0.0 -75.1938656,39.9520851,0.0 -75.1929791,39.9524182,0.0 -75.1920899,39.952813,0.0</coordinates>
 				</LineString>
 			</Placemark>
 			<Placemark>
@@ -567,6 +575,38 @@
 			<Pair>
 				<key>highlight</key>
 				<styleUrl>#line-000000-1-nodesc-highlight</styleUrl>
+			</Pair>
+		</StyleMap>
+		<Style id='poly-DB4436-1-76-normal'>
+			<LineStyle>
+				<color>ff3644DB</color>
+				<width>1</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>4C3644DB</color>
+				<fill>1</fill>
+				<outline>1</outline>
+			</PolyStyle>
+		</Style>
+		<Style id='poly-DB4436-1-76-highlight'>
+			<LineStyle>
+				<color>ff3644DB</color>
+				<width>2.0</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>4C3644DB</color>
+				<fill>1</fill>
+				<outline>1</outline>
+			</PolyStyle>
+		</Style>
+		<StyleMap id='poly-DB4436-1-76'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#poly-DB4436-1-76-normal</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#poly-DB4436-1-76-highlight</styleUrl>
 			</Pair>
 		</StyleMap>
 		<Style id='poly-DB4436-1-76-nodesc-normal'>
