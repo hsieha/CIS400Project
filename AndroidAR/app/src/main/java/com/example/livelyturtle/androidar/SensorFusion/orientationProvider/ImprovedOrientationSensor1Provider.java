@@ -1,9 +1,5 @@
 package com.example.livelyturtle.androidar.SensorFusion.orientationProvider;
 
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
-import android.util.Log;
 
 import com.example.livelyturtle.androidar.SensorFusion.representation.Quaternion;
 
@@ -22,7 +18,7 @@ import android.util.Log;
  * @author Alexander Pacha
  *
  */
-public class ImprovedOrientationSensor2Provider extends OrientationProvider {
+public class ImprovedOrientationSensor1Provider extends OrientationProvider {
 
     /**
      * Constant specifying the factor between a Nano-second and a second
@@ -62,7 +58,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
      * slow user-action (threshold > 0.5). 0.1 seems to work fine for most applications.
      *
      */
-    private static final double EPSILON = 0.04f;
+    private static final double EPSILON = 0.02f;
 
     /**
      * Value giving the total velocity of the gyroscope (will be high, when the device is moving fast and low when
@@ -89,13 +85,12 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
     private int panicCounter;
 
     /**
-     * This weight determines indirectly how much the rotation sensor will be used to correct. This weight will be
-     * multiplied by the velocity to obtain the actual weight. (in sensor-fusion-scenario 2 -
-     * SensorSelection.GyroscopeAndRotationVector2).
-     * Must be a value between 0 and approx. 0.04 (because, if multiplied with a velocity of up to 25, should be still
-     * less than 1, otherwise the SLERP will not correctly interpolate). Should be close to zero.
+     * This weight determines directly how much the rotation sensor will be used to correct (in
+     * Sensor-fusion-scenario 1 - SensorSelection.GyroscopeAndRotationVector). Must be a value between 0 and 1.
+     * 0 means that the system entirely relies on the gyroscope, whereas 1 means that the system relies entirely on
+     * the rotationVector.
      */
-    private static final float INDIRECT_INTERPOLATION_WEIGHT = 0.02f;
+    private static final float DIRECT_INTERPOLATION_WEIGHT = 0.00065f;
 
     /**
      * The threshold that indicates an outlier of the rotation vector. If the dot-product between the two vectors
@@ -118,9 +113,10 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
      * gyroscope failure).
      *
      * This value should be lower than OUTLIER_THRESHOLD (0.5 - 0.7) to only start increasing the panic counter,
-     * when there is a huge discrepancy between the two fused sensors.
+     * when there is a
+     * huge discrepancy between the two fused sensors.
      */
-    private static final float OUTLIER_PANIC_THRESHOLD = 0.75f;
+    private static final float OUTLIER_PANIC_THRESHOLD = 0.65f;
 
     /**
      * The threshold that indicates that a chaos state has been established rather than just a temporary peak in the
@@ -132,11 +128,11 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
     private static final int PANIC_THRESHOLD = 60;
 
     /**
-     * Initialises a new ImprovedOrientationSensor2Provider
+     * Initialises a new ImprovedOrientationSensor1Provider
      *
      * @param sensorManager The android sensor manager
      */
-    public ImprovedOrientationSensor2Provider(SensorManager sensorManager) {
+    public ImprovedOrientationSensor1Provider(SensorManager sensorManager) {
         super(sensorManager);
 
         //Add the gyroscope and rotation Vector
@@ -219,8 +215,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
                     // Interpolate with a fixed weight between the two absolute quaternions obtained from gyro and rotation vector sensors
                     // The weight should be quite low, so the rotation vector corrects the gyro only slowly, and the output keeps responsive.
                     Quaternion interpolate = new Quaternion();
-                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate,
-                            (float) (INDIRECT_INTERPOLATION_WEIGHT * gyroscopeRotationVelocity));
+                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate, DIRECT_INTERPOLATION_WEIGHT);
 
                     // Use the interpolated value between gyro and rotationVector
                     setOrientationQuaternionAndMatrix(interpolate);
@@ -277,4 +272,3 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
         }
     }
 }
-

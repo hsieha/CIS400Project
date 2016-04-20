@@ -25,6 +25,10 @@ public class GenerateXZUtility {
         add(new LL(39.951892, -75.194403)); // L/Wood
         add(new LL(39.952788, -75.192113)); // 34/W
         add(new LL(39.952323, -75.192182)); // 34/Chancellor
+        add(new LL(39.950355, -75.191709)); // 33/Spruce
+        add(new LL(39.951485, -75.190791)); // DEMO tour 1
+        add(new LL(39.951609, -75.191695)); // DEMO tour 2
+        add(new LL(39.952249, -75.191561)); // DEMO tour 3
         // etc...
 
     }};
