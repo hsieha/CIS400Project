@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.example.livelyturtle.androidar.MapData;
 import com.example.livelyturtle.androidar.MoverioLibraries.DataDebug;
+import com.example.livelyturtle.androidar.SensorFusion.orientationProvider.CalibratedGyroscopeProvider;
 import com.example.livelyturtle.androidar.SensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 import com.example.livelyturtle.androidar.SensorFusion.orientationProvider.OrientationProvider;
 import com.example.livelyturtle.androidar.opengl.MyGLRenderer;
@@ -103,7 +104,7 @@ public class World3DActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        currentOrientationProvider = new ImprovedOrientationSensor2Provider(
+        currentOrientationProvider = new CalibratedGyroscopeProvider(
                 (SensorManager)getSystemService(SENSOR_SERVICE));
 
         mapData = new MapData("UPennCampus.kml", this);

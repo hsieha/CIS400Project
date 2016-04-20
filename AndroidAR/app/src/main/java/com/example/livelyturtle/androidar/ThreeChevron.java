@@ -45,19 +45,19 @@ public class ThreeChevron extends WorldObject{
         //first chevron
         ArrayList<Coordinate> coor1 = new ArrayList<Coordinate>();
         coor1.add(new Coordinate(lat, lon));
-        chev_one = new Chevron("one", coor1, angle);
+        chev_one = new Chevron(name+"_one", coor1, angle);
 
         //second chevron
         ArrayList<Coordinate> coor2 = new ArrayList<Coordinate>();
         coor2.add(new Coordinate(lat, lon));
-        chev_two = new Chevron("two", coor2, angle);
+        chev_two = new Chevron(name+"_two", coor2, angle);
         chev_two.set_x(chev_two.x + dist*Math.cos(-Math.toRadians(angle+90)));
         chev_two.set_z(chev_two.z + dist*Math.sin(-Math.toRadians(angle+90)));
 
         //third chevron
         ArrayList<Coordinate> coor3 = new ArrayList<Coordinate>();
         coor3.add(new Coordinate(lat, lon));
-        chev_three = new Chevron("three", coor3, angle);
+        chev_three = new Chevron(name+"_three", coor3, angle);
         chev_three.set_x(chev_three.x + 2*dist*Math.cos(-Math.toRadians(angle+90)));
         chev_three.set_z(chev_three.z + 2 * dist * Math.sin(-Math.toRadians(angle + 90)));
 

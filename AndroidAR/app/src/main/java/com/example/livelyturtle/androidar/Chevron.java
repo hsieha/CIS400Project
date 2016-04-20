@@ -27,7 +27,7 @@ public class Chevron extends WorldObject {
     //must also enter a direction to point the chevron
     //direction given in degrees from south clockwise
     public Chevron(String name, ArrayList<Coordinate> coordinates, float dir){
-        super(name, coordinates, 0.3f);
+        super(name, coordinates, 0.2f);
 
         angle = dir;
 
