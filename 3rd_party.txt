@@ -2,9 +2,15 @@
  2. Nobile font
  3. Texample2 library
  4. Sensor fusion at codeproject.com/Articles/729759/Android-Sensor-Fusion-Tutorial
- 5. google maps kml data
+ 5. google maps kml data (Don't include)
  6. camera feed from cwadvandroid github.com/commonsguy/cw-advandroid/tree/master/Camera/Preview
  7. Sensor fusion package from apacha (https://bitbucket.org/apacha/sensor-fusion-demo)
+
+LIBRARIES:
+OpenGL ES 2.0
+OpenCV
+
+
 
 LICENSES / SITES
 
@@ -12,6 +18,6 @@ LICENSES / SITES
  2. http://www.fontsquirrel.com/license/Nobile
  3. http://creativecommons.org/publicdomain/zero/1.0/legalcode
  4. MIT
- 5. ??
+ 5. ?? - this is just public data on the internet. Don't include
  6. Apache 2.0
  7. MIT
